@@ -1,214 +1,173 @@
-# DesignShelf — Chrome and Firefox extension v0.8.3 (development build)
+# DesignShelf
 
-DesignShelf lets a developer select a visible element on a webpage, inspect its rendered HTML and computed CSS, preview it in the browser sidebar or side panel, and save captures locally.
+<p align="center">
+  <img src="icons/designshelf-mark.svg" width="76" alt="DesignShelf mark">
+</p>
 
-## Current development build features
+<h3 align="center">Collect the details behind the interfaces you like.</h3>
 
-This build includes the Field Notes visual system and the first product/security improvements. It remains a development release; public publication is blocked pending browser runtime tests, remaining security review and a licence decision.
+<p align="center">
+  A local-first browser extension for capturing, studying and organising real UI components.
+</p>
 
-- Smart section capture: stores a capped component tree (up to 24 elements) with parent/child relationships, selectors, visibility, dimensions, computed styles, and best-effort HTML snapshots for inspecting child elements individually.
-- Style snapshot: collects computed colour values, font family/size/weight, line height, border radius, shadow and background image information for the captured root and selected tree items.
-- Field Notes visual system: warm archive surfaces, ink typography, oxide-red actions, catalogue-style metadata and clearer component hierarchy.
+<p align="center">
+  <img alt="Chrome" src="https://img.shields.io/badge/Chrome-MV3-4285F4?logo=googlechrome&logoColor=white">
+  <img alt="Firefox" src="https://img.shields.io/badge/Firefox-MV3-FF7139?logo=firefoxbrowser&logoColor=white">
+  <img alt="Version" src="https://img.shields.io/badge/version-0.8.3-426C55">
+  <img alt="Local-first" src="https://img.shields.io/badge/data-local%20to%20your%20browser-B34631">
+  <img alt="Node" src="https://img.shields.io/badge/Node.js-20%2B-417E38?logo=nodedotjs&logoColor=white">
+</p>
 
-- Firefox sidebar and Chrome side-panel interfaces.
-- Project boards/flows, pinning, capture history, per-component research notes, Markdown `DESIGN.md` evidence packs, similarity search and component comparisons.
-- Local page audits, quality heuristics, asset insights, interaction recording and sandboxed workbench.
-- Click-to-pick overlay on ordinary webpages.
-- Captures the selected element's rendered HTML, a set of computed style properties, page URL/title, dimensions, selector and basic CSS animation/transition metadata.
-- Sanitises scripts, embedded frames and inline event attributes in the stored HTML snapshot.
-- Shows a sandboxed preview in the sidebar.
-- Stores captures in `browser.storage.local`.
-- Copies HTML/CSS/motion metadata, downloads HTML/CSS, React JSX and Vue starters, exports the library and full project, and deletes captures.
-- Aggregates observed design tokens and exports the stable DTCG 2025.10 format, CSS variables or a Tailwind v4 theme.
-- No API, account, remote server, analytics or email collection.
+<p align="center">
+  <a href="#what-you-can-do">Features</a> ·
+  <a href="#screenshots">Screenshots</a> ·
+  <a href="#get-started">Get started</a> ·
+  <a href="#privacy-and-permissions">Privacy</a> ·
+  <a href="#development">Development</a>
+</p>
 
-## Browser packages (v0.8.3)
+---
 
-The project now contains separate browser packages because Chrome and Firefox use different sidebar and background entry points:
+DesignShelf is for the moments when you find a useful interface and want to understand how it is put together. Pick a section on a page, save a local snapshot, inspect its structure and styles, then organise it with the other examples you have collected.
 
-- `chrome/` — Manifest V3 service worker and Chrome side panel.
-- `firefox/` — Manifest V3 background scripts and Firefox sidebar.
+It is a practical reference shelf for frontend developers, designers and people building design systems. It captures what the browser can observe; it does not claim to recover a website's original source project.
 
-Both packages use the same capture, inspector and workspace code. They request `activeTab` and `scripting` rather than permanent `<all_urls>` host access. The content script is injected only when an extension UI action asks to inspect the active tab.
+## Screenshots
 
-### Install in Chrome (unpacked)
+<p align="center">
+  <img src="docs/screenshots/field-notes-380.png" width="380" alt="DesignShelf workspace at a 380 pixel sidebar width">
+</p>
+<p align="center"><sub>DesignShelf's Field Notes workspace. The interface uses a paper, ink and oxide-red palette.</sub></p>
+
+## What you can do
+
+| Tool | What it is useful for |
+|---|---|
+| **Capture** | Pick a visible section and save its rendered markup, component tree, dimensions and selected computed styles. |
+| **Inspect** | Move through the captured component tree and review HTML, CSS snapshots and motion metadata. |
+| **Organise** | Group captures into boards, add research notes, search your library and pin important examples. |
+| **Compare** | Review structural and metadata differences between saved captures. |
+| **Check a page** | Run local markup, accessibility and performance heuristics to spot things worth reviewing. |
+| **Explore assets** | Inspect page images, fonts, stylesheets, controls and available animation information. |
+| **Try changes** | Edit a saved snapshot in an isolated workbench, with session undo and redo. |
+| **Export** | Take your work out as HTML/CSS, framework starters, project backups, board notes or design tokens. |
+
+### A closer look
+
+- **Design boards:** collect related components, arrange them and export a Markdown evidence pack with source context and notes.
+- **Design tokens:** aggregate observed colours, fonts, sizes, line heights, weights, spacing and radii. Export as DTCG 2025.10, CSS variables or a Tailwind v4 theme.
+- **Interaction recording:** record selected interaction metadata on the active tab. Form values and typed key values are not intentionally recorded.
+- **Page audit history:** keep a small local history of page scans and compare repeated snapshots.
+- **Capture retention:** unpinned captures are subject to a 15-day retention period. Pinned captures are exempt until unpinned.
+
+## How it works
+
+1. Open a normal website in Chrome or Firefox.
+2. Open DesignShelf from the browser toolbar.
+3. Choose **Capture a component** and select a visible section.
+4. Review the saved structure, styles and preview.
+5. Add notes or place the capture on a board.
+6. Export the parts you want to reuse or document.
+
+The saved result is a browser-observed snapshot. Dynamic states, inaccessible stylesheets and assets, and framework-specific source code may not be available.
+
+## Get started
+
+**This is a development build (v0.8.3), not a store release.** Install it locally using the package for your browser.
+
+### Chrome
 
 1. Open `chrome://extensions`.
-2. Enable **Developer mode**.
-3. Choose **Load unpacked**.
-4. Select the `chrome/` folder.
-5. Open a normal HTTP or HTTPS website and click the DesignShelf toolbar icon.
-6. Use **Capture a component** to start inspection.
+2. Turn on **Developer mode**.
+3. Select **Load unpacked**.
+4. Choose the `chrome/` folder in this repository.
+5. Open a regular website and select the DesignShelf toolbar icon.
 
-### Install temporarily in Firefox
+### Firefox
 
-1. Extract the ZIP to a folder.
-2. Open `about:debugging#/runtime/this-firefox` in Firefox.
-3. Click **Load Temporary Add-on…**.
-4. Select `firefox/manifest.json` from the extracted project (or select the manifest inside the Firefox package folder).
-5. Open a normal website tab (not `about:`, the Add-ons Manager, or another protected page).
-6. Click the DesignShelf toolbar button to open its sidebar.
-7. Click **Capture a component**, then hover and click a section. Press Escape to cancel.
+1. Open `about:debugging#/runtime/this-firefox`.
+2. Select **This Firefox**.
+3. Choose **Load Temporary Add-on…**.
+4. Select `firefox/manifest.json`.
+5. Open a regular website and select the DesignShelf toolbar button.
 
-Temporary add-ons are removed when Firefox restarts. For development, load the add-on again after restarting.
+Firefox temporary add-ons are removed when the browser restarts. Load the package again after restarting.
 
-## Known limitations
+### Browser access
 
-- This is a development build, not a production-ready or Mozilla-reviewed release.
-- It captures rendered DOM, not original React/Vue/Svelte source files or original project structure.
-- Only a subset of computed CSS properties is stored. External stylesheets, CSS variables, media queries, fonts, pseudo-elements, shadow DOM and complex layouts may not reproduce exactly.
-- CSS animation metadata is captured, but original JavaScript-driven animation logic is not reconstructed.
-- External images may be blocked in the sandboxed preview, and relative assets can fail after export.
-- Some pages (browser-internal pages, protected pages, certain PDFs and cross-origin/embedded content) cannot be inspected.
-- Inspection requires the user to invoke the extension on the active tab. `activeTab` access is temporary; browser-internal and protected pages remain unavailable.
-- Local storage is finite. DesignShelf uses a conservative estimated 7.5 MiB budget for new captures, imports, interaction events and audit history; actual browser quotas vary.
-- Use captured code responsibly and respect website copyright, licences, terms and privacy obligations.
-
-## Quality and security notes
-
-The extension does not intentionally transmit saved content. The current development build includes sender validation, bounded capture and interaction payload checks, preview sanitisation, form-value removal, import normalisation and a conservative estimated storage budget. These controls have not been independently security-certified. Before public release, complete live Chrome and Firefox testing, import fuzzing, storage quota tests, accessibility checks and a final permission review.
-
-
-## Historical release notes
-
-The following sections describe earlier development iterations. Permission and feature descriptions in those historical notes may no longer match the current v0.8.3 manifests and code. The current packages use temporary `activeTab` access and runtime injection; they do not declare permanent `<all_urls>` host access.
-
-## Smart component tree and design workspace (v0.6.0)
-
-After selecting a section, open the saved capture and use the Component tree to inspect individual descendants. Each row shows the tag, accessible label or text snippet, and rendered dimensions. Selecting a child updates the preview and the HTML, CSS, motion and basic checks panels to that child where data was captured. Colour swatches can be clicked to copy their CSS colour value. The tree is limited to 24 elements and six nested levels to keep capture size manageable. Closed dropdowns and menus may not be present until you interact with them on the original website; capture an open state separately when needed.
-
-## Improved section selection (v0.2)
-
-- Hover highlights a likely parent container rather than always selecting the deepest child.
-- Click once to lock the candidate, then use the on-page **Parent** and **Child** controls to adjust the boundary. Arrow Up/Down also move through the DOM hierarchy.
-- Click **Capture section** when the outline matches the full component. Press Escape or Cancel to exit.
-- The saved preview is taller and can be manually resized from its lower edge or expanded with the preview button.
-
-The container heuristic is a convenience, not a guarantee: some websites use unusual markup. Always verify the purple outline and adjust with Parent/Child before capturing.
-
-
-## Cross-site workflow and capture history (v0.3)
-
-- The picker content script is registered on ordinary HTTP/HTTPS websites, so switching to another website no longer requires closing and reopening the sidebar. Click **Capture a component** again on the new active tab to begin a new selection. Browser-internal and protected pages remain unavailable.
-- Captures persist in the local extension library across normal tab and website changes.
-- History filters: all captures, today, and the last 7 days. Each capture shows its capture date and time.
-- Captures older than 15 days are automatically pruned on extension startup, sidebar load, each new capture, and a daily alarm. Automatic deletion occurs when Firefox is running and the extension has an opportunity to execute.
-- **Delete all history** permanently clears all saved captures and the last-capture pointer.
-- The extension now requests access to all website URLs so the content script can work on newly opened websites without requiring the toolbar action to be clicked for each tab. This is a broad permission; protected browser pages remain excluded.
-
-
-## Version 0.5.0 additions
-
-- **Performance advisor:** scan the active HTTP/HTTPS page locally for available resource timing and sizes, large scripts/stylesheets/resources, oversized source images relative to displayed size, missing image dimensions/alt attributes, large DOM size and navigation timing. View the largest resources and export a JSON report. Resource URLs omit query strings and fragments.
-- **Evidence-aware recommendations:** each finding describes what was observed and suggests a next step. Resource sizes may be unavailable for cached or cross-origin resources; the report is not a Lighthouse replacement and does not claim to measure field Core Web Vitals or reliably identify unused code.
-- **Optimise workspace:** new sidebar view for page scans, metric summary, findings and largest resources.
-
-Version 0.4.0 additions
-
-- **Design flows:** create visual collections, assign saved captures, reorder components, remove items from a flow, and delete a flow without deleting the original captures.
-- **Local quality checks:** run heuristic checks for missing image alt attributes, unnamed buttons or links, fixed-width risks, missing image sources, and uncertain responsive behaviour. These are warnings, not a complete accessibility audit.
-- **Framework starter exports:** export HTML/CSS, a Tailwind starter, React JSX starter, or Vue template starter. Framework outputs are heuristic starting points and require manual review.
-- **Guided tutorial:** a six-step onboarding guide opens on first run and can be reopened from the top bar.
-- **Updated workspace UI:** navigation for Library, Design flows, Quality check, and Optimise; flow cards; warning panels; export controls; keyboard focus states.
-
-All features run locally. No paid API, account, or external server is required. The performance scan reads data exposed to the page context and stores the report in memory until the sidebar closes; it does not send the report to a server. Captures still expire after 15 days. Export the library before replacing a temporary Firefox add-on installation, because removing a temporary installation can clear its local extension storage.
-
-## v0.7.0 Inspector+ workspace
-
-This update adds a new Inspector+ workspace with the following local tools:
-
-- **Interaction recorder:** explicitly start and stop recording clicks, hover, focus, change, keyboard and submit events on the active page. Events include the target selector, label, viewport and exposed ARIA state; up to 500 events are kept in local extension storage and can be exported as JSON.
-- **Responsive snapshot preview:** resize a saved capture preview to common desktop, tablet and mobile widths. This is a viewport-width check of the saved snapshot, not a full responsive browser session and not a replacement for testing the original page at each breakpoint.
-- **Page asset explorer:** lists images and dimensions, stylesheet links, common font families, interactive controls, and stylesheet rules accessible to the page. Cross-origin stylesheet rules may be blocked by browser security.
-- **Design token mapper:** aggregates captured colours, font families, border radii and shadows across the local library and exports them as JSON.
-- **Capture comparison:** compares saved captures by HTML/CSS length, tree size, dimensions, fonts, colours and animation metadata. It is a metadata comparison, not a pixel-perfect image diff.
-- **Extra quality checks:** adds heuristic checks for form labels, generic link wording, heading hierarchy, new-tab links and possible reduced-motion gaps, alongside a repeated-declaration review. Computed snapshots cannot prove source CSS duplication or full accessibility compliance.
+DesignShelf uses the browser's `activeTab` and `scripting` permissions to inspect a tab after you invoke the extension. It does not request permanent access to every website. Browser-internal and other protected pages cannot be inspected.
 
 ## Privacy and permissions
 
-All new processing runs locally in the extension and the active page. Interaction events are stored in Firefox extension local storage and can include labels and selectors from the page; stop recording when finished and export or clear your data as needed. The extension requests temporary active-tab access when the user invokes inspection. It does not require persistent `<all_urls>` host permissions. Browser-internal and protected pages cannot be inspected. No external service or paid API is used.
+DesignShelf is built to keep its working data in browser-local extension storage.
 
-## Validation status for v0.7.0
+- No DesignShelf account is required.
+- No DesignShelf server, analytics endpoint or paid API is used by the extension.
+- Captures, boards, notes, interaction metadata and audit history are stored locally.
+- Captured page URLs have query strings and fragments removed.
+- Form values and checked/selected form state are removed from captured markup.
+- Saved previews are sanitised and isolated from page scripts and external asset loading.
 
-Run `node --check sidebar.js`, `node --check content.js`, `node --check background.js`, parse `manifest.json`, and run `unzip -t` on the release ZIP before packaging. These checks validate syntax and package integrity only. A live Firefox test is still required to confirm page messaging, browser-specific API behaviour, and all UI interactions.
+Local storage does not make captured website content automatically safe to share. Exports can contain copied markup, selectors, visible text and source context. Review an export before sending or publishing it.
 
-### Additional v0.7.0 tools
+Read [SECURITY.md](SECURITY.md) for responsible vulnerability reporting.
 
-- **Live component workbench:** edit the captured HTML and computed declarations in an isolated, script-disabled iframe preview; reset from the saved capture or export an HTML variant. The CSS field is a computed-style snapshot rather than the website's original stylesheet, so treat the export as a starting point and review selector scoping.
-- **Component similarity finder:** ranks other local captures by shared tag, colours, font family and name terms. It is a lightweight heuristic, not image-recognition or semantic AI.
-- **Animation inventory:** the page inspector also lists animations exposed by `document.getAnimations()`, including play state, timing and accessible keyframe metadata. This is a current-state inventory; it does not guarantee that every JavaScript, canvas, WebGL or framework animation can be reconstructed or replayed.
+## What it does not do
 
+A few boundaries are important:
 
-## v0.8.0 — project reliability and inspection improvements
+- It does not recover original React, Vue, Svelte or other framework source files.
+- It does not reproduce the complete CSS cascade, every media query, pseudo-element, shadow DOM state or cross-origin stylesheet.
+- It does not rebuild JavaScript-driven animations or application state.
+- Its responsive preview changes the width of the saved snapshot; it is not a full responsive browser test.
+- Capture comparisons are structural and metadata-based, not pixel-perfect screenshot diffs.
+- Page checks are heuristics, not a replacement for Lighthouse, a full accessibility audit or real-user performance data.
 
-- **Capture search:** filter the local library by component name, source URL, tag, selector, captured font or colour, alongside the existing date filter.
-- **Full project backup:** export captures, design flows, interaction history and project metadata into one JSON file. The file can contain copied website markup and URLs, so store it carefully.
-- **Project restore/import:** validate JSON structure, enforce file and item-count limits, merge captures by ID, merge design flows, and import interaction events. Invalid files are rejected with an error. Imported captures still follow the configured 15-day retention policy.
-- **Storage estimate:** view an approximate local storage footprint, capture count, flow count and event count. This is a JSON-size estimate, not a browser quota guarantee.
-- **Performance history:** retain up to 20 local audit reports and compare repeated scans for the same host across resource counts, transfer-size estimates, DOM size and available navigation timings. Measurements vary with cache and network conditions and are not controlled benchmarks.
-- **Current viewport checks:** page insights flag possible horizontal overflow and small interactive targets in the active viewport. This is a heuristic snapshot, not a full responsive audit across breakpoints.
-- **Workbench undo/redo:** undo or redo recent HTML/CSS editor states in the isolated preview. History is session-local and resets when the selected capture is reloaded.
-- **CSS snapshot review:** list captured declarations, repeated declaration strings and duplicate IDs. Repeated declarations in computed snapshots do not prove redundant source CSS; full cascade tracing and reliable unused-CSS detection remain limited by source stylesheet access.
-- **Deeper capture comparison:** list CSS declaration strings unique to each capture and compare structure signatures in addition to the existing metadata comparison. This remains a structural comparison, not a pixel-perfect screenshot diff.
-- **Safer interaction metadata:** recorder events now include a small computed-style snapshot and details for a target's `aria-controls` element when available. Form-field values are not intentionally recorded; labels use accessible text, placeholder, name or type instead.
+## Development
 
-### v0.8.0 validation status
+Requirements: **Node.js 20 or newer**. No third-party npm dependencies are required for the current checks.
 
-Syntax and package checks are run before packaging. A live Firefox session test has not been performed. Features that need actual browser validation include capture/import flows, cross-origin page behaviour, live interaction recording, workbench undo/redo and local storage limits.
+```bash
+npm test          # Run the automated test suite
+npm run check     # Check syntax and package consistency
+npm run validate  # Run both
+```
 
-### Known pending or inherently limited items
+The Chrome and Firefox packages share the same core implementation and have separate manifests and browser entry points.
 
-- Pixel-perfect screenshot diff is not implemented; the current comparison is structural and metadata-based. A true image diff needs reliable screenshot capture and image persistence, followed by testing across Firefox versions.
-- The responsive preview changes the saved snapshot viewport width; it does not resize the original website tab or guarantee original media queries are present in captured CSS.
-- Full CSS cascade tracing and reliable unused CSS detection are not implemented because captured computed styles do not preserve the complete source cascade, and cross-origin stylesheets may be inaccessible.
-- The extension does not reconstruct original React/Vue source, framework state, JavaScript animation logic, or all third-party dependencies.
-- Firefox live testing, accessibility testing of the extension UI, quota/error testing, and Mozilla Add-ons release review remain necessary before describing this as production-ready.
+### Repository map
 
+```text
+DesignShelf/
+├── chrome/          # Chrome extension package
+├── firefox/         # Firefox extension package
+├── docs/             # Product, design, QA and release documentation
+├── icons/            # Shared brand and browser icons
+├── scripts/          # Package and source checks
+├── tests/            # Node automated tests
+├── background.js     # Shared background logic
+├── content.js        # Page inspection and selection
+├── sidebar.*         # Main extension interface
+└── token-export.js   # Design token export formats
+```
 
-## v0.8.3 design and workflow additions
+## Project notes
 
-- Introduced the Field Notes visual identity, a consistent light workspace, accessible contrast pairs and original browser icon assets.
-- Added per-capture research notes and board-level `DESIGN.md` evidence-pack export with source context, viewport, observed values and computed CSS snapshots.
-- Added DTCG 2025.10, CSS variable and Tailwind v4 token export. Token names remain neutral until the user assigns semantic meaning.
-- Added capture viewport and device-pixel-ratio provenance.
-- Added a Node test suite, package consistency checks, GitHub Actions CI, contribution guidance, a security policy and staged release documentation.
+- [Feature audit](docs/FEATURE_AUDIT.md)
+- [Product strategy](docs/PRODUCT_STRATEGY.md)
+- [Roadmap](docs/ROADMAP.md)
+- [Test report and known gaps](docs/TEST_REPORT.md)
+- [QA plan](docs/QA_PLAN.md)
+- [Visual system](docs/VISUAL_SYSTEM.md)
+- [Changelog](CHANGELOG.md)
+- [Contributing](CONTRIBUTING.md)
 
-## v0.8.3 security and compatibility hardening
+## Project status
 
-- Added **pinned captures**: pinned items are exempt from the 15-day automatic retention rule; unpinning restores normal expiry.
-- Replaced the page `window.postMessage` capture bridge with direct extension-runtime messaging from the isolated content-script context. This prevents a website from forging a capture by dispatching a matching page message.
-- Added sender checks for extension UI and web content messages.
-- Added capture and interaction-event validation, field-length limits, page-origin matching and structure-count limits before storage.
-- Removed query strings and fragments from stored capture and interaction-recording page URLs to reduce accidental exposure of URL tokens and tracking parameters.
-- Changed content-script access to user-initiated injection using `activeTab` and `scripting`; removed static all-sites injection and permanent all-sites host permissions.
-- Added browser-specific Chrome and Firefox manifests and side-panel entry points.
-- Added preview sanitisation, a restrictive preview Content Security Policy, and blocked external asset loads in saved-component and workbench previews. Only embedded raster data images are retained.
+DesignShelf is under active development. The current codebase includes automated tests and static package checks, but **live Chrome and Firefox workflows, accessibility testing and further security testing remain necessary**. Do not treat this build as independently security-certified or production-ready.
 
-### Security status
+The repository currently has no open-source licence. Until a licence is selected and added, no permission to redistribute or reuse the source is granted.
 
-These are targeted hardening changes, not a claim that the extension is vulnerability-free or independently security-certified. The packages have passed local syntax, manifest and static regression checks. Live browser testing, manual permission-prompt verification, malicious-import testing, and Chrome/Firefox release validation are still required before public distribution.
+---
 
-
-## Development checks
-
-Requires Node.js 20 or newer. Run `npm test` for automated tests, `npm run check` for syntax and package validation, or `npm run validate` for both. No third-party npm dependencies are required.
-
-## Project documentation
-
-- `docs/PRODUCT_STRATEGY.md` — product positioning, users, workflows and roadmap.
-- `docs/ROADMAP.md` — staged development plan and completion gates.
-- `docs/TEST_REPORT.md` — automated checks, package validation and remaining release gaps.
-- `docs/COMPETITOR_RESEARCH.md` — public competitor review and positioning.
-- `docs/VISUAL_SYSTEM.md` — Field Notes visual identity and UI rules.
-- `docs/INITIAL_AUDIT.md` — baseline source audit and open findings.
-- `docs/QA_PLAN.md` — functional, security, accessibility and browser test plan.
-- `docs/FEATURE_AUDIT.md` — interface and feature-by-feature implementation map.
-- `docs/BRAND_ASSETS.md` — logo and icon direction.
-- `docs/RELEASE_CHECKLIST.md` — GitHub and public release gates.
-- `docs/GITHUB_REPOSITORY_SETUP.md` — suggested repository metadata and publication controls.
-- `CONTRIBUTING.md` — development and contribution guidance.
-- `SECURITY.md` — security reporting guidance.
-
-## Licence
-
-No open-source licence has been selected yet. Until a licence is chosen and added, the source is not granted for redistribution or reuse. This decision must be made before the GitHub repository is made public.
+<p align="center"><sub>DesignShelf · A small, local-first workspace for collecting interface details.</sub></p>
