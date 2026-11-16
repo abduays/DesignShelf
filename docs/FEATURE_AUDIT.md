@@ -12,7 +12,7 @@
 | About | Explains local storage, visible text/URL capture and reuse/privacy cautions | Updated |
 | Capture action | Requests current active tab, injects content script on demand, starts picker | Existing feature; message sender checks retained |
 | Notice strip | Announces success and failure messages with `role=status` and `aria-live` | Existing feature; retained |
-| Main navigation | Library, Boards, Checks, Page audit and Studio | Labels and programmatic active state updated |
+| Main navigation | Library, Boards, Checks, Page audit and Studio | Semantic tabs/panels, selected state, roving tabindex, Left/Right/Home/End navigation and skip link |
 
 ## Library and capture detail
 
@@ -24,7 +24,7 @@
 | Capture card | Preview thumbnail, name, host, dimensions and pin/delete actions | Existing feature; restyled |
 | Pin capture | Exempts a capture from 15-day expiry | Existing feature; retained |
 | Detail preview | Sandboxed `srcdoc`, sanitised markup/CSS, no external resources | Preview root style target corrected; sanitisation expanded |
-| Component tree | Up to 24 captured nodes, depth-limited, child selection | Existing feature; background validation strengthened |
+| Component tree | Up to 24 captured nodes, depth-limited, child selection | Existing feature; generated selectors prefer unique stable attributes and avoid hash-like classes |
 | HTML/CSS/Motion/Checks tabs | Displays captured code, motion data and local heuristics | Keyboard tab navigation and ARIA state added |
 | Copy/download | HTML/CSS, Tailwind starter, React JSX and Vue template starter | Existing feature; labels clarified |
 | Viewport controls | Changes saved preview width to common viewport sizes | Clarified as snapshot viewport sizing, not original responsive testing |
@@ -46,7 +46,7 @@
 
 | Element | Behaviour / implementation | Status |
 |---|---|---|
-| Component checks | Local markup/CSS/accessibility heuristics | Existing feature; limitations made explicit |
+| Component checks | Local markup/CSS/accessibility heuristics | Extended with unlabeled controls, empty headings and generic link text; heuristic only, not axe-core or WCAG certification |
 | Deep checks | Additional markup and computed-style heuristics | Existing feature; retained |
 | Page performance scan | Resource, image, DOM and navigation timing snapshot | Existing feature; no claim of Lighthouse/Core Web Vitals equivalence |
 | Audit history | Saves recent page scans and compares with previous scan for same host | Field-level import normalisation and storage budget check added |
@@ -86,3 +86,15 @@
 - CSS and JavaScript maintainability still needs refactoring; some inherited functions remain compressed.
 - Accessibility needs runtime keyboard, contrast, zoom and screen-reader checks.
 - Security review is not independent certification; import fuzzing and hostile-page testing remain release gates.
+
+
+## UI/accessibility upgrade (16 November 2026)
+
+- Added skip navigation and a main content landmark.
+- Workspace navigation now exposes tab semantics and keyboard roving focus with Left/Right/Home/End keys.
+- Panels expose tabpanel relationships and keyboard focus targets.
+- Increased interactive target sizes; added forced-colors and reduced-motion styling.
+- Detail scrolling respects reduced-motion preference.
+- Selector generation prefers unique IDs and stable test/QA attributes, validates uniqueness and filters hash-like class tokens.
+- Added local heuristics for unnamed form controls, empty headings and generic link text.
+- No external runtime package or remote asset was introduced. axe-core remains a candidate pending local bundle and cross-browser runtime validation.
