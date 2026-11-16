@@ -11,7 +11,7 @@ const run = (args) => {
   if (result.status !== 0) fail.push(`${args.join(' ')}\n${result.stderr || result.stdout}`);
 };
 
-for (const file of ['background.js','content.js','sidebar.js','token-export.js','project-import.js']) run(['--check',file]);
+for (const file of ['background.js','content.js','sidebar.js','token-export.js','project-import.js','demo/app.js']) run(['--check',file]);
 for (const browser of ['chrome','firefox']) {
   const dir = path.join(root,browser);
   const manifestPath = path.join(dir,'manifest.json');
@@ -45,6 +45,16 @@ for (const browser of ['chrome','firefox']) {
     if (!fs.existsSync(path.join(dir,value))) fail.push(`${browser}: missing UI resource ${value}`);
   }
 }
+
+const demoHtmlPath = path.join(root,'demo','index.html');
+const demoHtml = fs.readFileSync(demoHtmlPath,'utf8');
+for (const match of demoHtml.matchAll(/(?:src|href)=[\"']([^\"']+)[\"']/g)) {
+  const value = match[1];
+  if (/^(?:https?:|data:|#)/i.test(value)) continue;
+  if (!fs.existsSync(path.join(root,'demo',value))) fail.push('demo: missing local resource ' + value);
+}
+const demoCss = fs.readFileSync(path.join(root,'demo','styles.css'),'utf8');
+if ((demoCss.match(/{/g)||[]).length !== (demoCss.match(/}/g)||[]).length) fail.push('demo/styles.css: unbalanced braces');
 
 const html = fs.readFileSync(path.join(root,'sidebar.html'),'utf8');
 const ids = [...html.matchAll(/\bid=["']([^"']+)["']/g)].map(match => match[1]);
