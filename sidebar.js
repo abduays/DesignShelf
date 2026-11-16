@@ -116,9 +116,15 @@ async function updateActionStates() {
     $('startRecordingBtn').disabled=Number.isInteger(data.designshelfRecordingTabId); $('stopRecordingBtn').disabled=!Number.isInteger(data.designshelfRecordingTabId); $('exportRecordingBtn').disabled=!hasEvents;
   } catch {}
 }
-function switchView(view) {
+function switchView(view, moveFocus = false) {
   currentView = view;
-  document.querySelectorAll('.view-btn').forEach(b => { const active = b.dataset.view === view; b.classList.toggle('active', active); if (active) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current'); });
+  document.querySelectorAll('.view-btn').forEach(b => {
+    const active = b.dataset.view === view;
+    b.classList.toggle('active', active);
+    b.setAttribute('aria-selected', String(active));
+    b.tabIndex = active ? 0 : -1;
+    if (active && moveFocus) b.focus();
+  });
   $('libraryView').classList.toggle('hidden', view !== 'library');
   $('boardsView').classList.toggle('hidden', view !== 'boards');
   $('qualityView').classList.toggle('hidden', view !== 'quality');
@@ -172,7 +178,7 @@ function selectCapture(id, scroll = true) {
   $('preview').srcdoc = previewDocument(capture.html, capture.css);
   document.querySelectorAll('.tab').forEach(t => { const active = t.dataset.tab === activeTab; t.classList.toggle('active', active); t.setAttribute('aria-selected', String(active)); t.tabIndex = active ? 0 : -1; if (active) $('codeView').setAttribute('aria-labelledby', t.id); });
   renderComponentTree(capture); renderCode(capture); renderList(); renderQuality(); updateActionStates();
-  if (scroll) $('detailPanel').scrollIntoView({behavior:'smooth',block:'start'});
+  if (scroll) $('detailPanel').scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'});
 }
 function currentInspectedItem(capture) {
   return (capture.structure || []).find(node => node.id === selectedNodeId) || null;
@@ -241,8 +247,15 @@ function runQualityChecks(capture) {
   const unnamedButtons = buttons.filter(b => !(b.textContent || '').trim() && !b.getAttribute('aria-label') && !b.getAttribute('title'));
   if (unnamedButtons.length) checks.push({level:'warning',title:`${unnamedButtons.length} button(s) may lack an accessible name`,detail:'Give icon-only buttons an accessible name, such as aria-label.'});
   const links = [...doc.querySelectorAll('a')];
-  const unnamedLinks = links.filter(a => !(a.textContent || '').trim() && !a.querySelector('img[alt]:not([alt=""])') && !a.getAttribute('aria-label'));
+  const unnamedLinks = links.filter(a => !(a.textContent || '').trim() && !a.querySelector('img[alt]:not([alt=""])') && !a.getAttribute('aria-label') && !a.getAttribute('aria-labelledby'));
   if (unnamedLinks.length) checks.push({level:'warning',title:`${unnamedLinks.length} link(s) may lack descriptive text`,detail:'Ensure each link has an accessible name that explains its destination or action.'});
+  const controls = [...doc.querySelectorAll('input,select,textarea')].filter(el => !['hidden','submit','button','reset','image'].includes((el.type || '').toLowerCase()));
+  const unlabeledControls = controls.filter(el => !el.labels?.length && !el.getAttribute('aria-label') && !el.getAttribute('aria-labelledby'));
+  if (unlabeledControls.length) checks.push({level:'warning',title:`${unlabeledControls.length} form control(s) may lack an accessible name`,detail:'Associate each control with a visible label, or provide a valid aria-label or aria-labelledby reference.'});
+  const emptyHeadings = [...doc.querySelectorAll('h1,h2,h3,h4,h5,h6')].filter(el => !(el.textContent || '').trim() && !el.getAttribute('aria-label'));
+  if (emptyHeadings.length) checks.push({level:'warning',title:`${emptyHeadings.length} heading(s) have no accessible text`,detail:'Give headings meaningful text so people navigating by headings can understand the page structure.'});
+  const genericLinks = links.filter(a => /^(click here|read more|learn more)$/i.test((a.textContent || '').trim()));
+  if (genericLinks.length) checks.push({level:'info',title:`${genericLinks.length} link(s) use generic wording`,detail:'Use link text that makes sense when read out of context, or provide an accessible name that describes the destination.'});
   if (/<(script|iframe|object|embed)\b/i.test(html)) checks.push({level:'info',title:'Active or embedded content detected in source',detail:'The saved snapshot should not be treated as a secure, fully functional copy. DesignShelf removes scripts and embedded frames during capture where possible.'});
   if (/(^|[;\s])(?:width|min-width)\s*:\s*\d{3,}px/i.test(css) || /(?:width|min-width)\s*:\s*\d{3,}px/i.test(html)) checks.push({level:'warning',title:'Large fixed width may overflow on smaller screens',detail:'Test the component at mobile widths. Consider max-width: 100%, flexible units or responsive breakpoints.'});
   if (!/max-width|@media|flex-wrap|grid-template-columns|width:\s*100%/i.test(css + html)) checks.push({level:'info',title:'Responsive behaviour could not be confirmed',detail:'No common responsive indicators were found in the captured root styles. Inspect the original page at mobile and tablet widths.'});
@@ -658,6 +671,19 @@ $('tutorialBtn').addEventListener('click',showTutorial); $('closeTutorialBtn').a
 $('tutorialPrevBtn').addEventListener('click',()=>{if(tutorialStep>0){tutorialStep--;renderTutorial();}});
 $('tutorialNextBtn').addEventListener('click',async()=>{if(tutorialStep<tutorial.length-1){tutorialStep++;renderTutorial();}else{$('tutorialDialog').close();await api.storage.local.set({designshelfTutorialSeen:true});setNotice('Tutorial complete. Start by capturing a section from a website.');}});
 document.querySelectorAll('.view-btn').forEach(b=>b.addEventListener('click',()=>switchView(b.dataset.view)));
+document.querySelector('.workspace-nav')?.addEventListener('keydown', event => {
+  if (!['ArrowLeft','ArrowRight','Home','End'].includes(event.key)) return;
+  const tabs = [...document.querySelectorAll('.view-btn')];
+  const current = tabs.indexOf(document.activeElement);
+  if (current < 0) return;
+  let next = current;
+  if (event.key === 'ArrowRight') next = (current + 1) % tabs.length;
+  if (event.key === 'ArrowLeft') next = (current - 1 + tabs.length) % tabs.length;
+  if (event.key === 'Home') next = 0;
+  if (event.key === 'End') next = tabs.length - 1;
+  event.preventDefault();
+  switchView(tabs[next].dataset.view, true);
+});
 document.querySelectorAll('.tab').forEach(tab=>tab.addEventListener('click',()=>{activeTab=tab.dataset.tab;document.querySelectorAll('.tab').forEach(x=>{const active=x===tab;x.classList.toggle('active',active);x.setAttribute('aria-selected',String(active));x.tabIndex=active?0:-1;if(active)$('codeView').setAttribute('aria-labelledby',x.id);});const c=captures.find(x=>x.id===selectedId);if(c)renderCode(c);}));
 $('detailPanel').querySelector('.tabs').addEventListener('keydown',event=>{if(!['ArrowLeft','ArrowRight','Home','End'].includes(event.key))return;const tabs=[...document.querySelectorAll('.tab')];const current=tabs.indexOf(document.activeElement);let next=current;if(event.key==='ArrowRight')next=(current+1)%tabs.length;if(event.key==='ArrowLeft')next=(current-1+tabs.length)%tabs.length;if(event.key==='Home')next=0;if(event.key==='End')next=tabs.length-1;event.preventDefault();tabs[next].focus();tabs[next].click();});
 $('copyCodeBtn').addEventListener('click',async()=>{const c=captures.find(x=>x.id===selectedId);if(!c)return;const item=currentInspectedItem(c);const content=activeTab==='html'?(item?.html||c.html):activeTab==='css'?(item?.css||c.css):activeTab==='animation'?JSON.stringify(item?.animation||c.animation||{},null,2):runQualityChecks({html:item?.html||c.html,css:item?.css||c.css}).map(x=>`${x.level.toUpperCase()}: ${x.title}\n${x.detail}`).join('\n\n');try{await navigator.clipboard.writeText(content||'');setNotice('Content copied to clipboard.');}catch{setNotice('Clipboard access was blocked. Select and copy the code manually.',true);}});
