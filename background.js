@@ -131,7 +131,7 @@ function validInteraction(item) {
   return true;
 }
 
-api.runtime.onMessage.addListener(async (message, sender) => {
+async function handleRuntimeMessage(message, sender) {
   if (!message || typeof message.type !== 'string') return undefined;
   const contentMessageTypes = ['DESIGNSHELF_INTERACTION_EVENT','DESIGNSHELF_CAPTURE'];
   if (contentMessageTypes.includes(message.type) && !isWebContentSender(sender)) return { ok:false, error:'Untrusted message sender.' };
@@ -252,4 +252,16 @@ api.runtime.onMessage.addListener(async (message, sender) => {
     }
   }
   return undefined;
+}
+
+api.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  handleRuntimeMessage(message, sender).then(response => {
+    if (response !== undefined) sendResponse(response);
+  }).catch(error => {
+    console.error('DesignShelf background message failed:', error);
+    sendResponse({ ok:false, error:'An unexpected background error occurred.' });
+  });
+  // Callback-based async replies work in Chrome versions before native Promise
+  // listener support and remain compatible with Firefox WebExtensions.
+  return true;
 });
