@@ -41,7 +41,7 @@
 
 ## Release decision
 
-The development build's current automated checks pass (39 tests, 0 failures) and package consistency checks pass in GitHub Actions. It is not yet cleared for public release. Live Chrome and Firefox testing, storage/import stress testing, a licence decision and explicit user approval remain required before GitHub publication.
+The development build's current automated checks pass (44 tests, 0 failures) and package consistency checks pass in GitHub Actions. The GitHub repository is public, but this is not a browser-store release and is not cleared for store publication. Live Chrome and Firefox testing, storage/import stress testing, a licence decision and explicit release approval remain required.
 
 
 ## UI and accessibility upgrade validation — 16 November 2026
