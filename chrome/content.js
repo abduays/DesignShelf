@@ -133,23 +133,47 @@
   }
 
   function selectorFor(element) {
-    if (element.id && !/\s/.test(element.id)) return `#${CSS.escape(element.id)}`;
+    const escape = value => globalThis.CSS?.escape
+      ? CSS.escape(String(value))
+      : String(value).replace(/[^a-zA-Z0-9_-]/g, character => "\\" + character.codePointAt(0).toString(16) + " ");
+    const isUnique = selector => {
+      try { return document.querySelectorAll(selector).length === 1; } catch { return false; }
+    };
+    if (element.id && !/\\s/.test(element.id)) {
+      const idSelector = "#" + escape(element.id);
+      if (isUnique(idSelector)) return idSelector;
+    }
+    const stableAttributes = ["data-testid", "data-test", "data-qa", "data-cy", "name", "aria-label", "role"];
+    for (const attribute of stableAttributes) {
+      const value = element.getAttribute(attribute);
+      if (!value || value.length > 120) continue;
+      const quoted = value.replace(/\\/g, "\\\\").replace(/"/g, '\\"');
+      const candidate = element.localName + "[" + attribute + "=\"" + quoted + "\"]";
+      if (isUnique(candidate)) return candidate;
+    }
     const parts = [];
     let node = element;
-    while (node && node.nodeType === 1 && parts.length < 5) {
+    while (node && node.nodeType === 1 && parts.length < 7) {
       let part = node.localName;
-      const classes = [...node.classList].filter(c => c.length < 40).slice(0, 2);
-      if (classes.length) part += '.' + classes.map(c => CSS.escape(c)).join('.');
+      if (node.id && !/\\s/.test(node.id)) {
+        const idPart = "#" + escape(node.id);
+        if (isUnique(idPart)) { parts.unshift(idPart); break; }
+      }
+      const classes = [...node.classList]
+        .filter(token => token.length > 1 && token.length < 32 && !/^[a-f0-9]{8,}$/i.test(token) && !/^[a-z]{1,3}[-_]?\\d{4,}$/i.test(token))
+        .slice(0, 2);
+      if (classes.length) part += "." + classes.map(escape).join(".");
       if (node.parentElement) {
-        const siblings = [...node.parentElement.children].filter(s => s.localName === node.localName);
-        if (siblings.length > 1) part += `:nth-of-type(${siblings.indexOf(node) + 1})`;
+        const sameTag = [...node.parentElement.children].filter(sibling => sibling.localName === node.localName);
+        if (sameTag.length > 1) part += ":nth-of-type(" + (sameTag.indexOf(node) + 1) + ")";
       }
       parts.unshift(part);
+      const candidate = parts.join(" > ");
+      if (isUnique(candidate)) return candidate;
       node = node.parentElement;
     }
-    return parts.join(' > ');
+    return parts.join(" > ");
   }
-
   function getStyleText(element) {
     const computed = getComputedStyle(element);
     return STYLE_PROPS.map(prop => `${prop}: ${computed.getPropertyValue(prop)};`).join('\n');
