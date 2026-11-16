@@ -53,3 +53,16 @@ Before a formal store release:
 - Credentials, API keys, browser profiles or session data.
 - Screenshots containing private or identifiable user information.
 - Third-party assets without permission to redistribute them.
+
+## Interactive demo hosting
+
+The interactive sample demo lives in `demo/` and is deployed through `.github/workflows/pages.yml`.
+
+To enable hosting for this repository:
+
+1. Open **Settings → Pages** in the GitHub repository.
+2. Under **Build and deployment**, set **Source** to **GitHub Actions**.
+3. Open **Actions → Deploy DesignShelf demo** and rerun the latest failed run, or push a change under `demo/`.
+4. Once the deployment succeeds, the site is available at `https://abduays.github.io/DesignShelf/`.
+
+The deployment workflow cannot enable Pages automatically with the current GitHub Actions token permissions. The one-time Pages setting must be changed by a repository administrator. The demo uses fictional sample data; it is not the installed extension and cannot inspect live browser tabs.
