@@ -181,3 +181,9 @@ test('capture retention safely discards malformed stored entries', async () => {
   assert.equal(result.ok, true);
   assert.deepEqual(h.state.designshelfCaptures.map(item=>item.id), ['capture-1','pinned']);
 });
+
+test('callback message bridge closes unhandled message channels with a null response', async () => {
+  const h = createHarness();
+  const result = await h.send({ type:'UNKNOWN_DESIGNSHELF_MESSAGE' }, extensionSender);
+  assert.equal(result, null);
+});
