@@ -7,12 +7,13 @@
   <link rel="stylesheet" href="sidebar.css">
 </head>
 <body>
+  <a class="skip-link" href="#main-content">Skip to workspace content</a>
   <header class="topbar">
     <img class="brand-mark" src="icons/designshelf-mark.svg" alt="" aria-hidden="true">
     <div class="brand-copy"><strong>DesignShelf</strong><span>Visual research workspace</span></div>
     <button id="tutorialBtn" class="secondary small" title="Open guided tutorial">Guide</button><button id="settingsBtn" class="icon-btn" title="About DesignShelf" aria-label="About DesignShelf">ⓘ</button>
   </header>
-  <main>
+  <main id="main-content">
     <section class="hero">
       <div class="eyebrow">FIELD NOTES / 01</div>
       <h1>Keep the details<br>that make a design work.</h1>
@@ -21,31 +22,31 @@
       <div class="hint">Tip: hover to highlight, click to capture. Press Esc to cancel.</div>
     </section>
     <div id="notice" class="notice" role="status" aria-live="polite">Ready when you are.</div>
-    <nav class="workspace-nav" aria-label="Workspace views">
-      <button class="view-btn active" data-view="library" aria-current="page" aria-controls="libraryView">Library</button>
-      <button class="view-btn" data-view="boards" aria-controls="boardsView">Boards</button>
-      <button class="view-btn" data-view="quality" aria-controls="qualityView">Checks</button><button class="view-btn" data-view="optimise" aria-controls="optimiseView">Page audit</button><button class="view-btn" data-view="toolbox" aria-controls="toolboxView">Studio</button>
+    <nav class="workspace-nav" aria-label="Workspace views" role="tablist" aria-orientation="horizontal">
+      <button class="view-btn active" id="viewTab-library" type="button" role="tab" aria-selected="true" aria-current="page" aria-controls="libraryView" tabindex="0" data-view="library">Library</button>
+      <button class="view-btn" id="viewTab-boards" type="button" role="tab" aria-selected="false" aria-controls="boardsView" tabindex="-1" data-view="boards">Boards</button>
+      <button class="view-btn" id="viewTab-quality" type="button" role="tab" aria-selected="false" aria-controls="qualityView" tabindex="-1" data-view="quality">Checks</button><button class="view-btn" id="viewTab-optimise" type="button" role="tab" aria-selected="false" aria-controls="optimiseView" tabindex="-1" data-view="optimise">Page audit</button><button class="view-btn" id="viewTab-toolbox" type="button" role="tab" aria-selected="false" aria-controls="toolboxView" tabindex="-1" data-view="toolbox">Studio</button>
     </nav>
-    <section id="libraryView" class="library-section app-view">
+    <section id="libraryView" role="tabpanel" aria-labelledby="viewTab-library" tabindex="0" class="library-section app-view">
       <div class="section-heading"><div><h2>Component library</h2><span id="countLabel" class="muted">0 captures</span></div><button id="exportAllBtn" class="quiet-btn" disabled>Export all</button></div>
       <div class="history-toolbar"><label for="captureSearch">Search</label><input id="captureSearch" type="search" placeholder="Name, website, tag, colour, font…" aria-label="Search captures"><label for="historyFilter">Show</label><select id="historyFilter"><option value="all">All history</option><option value="today">Today</option><option value="7days">Last 7 days</option></select><span class="retention-note">Unpinned items expire after 15 days</span></div>
       <div class="collection-assign"><label for="collectionSelect">Add selected capture to</label><select id="collectionSelect" disabled><option value="">Choose a design flow…</option></select><button id="createCollectionBtn" class="secondary small">＋ New flow</button></div>
       <div id="emptyState" class="empty-state"><div class="empty-icon">⌘</div><strong>No captures in history</strong><p>Open any normal website and use Capture a component. Your saved captures remain available when you switch tabs or websites.</p></div>
       <div id="captureList" class="capture-list"></div>
     </section>
-    <section id="boardsView" class="app-view hidden view-section">
+    <section id="boardsView" role="tabpanel" aria-labelledby="viewTab-boards" tabindex="0" class="app-view hidden view-section">
       <div class="section-heading"><div><h2>Design flows</h2><span class="muted">Group captures into a page or project</span></div><button id="newBoardBtn" class="primary small">＋ New flow</button></div>
       <div class="feature-intro">Collect hero sections, cards, navigation, pricing and footers into one visual reference board. Captures stay on this device.</div>
       <div id="boardList" class="board-list"></div>
       <div id="boardDetail" class="board-detail hidden"></div>
     </section>
-    <section id="qualityView" class="app-view hidden view-section">
+    <section id="qualityView" role="tabpanel" aria-labelledby="viewTab-quality" tabindex="0" class="app-view hidden view-section">
       <div class="section-heading"><div><h2>Component quality</h2><span class="muted">Local, rule-based checks</span></div><button id="runQualityBtn" class="secondary small" disabled>Run checks</button></div>
       <div class="feature-intro">Checks highlight potential issues in the captured markup and styles. They are guidance, not a full accessibility or browser compatibility audit.</div>
       <div id="qualityEmpty" class="empty-state"><div class="empty-icon">✓</div><strong>Select a capture to inspect</strong><p>Open a saved component from Library, then return here to run the checks.</p></div>
       <div id="qualityResults" class="quality-results hidden"></div>
     </section>
-    <section id="optimiseView" class="app-view hidden view-section">
+    <section id="optimiseView" role="tabpanel" aria-labelledby="viewTab-optimise" tabindex="0" class="app-view hidden view-section">
       <div class="section-heading"><div><h2>Performance advisor</h2><span class="muted">Local browser measurements</span></div><button id="scanPageBtn" class="primary small">Scan page</button></div>
       <div class="feature-intro">Inspect the active website for large resources, image delivery issues, DOM size and basic load timings. Recommendations are evidence-based hints, not automatic changes or a substitute for Lighthouse or real-user data.</div>
       <div class="audit-actions"><button id="exportAuditBtn" class="secondary small" disabled>Export report</button><span id="auditTimestamp" class="muted">No scan run yet</span></div>
@@ -55,7 +56,7 @@
       <div id="resourceTableWrap" class="resource-table-wrap hidden"><h3>Largest resources</h3><div id="resourceTable" class="resource-table"></div></div>
       <p class="small-note">Transfer sizes may be unavailable for cached or cross-origin resources. This report does not claim to measure full Core Web Vitals or identify all unused code.</p>
     </section>
-    <section id="toolboxView" class="app-view hidden view-section">
+    <section id="toolboxView" role="tabpanel" aria-labelledby="viewTab-toolbox" tabindex="0" class="app-view hidden view-section">
       <div class="section-heading"><div><h2>Studio tools</h2><span class="muted">Interaction, assets, tokens and comparison</span></div><button id="refreshInsightsBtn" class="primary small">Inspect page</button></div>
       <div class="feature-intro">Runs locally in the active tab. Some details depend on browser access and the website's implementation.</div>
       <div class="toolbox-card">

@@ -164,6 +164,8 @@ DesignShelf/
 - [Test report and known gaps](docs/TEST_REPORT.md)
 - [QA plan](docs/QA_PLAN.md)
 - [Visual system](docs/VISUAL_SYSTEM.md)
+- [UI and accessibility improvement plan](docs/IMPROVEMENT_PLAN.md)
+- [Third-party project and licence review](docs/THIRD_PARTY_NOTICES.md)
 - [Changelog](CHANGELOG.md)
 - [Contributing](CONTRIBUTING.md)
 

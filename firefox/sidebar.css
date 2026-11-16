@@ -384,3 +384,23 @@ footer { display: flex; align-items: center; justify-content: space-between; gap
 .research-note-actions{display:flex;align-items:center;justify-content:space-between;gap:8px}
 button:disabled,select:disabled,input:disabled,textarea:disabled{opacity:.45;cursor:not-allowed;filter:saturate(.55)}
 button:disabled:hover{transform:none;box-shadow:none}
+
+
+/* Accessibility and navigation refinement — WCAG 2.2 AA-oriented defaults. */
+.skip-link { position:absolute; z-index:100; top:6px; left:8px; transform:translateY(-160%); padding:10px 14px; border:2px solid var(--ds-ink); border-radius:5px; background:var(--ds-paper); color:var(--ds-ink); font-size:13px; font-weight:800; }
+.skip-link:focus { transform:translateY(0); }
+button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, a:focus-visible { outline:3px solid var(--ds-accent-dark); outline-offset:3px; }
+.workspace-nav { gap:5px; padding-top:10px; }
+.view-btn { min-height:40px; padding:8px 5px; font-size:11px; }
+.view-btn[aria-selected="true"] { border-color:var(--ds-line-strong); background:var(--ds-paper); color:var(--ds-ink); box-shadow:inset 0 -3px var(--ds-accent); }
+.primary, .secondary, .quiet-btn, .danger, .icon-btn { min-height:36px; }
+.icon-btn { width:36px; min-width:36px; }
+input, select, textarea { min-height:36px; }
+textarea { line-height:1.55; }
+.small-note, .muted, .hint, .history-toolbar label, .collection-assign label { font-size:11px; }
+.feature-intro, .toolbox-card-head p, .quality-item p { font-size:12px; }
+.view-section:focus, .library-section:focus { outline:none; }
+.view-section:focus-visible, .library-section:focus-visible { outline:2px solid var(--ds-accent); outline-offset:-2px; }
+@media (max-width:340px) { .workspace-nav { grid-template-columns:repeat(3,minmax(0,1fr)); } .view-btn { white-space:normal; } .history-toolbar { align-items:stretch; } .history-toolbar input { flex-basis:100%; } .retention-note { flex-basis:100%; } }
+@media (prefers-reduced-motion:reduce) { *, *::before, *::after { scroll-behavior:auto !important; animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important; } }
+@media (forced-colors:active) { .view-btn[aria-selected="true"], button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, a:focus-visible { outline:2px solid Highlight; outline-offset:2px; } .view-btn[aria-selected="true"] { border:2px solid Highlight; } }
