@@ -31,14 +31,14 @@ function createHarness(initial = {}, options = {}) {
     storage: { local: storage },
     sidePanel: { setPanelBehavior: async () => {} },
     tabs: {
-      async query() { return Number.isInteger(options.activeTabId) ? [{ id:options.activeTabId }] : []; },
+      async query() { return Number.isInteger(options.activeTabId) ? [{ id:options.activeTabId, ...(options.activeTabUrl?{url:options.activeTabUrl}:{}) }] : []; },
       async sendMessage(tabId, message) {
         sentMessages.push({ tabId, message });
         if (options.failTabId === tabId) throw new Error('Tab unavailable');
         return options.tabReply || { ok:true, count:0 };
       }
     },
-    scripting: { async executeScript() {} },
+    scripting: { async executeScript() { if(options.failInjection) throw new Error('Missing host permission for the tab'); } },
     action: { onClicked: noopEvent }
   };
   const context = { browser: api, chrome: api, URL, Date, JSON, Number, Array, Object, Set, Math, console, structuredClone };
@@ -186,4 +186,13 @@ test('callback message bridge closes unhandled message channels with a null resp
   const h = createHarness();
   const result = await h.send({ type:'UNKNOWN_DESIGNSHELF_MESSAGE' }, extensionSender);
   assert.equal(result, null);
+});
+
+
+test('page inspection explains missing optional website permission instead of mislabelling a normal site as protected', async () => {
+  const h = createHarness({}, { activeTabId:4, activeTabUrl:'https://example.com/article', failInjection:true });
+  const result = await h.send({ type:'DESIGNSHELF_RUN_AUDIT' }, extensionSender);
+  assert.equal(result.ok, false);
+  assert.match(result.error, /Enable website access/i);
+  assert.match(result.error, /optional website permission/i);
 });
