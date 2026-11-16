@@ -404,3 +404,5 @@ textarea { line-height:1.55; }
 @media (max-width:340px) { .workspace-nav { grid-template-columns:repeat(3,minmax(0,1fr)); } .view-btn { white-space:normal; } .history-toolbar { align-items:stretch; } .history-toolbar input { flex-basis:100%; } .retention-note { flex-basis:100%; } }
 @media (prefers-reduced-motion:reduce) { *, *::before, *::after { scroll-behavior:auto !important; animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important; } }
 @media (forced-colors:active) { .view-btn[aria-selected="true"], button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, a:focus-visible { outline:2px solid Highlight; outline-offset:2px; } .view-btn[aria-selected="true"] { border:2px solid Highlight; } }
+
+.hero-actions{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:16px}.hero-actions .primary{margin-top:0}.hero-actions .secondary{min-height:36px}
