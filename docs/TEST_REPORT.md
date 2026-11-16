@@ -42,3 +42,12 @@
 ## Release decision
 
 The development build's current automated checks pass (39 tests, 0 failures) and package consistency checks pass in GitHub Actions. It is not yet cleared for public release. Live Chrome and Firefox testing, storage/import stress testing, a licence decision and explicit user approval remain required before GitHub publication.
+
+
+## UI and accessibility upgrade validation — 16 November 2026
+
+- GitHub Actions CI run: https://github.com/abduays/DesignShelf/actions/runs/43836647992
+- Node automated tests: 44 passed, 0 failed.
+- Package checks: passed after synchronising root, Chrome and Firefox sources and registering delegated workspace tabs with the static handler checker.
+- Added regression coverage for semantic tabs/panels, keyboard navigation, skip link, reduced-motion/forced-colors styles, accessibility heuristics and selector-stability rules.
+- This CI run does not perform a real browser, screen-reader, zoom or axe-core scan. Those remain manual/runtime validation gates.
