@@ -40,10 +40,15 @@
 - Keyboard-only navigation and focus visibility.
 - Correct accessible names for icon buttons and controls.
 - Programmatic active state for navigation and tabs.
+- Workspace tab arrow-key navigation (Left/Right/Home/End) and roving tabindex.
+- Skip link reaches main workspace; focus remains visible in forced-colors mode.
+- Reduced-motion preference disables smooth programmatic detail scrolling.
 - Contrast review for text, controls and status states.
 - 24×24 CSS pixel target-size review with WCAG exceptions considered.
 - Reduced-motion support.
-- Narrow side-panel layout and zoom checks.
+- Narrow side-panel layout and zoom checks, including 320 CSS-pixel reflow and 200%/400% zoom.
+- Verify heuristics for unlabeled controls, empty headings and generic links.
+- Run axe-core against the extension UI in a real browser before claiming a complete automated WCAG scan.
 
 ## Browser matrix
 
