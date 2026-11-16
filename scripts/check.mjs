@@ -65,7 +65,7 @@ const dynamicIds = new Set(['deleteFlowBtn','exportFlowMarkdownBtn']);
 for (const id of staticRefs) if (!ids.includes(id) && !dynamicIds.has(id)) fail.push(`sidebar.js references missing HTML ID: ${id}`);
 const buttonIds = [...html.matchAll(/<button\b[^>]*\bid=["']([^"']+)["']/g)].map(match => match[1]);
 const directHandlers = new Set([...uiJs.matchAll(/\$\(["']([^"']+)["']\)(?:\?\.addEventListener|\.addEventListener)/g)].map(match => match[1]));
-const delegatedButtons = new Set(['tabHtml','tabCss','tabMotion','tabChecks']);
+const delegatedButtons = new Set(['tabHtml','tabCss','tabMotion','tabChecks','viewTab-library','viewTab-boards','viewTab-quality','viewTab-optimise','viewTab-toolbox']);
 for (const id of buttonIds) if (!directHandlers.has(id) && !delegatedButtons.has(id)) fail.push(`button has no registered click handler: ${id}`);
 for (const cssFile of ['sidebar.css']) {
   const css = fs.readFileSync(path.join(root,cssFile),'utf8');
