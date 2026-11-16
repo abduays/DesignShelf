@@ -84,7 +84,7 @@ function validStructureNode(node, index) {
   if (!Number.isInteger(node.id) || node.id !== index) return false;
   if (node.parentId != null && (!Number.isInteger(node.parentId) || node.parentId < 0 || node.parentId >= index)) return false;
   if (!Number.isFinite(node.depth) || node.depth < 0 || node.depth > 6) return false;
-  const limits = { tag:32, name:120, selector:2000, text:180, display:40, css:20000, html:100000 };
+  const limits = { tag:32, name:120, selector:2000, text:180, display:40, css:20000, html:12000 };
   if (!Object.entries(limits).every(([key,max]) => boundedString(node[key] ?? '', max))) return false;
   if (!Number.isFinite(node.width) || node.width < 0 || node.width > 100000 || !Number.isFinite(node.height) || node.height < 0 || node.height > 100000 || typeof node.visible !== 'boolean') return false;
   return validTokens(node.tokens) && validAnimation(node.animation);
