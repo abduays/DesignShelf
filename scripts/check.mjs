@@ -22,6 +22,7 @@ for (const browser of ['chrome','firefox']) {
   if (manifest.manifest_version !== 3 || manifest.version !== '0.8.3') fail.push(`${browser}: unexpected manifest version`);
   if (!manifest.permissions?.includes('activeTab') || !manifest.permissions?.includes('scripting') || !manifest.permissions?.includes('storage')) fail.push(`${browser}: missing required permissions`);
   if (manifest.host_permissions || manifest.content_scripts || manifest.permissions?.includes('<all_urls>')) fail.push(`${browser}: broad or automatic site access detected`);
+  if (!manifest.optional_host_permissions?.includes('http://*/*') || !manifest.optional_host_permissions?.includes('https://*/*')) fail.push(`${browser}: optional HTTP/HTTPS site access missing`);
   if (browser === 'chrome' && (!manifest.background?.service_worker || !manifest.side_panel?.default_path || Number(manifest.minimum_chrome_version) < 114)) fail.push('chrome: MV3 service worker, side panel path or Chrome 114 minimum missing');
   if (browser === 'firefox' && (!manifest.background?.scripts?.includes('background.js') || !manifest.sidebar_action?.default_panel)) fail.push('firefox: MV3 background scripts or sidebar path missing');
   const convenienceManifest = path.join(root,`manifest.${browser}.json`);
