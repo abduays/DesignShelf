@@ -3,6 +3,10 @@
   "name": "DesignShelf - Visual Component Collector",
   "version": "0.8.3",
   "description": "Inspect, capture and organise website components locally. No account or remote service.",
+  "optional_host_permissions": [
+    "http://*/*",
+    "https://*/*"
+  ],
   "permissions": [
     "storage",
     "alarms",
