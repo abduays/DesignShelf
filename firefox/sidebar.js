@@ -122,6 +122,7 @@ function switchView(view, moveFocus = false) {
     const active = b.dataset.view === view;
     b.classList.toggle('active', active);
     b.setAttribute('aria-selected', String(active));
+    if (active) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current');
     b.tabIndex = active ? 0 : -1;
     if (active && moveFocus) b.focus();
   });
