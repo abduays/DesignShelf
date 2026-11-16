@@ -256,7 +256,7 @@ async function handleRuntimeMessage(message, sender) {
 
 api.runtime.onMessage.addListener((message, sender, sendResponse) => {
   handleRuntimeMessage(message, sender).then(response => {
-    if (response !== undefined) sendResponse(response);
+    sendResponse(response === undefined ? null : response);
   }).catch(error => {
     console.error('DesignShelf background message failed:', error);
     sendResponse({ ok:false, error:'An unexpected background error occurred.' });
