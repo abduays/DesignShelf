@@ -19,5 +19,4 @@ document.querySelector('#search').addEventListener('input',renderGrid);
 document.querySelectorAll('.filter').forEach(b=>b.addEventListener('click',()=>{filter=b.dataset.filter;document.querySelectorAll('.filter').forEach(n=>n.classList.toggle('active',n===b));renderGrid()}));
 document.querySelector('#colour-list').innerHTML=[['Oxide red','#b64c36','12'],['Field green','#687b62','08'],['Ink','#343a33','07'],['Warm paper','#f4f0e8','06'],['Sandstone','#d1b78b','04']].map(c=>'<div class="colour-row"><span class="swatch" style="background:'+c[1]+'"></span><span>'+c[0]+'</span><code>'+c[1]+' · '+c[2]+'</code></div>').join('');
 document.querySelector('#copy-tokens').addEventListener('click',()=>copy(':root {\n  --color-observed-001: #b64c36;\n  --color-observed-002: #687b62;\n  --color-observed-003: #343a33;\n  --color-observed-004: #f4f0e8;\n  --color-observed-005: #d1b78b;\n}'));
-document.querySelector('#install-link').href='https://github.com/abduays/DesignShelf# get-started'.replace('# ','#');
 renderGrid();renderInspector();
