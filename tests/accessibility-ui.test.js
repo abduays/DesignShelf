@@ -1,0 +1,12 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+const html=fs.readFileSync(new URL('../sidebar.html',import.meta.url),'utf8');
+const js=fs.readFileSync(new URL('../sidebar.js',import.meta.url),'utf8');
+const css=fs.readFileSync(new URL('../sidebar.css',import.meta.url),'utf8');
+const content=fs.readFileSync(new URL('../content.js',import.meta.url),'utf8');
+test('workspace includes skip navigation and main landmark',()=>{assert.match(html,/class="skip-link" href="#main-content"/);assert.match(html,/<main id="main-content">/);});
+test('primary workspace tabs have semantic panels and keyboard support',()=>{assert.match(html,/role="tablist"/);for(const v of ['library','boards','quality','optimise','toolbox']){assert.match(html,new RegExp('id="viewTab-'+v+'"[^>]*role="tab"'));assert.match(html,new RegExp('id="'+v+'View" role="tabpanel" aria-labelledby="viewTab-'+v+'"'));}assert.match(js,/setAttribute\('aria-selected', String\(active\)\)/);assert.match(js,/event\.key === 'ArrowRight'/);assert.match(js,/event\.key === 'Home'/);assert.match(js,/event\.key === 'End'/);});
+test('reduced motion and forced-colors are respected',()=>{assert.match(js,/prefers-reduced-motion: reduce/);assert.match(css,/prefers-reduced-motion:reduce/);assert.match(css,/forced-colors:active/);});
+test('component quality checks include accessible names and link text',()=>{assert.match(js,/unlabeledControls/);assert.match(js,/emptyHeadings/);assert.match(js,/genericLinks/);});
+test('selector generation prefers stable attributes and bounded unique paths',()=>{assert.match(content,/data-testid/);assert.match(content,/data-qa/);assert.match(content,/const isUnique = selector/);assert.match(content,/parts\.length < 7/);});
