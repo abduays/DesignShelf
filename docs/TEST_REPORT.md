@@ -8,7 +8,7 @@
 | Check | Result |
 |---|---|
 | Node automated tests | 39 passed, 0 failed |
-| JavaScript syntax | Passed for background, content, sidebar, token export and project import modules |
+| JavaScript syntax | Passed for background, content, sidebar, token export, project import and demo modules |
 | Manifest validation | Chrome and Firefox Manifest V3 JSON valid |
 | Permission review | No static content scripts, no `<all_urls>` host access, user-initiated `activeTab` injection |
 | Browser package parity | Shared source files match root source in both browser packages, including callback-based asynchronous messaging |
