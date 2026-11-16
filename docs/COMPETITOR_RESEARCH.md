@@ -60,3 +60,17 @@ At the time of research, the designlang repository showed approximately 5.1k Git
 - PeekCSS: https://peekcss.com/
 - designlang: https://github.com/Manavarya09/design-extract and https://designlang.app/
 - Muzli: https://muz.li/faq/
+
+
+## Open-source implementation research — 16 November 2026
+
+| Project | Repository | Licence verified | Decision |
+|---|---|---|---|
+| axe-core | https://github.com/dequelabs/axe-core | MPL-2.0 (repository LICENSE) | Candidate for a future pinned local accessibility engine. Bundle only after reviewing notices, size and isolated-world execution in Chrome and Firefox. |
+| ProjectVisBug | https://github.com/GoogleChromeLabs/ProjectVisBug | Apache-2.0 (LICENSE and package metadata) | Study point-and-inspect interaction patterns; no source or artwork copied. |
+| Tabster | https://github.com/microsoft/tabster | Not adopted | Reference for keyboard navigation. Native buttons plus a small roving-tabindex controller are sufficient. |
+| SmolVLM-Instruct | https://huggingface.co/HuggingFaceTB/SmolVLM-Instruct | Apache-2.0 (model card) | Research-only candidate for optional visual interpretation. Not bundled because model/runtime size and hardware cost conflict with a lightweight extension. |
+
+Patterns translated into DesignShelf: direct element selection, persistent source/selector context, keyboard-first workspace navigation and evidence-based findings. No third-party runtime dependency was added in this pass.
+
+WCAG 2.2 AA baseline: https://www.w3.org/TR/WCAG22/ and https://www.w3.org/WAI/standards-guidelines/wcag/new-in-22/. Targets, focus visibility, reflow and reduced motion are treated as implementation requirements, not decorative polish.
