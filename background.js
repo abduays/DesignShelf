@@ -84,7 +84,7 @@ function validStructureNode(node, index) {
   if (!Number.isInteger(node.id) || node.id !== index) return false;
   if (node.parentId != null && (!Number.isInteger(node.parentId) || node.parentId < 0 || node.parentId >= index)) return false;
   if (!Number.isFinite(node.depth) || node.depth < 0 || node.depth > 6) return false;
-  const limits = { tag:32, name:120, selector:2000, text:180, display:40, css:20000, html:100000 };
+  const limits = { tag:32, name:120, selector:2000, text:180, display:40, css:20000, html:12000 };
   if (!Object.entries(limits).every(([key,max]) => boundedString(node[key] ?? '', max))) return false;
   if (!Number.isFinite(node.width) || node.width < 0 || node.width > 100000 || !Number.isFinite(node.height) || node.height < 0 || node.height > 100000 || typeof node.visible !== 'boolean') return false;
   return validTokens(node.tokens) && validAnimation(node.animation);
@@ -93,7 +93,7 @@ function validCapture(capture, sender) {
   if (!capture || typeof capture !== 'object' || Array.isArray(capture)) return false;
   const required = ['id','name','tag','selector','url','pageTitle','capturedAt','text','html','css'];
   if (!required.every(key => typeof capture[key] === 'string')) return false;
-  const limits = { id:100, name:180, tag:32, selector:2000, pageTitle:300, text:500, html:750000, css:50000 };
+  const limits = { id:100, name:180, tag:32, selector:2000, pageTitle:300, text:500, html:600000, css:50000 };
   if (!Object.entries(limits).every(([key,max]) => capture[key].length <= max)) return false;
   if (!Number.isFinite(capture.width) || capture.width < 0 || capture.width > 100000 || !Number.isFinite(capture.height) || capture.height < 0 || capture.height > 100000) return false;
   if (capture.note != null && !boundedString(capture.note, 2000)) return false;
@@ -106,7 +106,7 @@ function validCapture(capture, sender) {
   if (!Number.isFinite(Date.parse(capture.capturedAt))) return false;
   if (!Array.isArray(capture.structure) || capture.structure.length > 24 || !capture.structure.every(validStructureNode)) return false;
   if (!validTokens(capture.tokens) || !validAnimation(capture.animation)) return false;
-  try { if (JSON.stringify(capture).length * 2 > 1500000) return false; } catch { return false; }
+  try { if (JSON.stringify(capture).length * 2 > 1800000) return false; } catch { return false; }
   return true;
 }
 function validInteraction(item) {

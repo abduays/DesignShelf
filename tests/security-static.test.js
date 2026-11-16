@@ -17,13 +17,17 @@ test('browser manifests use least-privilege active-tab injection', () => {
   }
 });
 
-test('capture pipeline has no page-controlled postMessage bridge', () => {
+test('capture pipeline bounds cloned markup and selects the element under the pointer', () => {
   const c = read('content.js');
   assert.match(c, /DESIGNSHELF_CAPTURE/);
   assert.match(c, /api\.runtime\.sendMessage/);
   assert.match(c, /showPickerNotice\('Component saved to DesignShelf\.'/);
   assert.doesNotMatch(c, /window\.addEventListener\(['"]message['"]/);
   assert.doesNotMatch(c, /window\.postMessage\(/);
+  assert.match(c, /clones\.slice\(maxNodes\)\.forEach\(node => node\.remove\(\)\)/);
+  assert.match(c, /cleanCloneAndInline\(el, 10, 8000\)/);
+  assert.match(c, /setCurrent\(element, false\)/);
+  assert.match(c, /setCurrent\(element, true\)/);
 });
 
 test('background validates capture structure and aggregate payload size', () => {
@@ -34,7 +38,7 @@ test('background validates capture structure and aggregate payload size', () => 
   assert.match(b, /validStructureNode/);
   assert.match(b, /MAX_ESTIMATED_STORAGE_BYTES/);
   assert.match(b, /JSON\.stringify\(capture\)\.length \* 2/);
-  assert.match(b, /html:100000/);
+  assert.match(b, /html:12000/);
 });
 
 test('interaction messages whitelist events and bound nested payloads', () => {

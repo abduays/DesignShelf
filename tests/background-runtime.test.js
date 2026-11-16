@@ -84,7 +84,7 @@ test('background rejects cross-origin, malformed and oversized component trees',
   const invalidTree = validCapture(); invalidTree.structure[0].id = 99;
   const malformed = await h.send({ type: 'DESIGNSHELF_CAPTURE', capture: invalidTree }, contentSender);
   assert.equal(malformed.ok, false);
-  const tooLarge = await h.send({ type: 'DESIGNSHELF_CAPTURE', capture: validCapture({ html: 'x'.repeat(750001) }) }, contentSender);
+  const tooLarge = await h.send({ type: 'DESIGNSHELF_CAPTURE', capture: validCapture({ html: 'x'.repeat(600001) }) }, contentSender);
   assert.equal(tooLarge.ok, false);
 });
 
