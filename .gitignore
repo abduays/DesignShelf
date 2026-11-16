@@ -1,0 +1,10 @@
+.DS_Store
+Thumbs.db
+*.log
+*.tmp
+*.crx
+*.xpi
+node_modules/
+coverage/
+playwright-report/
+test-results/

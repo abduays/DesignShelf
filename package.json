@@ -1,0 +1,14 @@
+{
+  "name": "designshelf-extension",
+  "version": "0.8.3",
+  "private": true,
+  "description": "Local-first browser extension for capturing, inspecting and organising real interface components.",
+  "scripts": {
+    "test": "node --test tests/*.test.js",
+    "check": "node scripts/check.mjs",
+    "validate": "npm test && npm run check"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
