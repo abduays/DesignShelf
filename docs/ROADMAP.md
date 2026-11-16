@@ -1,7 +1,7 @@
 # DesignShelf development roadmap
 
 **Target release line:** 0.8.3 development build  
-**Status date:** 14 November 2026
+**Status date:** 16 November 2026
 
 ## Stage 1 — Product and competitor audit
 
@@ -23,6 +23,7 @@
 - [x] Create original shelf/index SVG mark and browser PNG icon sizes.
 - [x] Rebuild the workspace stylesheet and update navigation, cards, tabs, boards and tool surfaces.
 - [x] Add visible focus, reduced-motion support, keyboard tab navigation and programmatic state.
+- [x] Add skip navigation, semantic workspace tabs/panels, roving tabindex, larger targets and forced-colors focus treatment.
 - [x] Test colour contrast pairs and render narrow/wide static UI previews.
 - [ ] Complete live screen-reader, keyboard, zoom and browser side-panel checks.
 
@@ -82,6 +83,7 @@
 - [ ] Add user-triggered component state snapshots for hover/focus/expanded states.
 - [ ] Add pixel-level visual comparison only after screenshot privacy, crop and storage design is proven.
 - [ ] Improve toolbox information architecture so advanced features are easier to find.
+- [x] Improve selector stability with unique IDs, stable attributes and uniqueness checks.
 
 **Exit condition:** each diagnostic is explainable, reproducible and labelled as measured or heuristic.
 
@@ -135,3 +137,6 @@
 - [ ] Tag and publish a release only after browser runtime gates pass.
 
 **Exit condition:** explicit approval received. No GitHub upload or public release has been performed.
+
+
+See [IMPROVEMENT_PLAN.md](IMPROVEMENT_PLAN.md) for the staged execution plan and [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) for project/licence review. axe-core and SmolVLM remain candidates, not shipped dependencies.
