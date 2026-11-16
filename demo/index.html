@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#f4f0e8">
+  <meta name="description" content="Explore a guided, interactive preview of DesignShelf using sample interface components.">
+  <title>DesignShelf Demo — Interface field notes</title>
+  <link rel="icon" href="../icons/designshelf-mark.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="rail">
+      <a class="brand" href="./" aria-label="DesignShelf demo home"><img src="../icons/designshelf-mark.svg" alt=""><span>DesignShelf</span></a>
+      <div class="workspace-label">WORKSPACE <span>DEMO</span></div>
+      <nav aria-label="Demo sections">
+        <button class="nav-item active" data-view="library"><span class="nav-icon">▦</span> Library <kbd>01</kbd></button>
+        <button class="nav-item" data-view="boards"><span class="nav-icon">▤</span> Design boards <kbd>02</kbd></button>
+        <button class="nav-item" data-view="tokens"><span class="nav-icon">◈</span> Token shelf <kbd>03</kbd></button>
+        <button class="nav-item" data-view="about"><span class="nav-icon">↗</span> How it works <kbd>04</kbd></button>
+      </nav>
+      <div class="rail-bottom"><span class="status-dot"></span> Sample workspace <small>Nothing is uploaded</small></div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div class="crumb">FIELD NOTES <span>/</span> <b id="crumb-current">LIBRARY</b></div>
+        <div class="top-actions"><span class="sample-pill">SAMPLE DATA</span><a class="repo-link" href="https://github.com/abduays/DesignShelf" target="_blank" rel="noreferrer">GitHub ↗</a></div>
+      </header>
+
+      <section class="view active" id="view-library">
+        <div class="page-heading">
+          <div><p class="eyebrow">YOUR REFERENCE SHELF / 01</p><h1>Collected interfaces<span>.</span></h1><p class="intro">A closer look at the small decisions that make a useful interface.</p></div>
+          <div class="heading-note"><span class="note-mark">✳</span><span>LOCAL BY DESIGN<br><b>Kept in your browser</b></span></div>
+        </div>
+        <div class="toolbar"><label class="search"><span>⌕</span><input id="search" type="search" placeholder="Find a component…" aria-label="Find a component"></label><div class="filters" role="group" aria-label="Filter components"><button class="filter active" data-filter="All">All <i>06</i></button><button class="filter" data-filter="Navigation">Navigation</button><button class="filter" data-filter="Forms">Forms</button><button class="filter" data-filter="Cards">Cards</button></div></div>
+        <div class="content-grid">
+          <div class="library-area"><div class="section-line"><span>RECENT CAPTURES</span><span id="result-count">06 ITEMS</span></div><div class="capture-grid" id="capture-grid"></div></div>
+          <aside class="inspector" aria-label="Component inspector">
+            <div class="inspector-head"><span>INSPECTOR / <b id="inspector-index">01</b></span><span class="live-dot">● SELECTED</span></div>
+            <div id="inspector-content"></div>
+          </aside>
+        </div>
+      </section>
+
+      <section class="view" id="view-boards">
+        <div class="page-heading"><div><p class="eyebrow">RESEARCH ORGANISATION / 02</p><h1>Design boards<span>.</span></h1><p class="intro">Keep related interface patterns together with a little context.</p></div></div>
+        <div class="board-grid">
+          <article class="board-card"><div class="board-art board-art-a"><span>01</span><div class="mini-nav">NORTH / STUDIO</div><div class="mini-hero">Make room<br>for good ideas.</div></div><p class="eyebrow">LANDING PAGES</p><h2>Editorial layouts</h2><p>Hero sections, navigation and considered typography.</p><div class="board-foot">03 CAPTURES <span>UPDATED RECENTLY</span></div></article>
+          <article class="board-card"><div class="board-art board-art-b"><span>02</span><div class="mini-card"></div><div class="mini-card short"></div></div><p class="eyebrow">PRODUCT UI</p><h2>Quiet interfaces</h2><p>Forms, settings and small interaction patterns.</p><div class="board-foot">02 CAPTURES <span>UPDATED RECENTLY</span></div></article>
+          <article class="board-card"><div class="board-art board-art-c"><span>03</span><div class="token-dots"><i></i><i></i><i></i><i></i></div><div class="token-lines"></div></div><p class="eyebrow">DESIGN SYSTEMS</p><h2>Colour studies</h2><p>Observed palettes and reusable visual decisions.</p><div class="board-foot">04 CAPTURES <span>UPDATED RECENTLY</span></div></article>
+        </div>
+        <p class="demo-footnote">These boards are illustrative sample content. The installed extension stores real boards and captures locally.</p>
+      </section>
+
+      <section class="view" id="view-tokens">
+        <div class="page-heading"><div><p class="eyebrow">OBSERVED VALUES / 03</p><h1>Token shelf<span>.</span></h1><p class="intro">A quick inventory of repeated colours, type and dimensions.</p></div></div>
+        <div class="token-layout"><div class="token-panel"><div class="section-line"><span>COLOUR FREQUENCY</span><span>FROM SAMPLE CAPTURES</span></div><div id="colour-list" class="colour-list"></div></div><div class="token-panel"><div class="section-line"><span>TYPE SCALE</span><span>OBSERVED</span></div><div class="type-row"><span>Display / 32px</span><b style="font-size:32px">Ag</b></div><div class="type-row"><span>Heading / 24px</span><b style="font-size:24px">Ag</b></div><div class="type-row"><span>Body / 16px</span><b style="font-size:16px">Ag</b></div><div class="type-row"><span>Caption / 12px</span><b style="font-size:12px">Ag</b></div></div></div>
+        <div class="token-export"><div><p class="eyebrow">READY TO TAKE WITH YOU</p><h2>Observed values, not invented names.</h2><p>DesignShelf can export collected values as CSS variables, DTCG tokens or a Tailwind theme.</p></div><button id="copy-tokens" class="button dark">Copy sample CSS ↗</button></div>
+      </section>
+
+      <section class="view" id="view-about">
+        <div class="page-heading"><div><p class="eyebrow">A SHORT WALKTHROUGH / 04</p><h1>Look closer<span>.</span></h1><p class="intro">DesignShelf turns a useful page reference into something you can study and organise.</p></div></div>
+        <div class="steps"><article><span>01</span><h2>Pick a section</h2><p>Open the extension on a normal website and select a visible component or section.</p></article><article><span>02</span><h2>Inspect the details</h2><p>Review the captured structure, selected computed styles, dimensions and motion metadata.</p></article><article><span>03</span><h2>Build your shelf</h2><p>Organise captures into boards, compare examples and collect observed design tokens.</p></article><article><span>04</span><h2>Export your work</h2><p>Take snapshots, notes and token data into your own development workflow.</p></article></div>
+        <div class="honesty"><b>ABOUT THIS DEMO</b><p>This is an interactive website preview using fictional sample components and values. It does not connect to a browser tab or run the extension APIs. Install the extension to capture and inspect real websites. Your demo interactions stay in this page.</p><a href="https://github.com/abduays/DesignShelf# get-started" id="install-link">View installation instructions ↗</a></div>
+      </section>
+      <footer class="footer"><span>DESIGNSHELF / FIELD NOTES</span><span>AN INTERACTIVE PREVIEW · SAMPLE DATA ONLY</span></footer>
+    </main>
+  </div>
+  <div id="toast" role="status" aria-live="polite"></div>
+  <script src="app.js"></script>
+</body>
+</html>
