@@ -1,29 +1,55 @@
-# GitHub repository setup proposal
+# GitHub repository details
 
-## Suggested repository metadata
+## Repository identity
 
-- **Repository name:** `DesignShelf`
-- **Description:** A local-first browser workspace for capturing, annotating, comparing and exporting real interface components.
-- **Suggested topics:** `browser-extension`, `manifest-v3`, `design-systems`, `css-inspector`, `component-library`, `design-research`, `frontend-tools`, `web-development`
+- **Name:** `DesignShelf`
+- **Suggested description:** A local-first browser extension for capturing, inspecting and organising real interface components.
 - **Default branch:** `main`
-- **Visibility:** keep private during final review; make public only after approval and licence selection.
+- **Current visibility:** Public (verified 16 November 2026). Keep this setting unchanged unless the owner explicitly requests a change.
 
-## Suggested repository layout
+## Suggested GitHub topics
 
-The repository root is the source and documentation workspace. Installable packages are isolated under `chrome/` and `firefox/`. GitHub Actions runs the Node test suite and package consistency checks on pushes and pull requests.
+Use these topics to describe the product and help developers find the repository:
 
-## Before making the repository public
+```text
+browser-extension
+chrome-extension
+firefox-addon
+manifest-v3
+frontend
+web-development
+design-systems
+component-library
+css-inspector
+design-research
+developer-tools
+local-first
+```
 
-1. Choose a licence and add the exact licence text. MIT is permissive; MPL-2.0 requires modified files to remain available under MPL. This is a user decision.
-2. Confirm the project name and that no trademark conflict exists.
-3. Review all source, screenshots and assets for private data and third-party ownership.
+These are proposed repository topics, not a claim that GitHub metadata has already been updated.
+
+## Repository structure
+
+The root contains shared source, tests and project documentation. Browser-specific packages live in `chrome/` and `firefox/`. Both packages share the same capture, inspector and workspace implementation, with separate browser manifests and entry points.
+
+## Publication and licensing
+
+The repository is currently public, but the project has no open-source licence. Do not describe the code as open source or grant reuse rights until the owner chooses and adds a licence.
+
+Before a formal store release:
+
+1. Choose and add a licence. This is an owner decision.
+2. Confirm the project name and review possible trademark conflicts.
+3. Review source, screenshots and assets for private data and third-party ownership.
 4. Confirm the Firefox add-on ID.
-5. Enable private vulnerability reporting and configure branch protection.
-6. Run `npm run validate` and verify both browser ZIPs install.
-7. Approve the first public commit and release tag.
+5. Review browser permissions and privacy wording.
+6. Run `npm run validate` and test both packages in real browsers.
+7. Complete accessibility, storage-limit, hostile-import and security testing.
+8. Obtain explicit approval before creating a public release or submitting to an extension store.
 
 ## Do not commit
 
-- Captured website content, customer data, credentials, API keys, browser profiles or personal project exports.
-- Temporary screenshots containing real websites or user data.
-- Private source files not intended for public release.
+- Captured website content, customer data or private project exports.
+- Credentials, API keys, browser profiles or session data.
+- Screenshots containing private or identifiable user information.
+- Third-party assets without permission to redistribute them.
