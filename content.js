@@ -179,15 +179,18 @@
     return STYLE_PROPS.map(prop => `${prop}: ${computed.getPropertyValue(prop)};`).join('\n');
   }
 
-  function cleanCloneAndInline(element, maxNodes = 250) {
+  function cleanCloneAndInline(element, maxNodes = 180, maxChars = 550000) {
     const clone = element.cloneNode(true);
     const originals = [element, ...element.querySelectorAll('*')];
     const clones = [clone, ...clone.querySelectorAll('*')];
+    // Prune the clone itself. Previously maxNodes only limited style inlining,
+    // while the complete subtree was still serialised into the message payload.
+    clones.slice(maxNodes).forEach(node => node.remove());
     const limited = Math.min(originals.length, maxNodes);
     for (let i = 0; i < limited; i++) {
       const original = originals[i];
       const copy = clones[i];
-      if (!copy) continue;
+      if (!copy || !copy.isConnected && copy !== clone) continue;
       const computed = getComputedStyle(original);
       let style = '';
       for (const prop of STYLE_PROPS) {
@@ -197,7 +200,8 @@
       copy.setAttribute('style', style);
       [...copy.attributes].forEach(attr => {
         if (/^on/i.test(attr.name) || attr.name === 'srcdoc') copy.removeAttribute(attr.name);
-        if ((attr.name === 'href' || attr.name === 'src' || attr.name === 'xlink:href') && /^\s*javascript:/i.test(attr.value)) copy.removeAttribute(attr.name);
+        if ((attr.name === 'href' || attr.name === 'src' || attr.name === 'xlink:href') && /^\\s*javascript:/i.test(attr.value)) copy.removeAttribute(attr.name);
+        if ((attr.name === 'src' || attr.name === 'href' || attr.name === 'xlink:href') && /^data:/i.test(attr.value) && attr.value.length > 2048) copy.removeAttribute(attr.name);
       });
       if (['SCRIPT','IFRAME','OBJECT','EMBED'].includes(copy.tagName)) {
         if (copy.tagName === 'SCRIPT' || copy.tagName === 'OBJECT' || copy.tagName === 'EMBED') copy.remove();
@@ -217,6 +221,17 @@
       if (control.tagName === 'TEXTAREA') control.textContent = '';
       if (control.tagName === 'SELECT') control.selectedIndex = -1;
     });
+    // Keep a valid, bounded HTML fragment rather than sending an unbounded page subtree.
+    while (clone.outerHTML.length > maxChars) {
+      const descendants = [...clone.querySelectorAll('*')];
+      const leaf = descendants.reverse().find(node => !node.children.length);
+      if (!leaf) break;
+      leaf.remove();
+    }
+    if (clone.outerHTML.length > maxChars) {
+      clone.replaceChildren(document.createTextNode('Snapshot shortened because the selected element contains unusually large markup.'));
+      [...clone.attributes].forEach(attr => { if (attr.name !== 'class') clone.removeAttribute(attr.name); });
+    }
     return clone.outerHTML;
   }
 
@@ -283,7 +298,7 @@
         css: getStyleText(el),
         animation: getAnimationDetails(el),
         tokens: getStyleTokens(el),
-        html: cleanCloneAndInline(el, 50)
+        html: cleanCloneAndInline(el, 10, 8000)
       });
       if (item.depth < 6) {
         for (const child of el.children) {
@@ -313,7 +328,7 @@
     const tag = element.tagName.toLowerCase();
     const text = safeText(element.innerText || element.textContent, 500);
     const name = safeText(element.getAttribute('aria-label') || element.getAttribute('data-testid') || text || tag, 72) || tag;
-    const outerHTML = cleanCloneAndInline(element);
+    const outerHTML = cleanCloneAndInline(element, 180, 550000);
     const computedCSS = getStyleText(element);
     const capture = {
       id: `ds_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
@@ -346,7 +361,7 @@
     lastPointer = { x: event.clientX, y: event.clientY };
     const element = document.elementFromPoint(event.clientX, event.clientY);
     if (!element || isOurNode(element)) return;
-    setCurrent(likelyContainer(element), false);
+    setCurrent(element, false);
   }
 
   function onClick(event) {
@@ -356,7 +371,7 @@
     event.preventDefault();
     event.stopPropagation();
     event.stopImmediatePropagation();
-    setCurrent(current || likelyContainer(element), true);
+    setCurrent(element, true);
   }
 
   function onKey(event) {
