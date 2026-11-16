@@ -43,7 +43,10 @@ function createHarness(initial = {}, options = {}) {
   };
   const context = { browser: api, chrome: api, URL, Date, JSON, Number, Array, Object, Set, Math, console, structuredClone };
   vm.runInNewContext(fs.readFileSync(path.join(__dirname, '..', 'background.js'), 'utf8'), context);
-  return { send: (message, sender) => messageListener(message, sender), state, sentMessages };
+  return { send: (message, sender) => new Promise(resolve => {
+    const keepChannelOpen = messageListener(message, sender, resolve);
+    if (keepChannelOpen !== true) resolve(keepChannelOpen);
+  }), state, sentMessages };
 }
 
 function validCapture(overrides = {}) {
