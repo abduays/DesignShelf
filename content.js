@@ -190,7 +190,7 @@
     for (let i = 0; i < limited; i++) {
       const original = originals[i];
       const copy = clones[i];
-      if (!copy || !copy.isConnected && copy !== clone) continue;
+      if (!copy || (i > 0 && !clone.contains(copy))) continue;
       const computed = getComputedStyle(original);
       let style = '';
       for (const prop of STYLE_PROPS) {
