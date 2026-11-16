@@ -20,6 +20,7 @@
 
 <p align="center">
   <a href="#what-you-can-do">Features</a> ·
+  <a href="https://abduays.github.io/DesignShelf/">Live demo</a> ·
   <a href="#screenshots">Screenshots</a> ·
   <a href="#get-started">Get started</a> ·
   <a href="#privacy-and-permissions">Privacy</a> ·
@@ -31,6 +32,10 @@
 DesignShelf is for the moments when you find a useful interface and want to understand how it is put together. Pick a section on a page, save a local snapshot, inspect its structure and styles, then organise it with the other examples you have collected.
 
 It is a practical reference shelf for frontend developers, designers and people building design systems. It captures what the browser can observe; it does not claim to recover a website's original source project.
+
+## Live demo
+
+Try the [interactive DesignShelf demo](https://abduays.github.io/DesignShelf/) to explore the sample library, component inspector, design boards and token shelf. It uses fictional sample data and does not connect to your browser tabs. Install the extension to capture and inspect real websites.
 
 ## Screenshots
 
