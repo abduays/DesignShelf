@@ -98,3 +98,12 @@
 - Selector generation prefers unique IDs and stable test/QA attributes, validates uniqueness and filters hash-like class tokens.
 - Added local heuristics for unnamed form controls, empty headings and generic link text.
 - No external runtime package or remote asset was introduced. axe-core remains a candidate pending local bundle and cross-browser runtime validation.
+
+
+## Permission recovery fix (16 November 2026)
+
+- Added an explicit **Enable website access** control. It requests optional HTTP/HTTPS host access only after a user click; it does not grant access automatically at install.
+- This permission allows page inspection to continue after tab switches and navigation, where `activeTab` alone may no longer apply.
+- Kept `activeTab` as the least-privilege path when the user does not grant persistent optional access.
+- Replaced misleading generic scan errors with a specific permission instruction or a protected-page explanation.
+- Browser-level verification is still required in Chrome and Firefox after reloading the unpacked extension.

@@ -47,7 +47,13 @@ if (api.sidePanel?.setPanelBehavior) {
 }
 
 async function ensureContentScript(tabId) {
-  await api.scripting.executeScript({ target: { tabId }, files: ['content.js'] });
+  try { await api.scripting.executeScript({ target: { tabId }, files: ['content.js'] }); }
+  catch (error) { const detail=String(error?.message||error||''); if(/cannot access|permission|host permission|missing host permission|not allowed/i.test(detail)) throw new Error('WEBSITE_ACCESS_REQUIRED'); throw error; }
+}
+function pageAccessError(tab) {
+  const url=typeof tab?.url==='string'?tab.url:'';
+  if(url&&!/^https?:\/\//i.test(url)) return 'This page is protected by the browser and cannot be inspected. Open a normal HTTP or HTTPS website.';
+  return 'DesignShelf does not have permission to inspect this tab. Select “Enable website access” in the extension, approve the optional website permission, then retry.';
 }
 
 function isExtensionPageSender(sender) {
@@ -149,7 +155,7 @@ async function handleRuntimeMessage(message, sender) {
     } catch (error) {
       return {
         ok: false,
-        error: 'This browser cannot inspect this page. Open a normal http:// or https:// website; browser-internal pages, extension pages and some protected pages cannot be inspected.'
+        error: pageAccessError(tab)
       };
     }
   }
@@ -159,7 +165,7 @@ async function handleRuntimeMessage(message, sender) {
     const tab = tabs[0];
     if (!tab?.id) return { ok: false, error: 'No active tab was found.' };
     try { await ensureContentScript(tab.id); return await api.tabs.sendMessage(tab.id, { type: message.type }); }
-    catch (error) { return { ok: false, error: 'This page cannot be inspected. Open a normal HTTP or HTTPS website; browser-internal and protected pages are unavailable.' }; }
+    catch (error) { return { ok: false, error: pageAccessError(tab) }; }
   }
 
   if (message.type === 'DESIGNSHELF_START_RECORDING') {
@@ -177,7 +183,7 @@ async function handleRuntimeMessage(message, sender) {
       const result = await api.tabs.sendMessage(tab.id, { type:message.type });
       if (result?.ok) await api.storage.local.set({ designshelfRecordingTabId:tab.id });
       return result || { ok:false, error:'The page did not confirm recording.' };
-    } catch (error) { return { ok:false, error:'This page cannot be recorded. Open a normal HTTP or HTTPS website; browser-internal and protected pages are unavailable.' }; }
+    } catch (error) { return { ok:false, error:pageAccessError(tab) }; }
   }
 
   if (message.type === 'DESIGNSHELF_STOP_RECORDING' || message.type === 'DESIGNSHELF_GET_RECORDING') {
@@ -225,7 +231,7 @@ async function handleRuntimeMessage(message, sender) {
       if (!result?.ok || !result.report) return { ok: false, error: result?.error || 'The page did not return an audit report.' };
       return { ok: true, report: result.report };
     } catch (error) {
-      return { ok: false, error: 'This page cannot be scanned. Open a normal HTTP or HTTPS website; browser-internal and protected pages are unavailable.' };
+      return { ok: false, error: pageAccessError(tab) };
     }
   }
 
