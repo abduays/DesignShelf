@@ -25,3 +25,13 @@
 - Added a custom shelf/index browser icon set and accessible keyboard navigation for inspector tabs.
 - Fixed interaction recording so it stops on the tab where it began and preserves previous sessions.
 - Expanded delete-all history to include page audit and interaction history.
+
+
+## Unreleased — UI and accessibility improvements
+
+- Added semantic workspace tabs, roving keyboard navigation, skip navigation and focusable content panels.
+- Improved focus visibility, target sizing, narrow-panel navigation, forced-colors support and reduced-motion behaviour.
+- Improved captured element selector stability using unique IDs, stable attributes and uniqueness checks.
+- Expanded local accessibility heuristics for form controls, headings and generic link text.
+- Documented competitor research, project licences, third-party adoption decisions and staged implementation plan.
+- No third-party runtime dependency or remote service added.
