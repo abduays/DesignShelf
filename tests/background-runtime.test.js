@@ -54,7 +54,7 @@ function validCapture(overrides = {}) {
     id: 'capture-1', name: 'Hero section', tag: 'section', selector: 'main > section',
     url: 'https://example.com/page', pageTitle: 'Example', capturedAt: new Date().toISOString(),
     text: 'Welcome', html: '<section><h1>Welcome</h1></section>', css: 'display: block;', width: 800, height: 420, viewport:{width:1440,height:900,devicePixelRatio:1},
-    tokens: { colors: ['rgb(1, 2, 3)'], fontFamily: 'Arial' }, animation: { name: 'none' },
+    tokens: { colors: ['rgb(1, 2, 3)'], fontFamily: 'Arial' }, semantics:{role:'region',roleSource:'explicit',nameCandidate:'Hero',nameSource:'aria-label',labelledBy:'',ariaLabel:'Hero',ariaHidden:false,hidden:false,tabIndex:-1,required:false,disabled:false}, pseudoElements:{before:{content:'star',display:'block',color:'rgb(0, 0, 0)'}}, frameworkSignals:[{name:'React',kind:'runtime marker',confidence:'observed'}], animation: { name: 'none' },
     structure: [{ id: 0, parentId: null, depth: 0, tag: 'section', name: 'Hero', selector: 'main > section', text: 'Welcome', width: 800, height: 420, display: 'block', visible: true, css: 'display: block;', html: '<section></section>', tokens: { colors: [] }, animation: { name: 'none' } }],
     ...overrides
   };
