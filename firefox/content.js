@@ -337,6 +337,8 @@
         css: getStyleText(el),
         animation: getAnimationDetails(el),
         tokens: getStyleTokens(el),
+        semantics: getSemanticDetails(el),
+        pseudoElements: getPseudoElementDetails(el),
         html: cleanCloneAndInline(el, 10, 8000)
       });
       if (item.depth < 6) {
