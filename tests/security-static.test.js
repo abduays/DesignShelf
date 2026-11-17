@@ -164,3 +164,10 @@ test('capture pipeline stores a bounded original element screenshot when browser
   assert.ok(h.includes('id="captureScreenshot"'));
   assert.ok(importer.includes('screenshot: c.screenshot'));
 });
+
+
+test('component intelligence records pseudo-elements, semantic evidence and qualified framework signals', () => {
+  const c=read('content.js'), b=read('background.js'), s=read('sidebar.js'), h=read('sidebar.html'), importer=read('project-import.js');
+  assert.ok(c.includes('getPseudoElementDetails(element)')); assert.ok(c.includes('getSemanticDetails(element)')); assert.ok(c.includes('getFrameworkSignals(element)')); assert.ok(c.includes('getComputedStyle(element, pseudo)'));
+  assert.ok(b.includes('capture.frameworkSignals')); assert.ok(b.includes('node.pseudoElements')); assert.ok(s.includes('renderComponentIntelligence')); assert.ok(h.includes('id="componentIntelligence"')); assert.ok(importer.includes('frameworkSignals: Array.isArray(c.frameworkSignals)'));
+});

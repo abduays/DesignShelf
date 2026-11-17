@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.9.1 — Component intelligence (development)
+
+- Capture computed `::before` and `::after` style evidence for the selected component and component-tree nodes.
+- Record semantic/accessibility evidence including role candidates, accessible-name candidates and their source, ARIA hidden state and keyboard tab index.
+- Detect limited framework/runtime markers and utility-class patterns, with confidence labels to distinguish observed markers from heuristics.
+- Display component intelligence in the inspector and preserve validated fields through project import/export.
+- Sync root, Chrome and Firefox capture, background, inspector and import files.
+
+
 ## 0.8.3 — Development build
 
 - Added the Field Notes / Specimen Archive visual direction and a local-only design token stylesheet.

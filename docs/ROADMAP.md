@@ -79,7 +79,9 @@
 - [x] Component tree, computed-style snapshots, motion inventory, asset explorer and page insights.
 - [x] Component comparison and viewport metadata comparison.
 - [x] Local quality heuristics with explicit limitations.
-- [ ] Add pseudo-element snapshots (`::before`/`::after`) where safe.
+- [x] Add pseudo-element snapshots (`::before`/`::after`) where safe.
+- [x] Capture accessibility evidence candidates (role, name source, ARIA hidden state and tab index) without claiming full accessibility-tree computation.
+- [x] Record conservative runtime/framework markers and label utility-class detection as heuristic.
 - [ ] Add user-triggered component state snapshots for hover/focus/expanded states.
 - [ ] Add pixel-level visual comparison only after screenshot privacy, crop and storage design is proven.
 - [ ] Improve toolbox information architecture so advanced features are easier to find.

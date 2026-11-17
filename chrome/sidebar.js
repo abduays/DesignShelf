@@ -184,7 +184,7 @@ function selectCapture(id, scroll = true) {
   $('screenshotStatus').textContent = screenshot ? `${capture.screenshot.width}×${capture.screenshot.height} · original element crop` : 'Unavailable';
   $('screenshotUnavailable').classList.toggle('hidden', !!screenshot);
   document.querySelectorAll('.tab').forEach(t => { const active = t.dataset.tab === activeTab; t.classList.toggle('active', active); t.setAttribute('aria-selected', String(active)); t.tabIndex = active ? 0 : -1; if (active) $('codeView').setAttribute('aria-labelledby', t.id); });
-  renderComponentTree(capture); renderCode(capture); renderList(); renderQuality(); updateActionStates();
+  renderComponentTree(capture); renderComponentIntelligence(capture); renderCode(capture); renderList(); renderQuality(); updateActionStates();
   if (scroll) $('detailPanel').scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'});
 }
 function currentInspectedItem(capture) {
@@ -208,12 +208,20 @@ function renderComponentTree(capture) {
       $('preview').srcdoc = previewDocument(node.html || capture.html, node.css || capture.css);
       $('detailName').textContent = node.name || node.tag;
       $('metaLine').textContent = `${node.tag} · ${node.selector || 'selector unavailable'} · ${node.width}×${node.height}px\n${capture.url || ''}`;
-      renderComponentTree(capture); renderStyleTokens(node.tokens || capture.tokens); renderCode(capture);
+      renderComponentTree(capture); renderStyleTokens(node.tokens || capture.tokens); renderComponentIntelligence(capture,node); renderCode(capture);
     });
     root.appendChild(row);
   });
   const selectedNode = (capture.structure || []).find(node => node.id === selectedNodeId);
   renderStyleTokens(selectedNode?.tokens || capture.tokens || {});
+}
+function renderComponentIntelligence(capture,node=null) {
+  const root=$('componentIntelligence'); if(!root)return; root.replaceChildren();
+  const semantics=node?.semantics||capture.semantics||{}, pseudo=node?.pseudoElements||capture.pseudoElements||{}, signals=capture.frameworkSignals||[];
+  const section=(title,rows)=>{const wrap=document.createElement('section');wrap.className='intelligence-group';const heading=document.createElement('strong');heading.textContent=title;wrap.appendChild(heading);if(!rows.length){const empty=document.createElement('span');empty.className='muted';empty.textContent='No evidence recorded';wrap.appendChild(empty);}rows.forEach(([label,value])=>{const row=document.createElement('div');row.className='intelligence-row';const k=document.createElement('span');k.textContent=label;const v=document.createElement('span');v.textContent=String(value);row.append(k,v);wrap.appendChild(row);});root.appendChild(wrap);};
+  section('ACCESSIBILITY EVIDENCE',[['Role',semantics.role||'Not inferred'],['Name candidate',semantics.nameCandidate||'None found'],['Name source',semantics.nameSource||'Not available'],['ARIA hidden',semantics.ariaHidden===true?'Yes':'No'],['Keyboard tab index',semantics.tabIndex??'Not recorded']]);
+  section('GENERATED CSS',Object.entries(pseudo).filter(([,v])=>v&&typeof v==='object').flatMap(([key,v])=>[['::'+key+' content',v.content||'(empty)'],['::'+key+' display',v.display||'—'],['::'+key+' colour',v.color||'—'],['::'+key+' size',`${v.width||'auto'} × ${v.height||'auto'}`]]));
+  section('IMPLEMENTATION SIGNALS',signals.map(x=>[x.name,`${x.confidence}: ${x.kind}`]));
 }
 function renderStyleTokens(tokens) {
   const root = $('styleTokens'); root.replaceChildren();

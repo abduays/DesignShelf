@@ -251,6 +251,45 @@
     };
   }
 
+
+  function getPseudoElementDetails(element) {
+    const result = {};
+    for (const pseudo of ['::before','::after']) {
+      try {
+        const style = getComputedStyle(element, pseudo), content = style.content;
+        if (!content || content === 'none' || content === 'normal') continue;
+        result[pseudo.slice(2)] = {content:safeText(content.replace(/^["']|["']$/g,''),160),display:style.display,position:style.position,color:style.color,backgroundColor:style.backgroundColor,fontFamily:style.fontFamily,fontSize:style.fontSize,fontWeight:style.fontWeight,width:style.width,height:style.height,margin:style.margin,padding:style.padding,border:style.border,borderRadius:style.borderRadius,transform:style.transform};
+      } catch {}
+    }
+    return result;
+  }
+  function getSemanticDetails(element) {
+    const tag=element.localName, roles={a:element.hasAttribute('href')?'link':'',button:'button',nav:'navigation',main:'main',header:'banner',footer:'contentinfo',aside:'complementary',form:'form',article:'article',section:element.hasAttribute('aria-label')?'region':'',img:'img',ul:'list',ol:'list',li:'listitem',h1:'heading',h2:'heading',h3:'heading',h4:'heading',h5:'heading',h6:'heading',textarea:'textbox',select:element.multiple?'listbox':'combobox'};
+    const explicit=safeText(element.getAttribute('role'),40), aria=safeText(element.getAttribute('aria-label'),160), alt=safeText(element.getAttribute('alt'),160), title=safeText(element.getAttribute('title'),160), text=safeText(element.innerText||element.textContent,160), style=getComputedStyle(element);
+    const name=aria||alt||title||text;
+    return {role:explicit||roles[tag]||'',roleSource:explicit?'explicit':roles[tag]?'native-element heuristic':'not inferred',nameCandidate:name,nameSource:aria?'aria-label':alt?'alt':title?'title':text?'visible text candidate':'none found',labelledBy:safeText(element.getAttribute('aria-labelledby'),160)||'',ariaLabel:aria||'',ariaHidden:element.getAttribute('aria-hidden')==='true',hidden:element.hidden||element.getAttribute('aria-hidden')==='true'||style.display==='none'||style.visibility==='hidden',tabIndex:Number.isInteger(element.tabIndex)?element.tabIndex:-1,required:element.required===true,disabled:element.disabled===true};
+  }
+  function getFrameworkSignals(root) {
+    const nodes = [root, ...root.querySelectorAll('*')].slice(0, 80);
+    const signals = [];
+    let react = false, vue = false, angular = false, svelte = false, tailwind = false;
+    for (const node of nodes) {
+      const keys = Object.keys(node);
+      react ||= keys.some(key => key.startsWith('__reactFiber') || key.startsWith('__reactProps'));
+      vue ||= !!node.__vueParentComponent || node.hasAttribute('data-v-app') || node.hasAttribute('data-vue');
+      angular ||= node.hasAttribute('ng-version') || keys.some(key => key.startsWith('__ngContext__'));
+      svelte ||= keys.some(key => key.startsWith('__svelte'));
+      const classes = typeof node.className === 'string' ? node.className : '';
+      tailwind ||= /(?:^|\s)(?:flex|grid|block|inline-flex|items-|justify-|gap-|p-[0-9]|px-|py-|text-|bg-|rounded-|shadow-)/.test(classes);
+    }
+    if (react) signals.push({name:'React',kind:'runtime marker',confidence:'observed'});
+    if (vue) signals.push({name:'Vue',kind:'runtime or mount marker',confidence:'observed'});
+    if (angular) signals.push({name:'Angular',kind:'runtime marker',confidence:'observed'});
+    if (svelte) signals.push({name:'Svelte',kind:'runtime marker',confidence:'observed'});
+    if (tailwind) signals.push({name:'Tailwind CSS',kind:'utility-class pattern',confidence:'heuristic'});
+    return signals;
+  }
+
   function getStyleTokens(element) {
     const style = getComputedStyle(element);
     const colors = [...new Set([
@@ -298,6 +337,8 @@
         css: getStyleText(el),
         animation: getAnimationDetails(el),
         tokens: getStyleTokens(el),
+        semantics: getSemanticDetails(el),
+        pseudoElements: getPseudoElementDetails(el),
         html: cleanCloneAndInline(el, 10, 8000)
       });
       if (item.depth < 6) {
@@ -348,6 +389,9 @@
       css: computedCSS,
       animation: getAnimationDetails(element),
       tokens: getStyleTokens(element),
+      semantics: getSemanticDetails(element),
+      pseudoElements: getPseudoElementDetails(element),
+      frameworkSignals: getFrameworkSignals(element),
       structure: buildComponentTree(element)
     };
     api.runtime.sendMessage({ type: 'DESIGNSHELF_CAPTURE', capture }).then(response => {
