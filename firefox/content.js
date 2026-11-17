@@ -387,6 +387,9 @@
       css: computedCSS,
       animation: getAnimationDetails(element),
       tokens: getStyleTokens(element),
+      semantics: getSemanticDetails(element),
+      pseudoElements: getPseudoElementDetails(element),
+      frameworkSignals: getFrameworkSignals(element),
       structure: buildComponentTree(element)
     };
     api.runtime.sendMessage({ type: 'DESIGNSHELF_CAPTURE', capture }).then(response => {
