@@ -89,6 +89,33 @@ function validStructureNode(node, index) {
   if (!Number.isFinite(node.width) || node.width < 0 || node.width > 100000 || !Number.isFinite(node.height) || node.height < 0 || node.height > 100000 || typeof node.visible !== 'boolean') return false;
   return validTokens(node.tokens) && validAnimation(node.animation);
 }
+async function captureElementScreenshot(tab, capture) {
+  try {
+    if (!Number.isInteger(tab?.windowId) || !capture?.rect || !capture?.viewport) return null;
+    const dataUrl = await api.tabs.captureVisibleTab(tab.windowId, { format:'jpeg', quality:82 });
+    if (typeof dataUrl !== 'string' || !dataUrl.startsWith('data:image/')) return null;
+    const response = await fetch(dataUrl);
+    const bitmap = await createImageBitmap(await response.blob());
+    const sx = bitmap.width / capture.viewport.width, sy = bitmap.height / capture.viewport.height;
+    const r = capture.rect;
+    const left = Math.max(0, Math.floor(r.x * sx)), top = Math.max(0, Math.floor(r.y * sy));
+    const right = Math.min(bitmap.width, Math.ceil((r.x + r.width) * sx));
+    const bottom = Math.min(bitmap.height, Math.ceil((r.y + r.height) * sy));
+    if (right <= left || bottom <= top) { bitmap.close?.(); return null; }
+    const sw = right-left, sh = bottom-top, scale = Math.min(1,1200/Math.max(sw,sh));
+    const width = Math.max(1,Math.round(sw*scale)), height = Math.max(1,Math.round(sh*scale));
+    const canvas = new OffscreenCanvas(width,height), ctx = canvas.getContext('2d',{alpha:false});
+    if (!ctx) { bitmap.close?.(); return null; }
+    ctx.drawImage(bitmap,left,top,sw,sh,0,0,width,height); bitmap.close?.();
+    let blob = await canvas.convertToBlob({type:'image/jpeg',quality:.76});
+    if (blob.size > 480000) blob = await canvas.convertToBlob({type:'image/jpeg',quality:.58});
+    if (blob.size > 520000) return null;
+    const bytes = new Uint8Array(await blob.arrayBuffer()); let binary='';
+    for(let i=0;i<bytes.length;i+=0x8000) binary += String.fromCharCode(...bytes.subarray(i,i+0x8000));
+    return {dataUrl:'data:image/jpeg;base64,'+btoa(binary),mode:'element-crop',width,height,mimeType:'image/jpeg'};
+  } catch (error) { console.warn('DesignShelf screenshot capture unavailable:',error); return null; }
+}
+
 function validCapture(capture, sender) {
   if (!capture || typeof capture !== 'object' || Array.isArray(capture)) return false;
   const required = ['id','name','tag','selector','url','pageTitle','capturedAt','text','html','css'];
@@ -97,6 +124,8 @@ function validCapture(capture, sender) {
   if (!Object.entries(limits).every(([key,max]) => capture[key].length <= max)) return false;
   if (!Number.isFinite(capture.width) || capture.width < 0 || capture.width > 100000 || !Number.isFinite(capture.height) || capture.height < 0 || capture.height > 100000) return false;
   if (capture.note != null && !boundedString(capture.note, 2000)) return false;
+  if (capture.rect != null && (typeof capture.rect !== 'object' || Array.isArray(capture.rect) || !['x','y','width','height'].every(k => Number.isFinite(capture.rect[k]) && Math.abs(capture.rect[k]) <= 100000))) return false;
+  if (capture.screenshot != null && (typeof capture.screenshot !== 'object' || Array.isArray(capture.screenshot) || capture.screenshot.mode !== 'element-crop' || !boundedString(capture.screenshot.dataUrl,700000) || !/^data:image\\/jpeg;base64,[A-Za-z0-9+/]+=*$/.test(capture.screenshot.dataUrl) || !Number.isInteger(capture.screenshot.width) || !Number.isInteger(capture.screenshot.height) || capture.screenshot.width < 1 || capture.screenshot.height < 1 || capture.screenshot.width > 1200 || capture.screenshot.height > 1200)) return false;
   if (capture.viewport != null && (typeof capture.viewport !== 'object' || Array.isArray(capture.viewport) || !Number.isFinite(capture.viewport.width) || capture.viewport.width < 1 || capture.viewport.width > 100000 || !Number.isFinite(capture.viewport.height) || capture.viewport.height < 1 || capture.viewport.height > 100000 || !Number.isFinite(capture.viewport.devicePixelRatio) || capture.viewport.devicePixelRatio < 0.25 || capture.viewport.devicePixelRatio > 10)) return false;
   try {
     const page = new URL(capture.url);
@@ -243,6 +272,9 @@ async function handleRuntimeMessage(message, sender) {
       const fresh = captures.filter(item => isFreshCapture(item, cutoff));
       const capture = message.capture;
       if (!validCapture(capture, sender)) return { ok:false, error:'Invalid or oversized capture data.' };
+      capture.screenshot = await captureElementScreenshot(sender.tab, capture);
+      capture.screenshotStatus = capture.screenshot ? 'captured' : 'unavailable';
+      delete capture.rect;
       if (!fresh.some((item) => item.id === capture.id)) fresh.unshift(capture);
       const nextState = {...stored,[STORAGE_KEY]:fresh,designshelfLastCapture:capture,designshelfLastCaptureAt:Date.now()};
       const estimatedBytes = JSON.stringify(nextState).length * 2;

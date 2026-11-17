@@ -151,3 +151,12 @@ test('empty-state actions are disabled until their required data exists', () => 
   assert.match(s, /hasSelection=!!captures\.find/);
   assert.match(s, /clearAllBtn'\)\.disabled=/);
 });
+
+
+test('capture pipeline stores a bounded original element screenshot when browser capture is available', () => {
+  const b=read('background.js'), c=read('content.js'), s=read('sidebar.js'), h=read('sidebar.html'), importer=read('project-import.js');
+  assert.match(b,/api\\.tabs\\.captureVisibleTab/); assert.match(b,/captureElementScreenshot/); assert.match(b,/OffscreenCanvas/);
+  assert.match(b,/capture\\.screenshotStatus = capture\\.screenshot \\? 'captured' : 'unavailable'/);
+  assert.match(c,/rect: \\{ x: Math\\.max\\(0, rect\\.left\\)/); assert.match(s,/capture\\.screenshot\\?\\.dataUrl/);
+  assert.match(h,/id="captureScreenshot"/); assert.match(importer,/screenshot: c\\.screenshot/);
+});

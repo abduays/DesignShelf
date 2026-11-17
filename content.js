@@ -343,6 +343,7 @@
       width: Math.round(rect.width),
       height: Math.round(rect.height),
       viewport: { width: innerWidth, height: innerHeight, devicePixelRatio: window.devicePixelRatio || 1 },
+      rect: { x: Math.max(0, rect.left), y: Math.max(0, rect.top), width: Math.max(0, Math.min(rect.width, innerWidth - Math.max(0, rect.left))), height: Math.max(0, Math.min(rect.height, innerHeight - Math.max(0, rect.top))) },
       html: outerHTML,
       css: computedCSS,
       animation: getAnimationDetails(element),
