@@ -146,7 +146,8 @@ function renderList() {
   visible.forEach(capture => {
     const card = document.createElement('article'); card.className = `capture-card${capture.id === selectedId ? ' selected' : ''}`;
     const thumb = document.createElement('div'); thumb.className = 'thumb';
-    const frame = document.createElement('iframe'); frame.setAttribute('sandbox',''); frame.title = `Preview of ${capture.name}`; frame.srcdoc = previewDocument(capture.html, capture.css); thumb.appendChild(frame);
+    if (capture.screenshot?.dataUrl) { const image=document.createElement('img'); image.src=capture.screenshot.dataUrl; image.alt=`Screenshot of ${capture.name}`; image.loading='lazy'; thumb.appendChild(image); }
+    else { const frame=document.createElement('iframe'); frame.setAttribute('sandbox',''); frame.title=`Preview of ${capture.name}`; frame.srcdoc=previewDocument(capture.html,capture.css); thumb.appendChild(frame); }
     const info = document.createElement('button'); info.className = 'capture-info'; info.type = 'button';
     let host = 'Unknown website'; try { host = new URL(capture.url).hostname; } catch {}
     const time = Date.parse(capture.capturedAt || capture.createdAt || '');
@@ -177,6 +178,11 @@ function selectCapture(id, scroll = true) {
   $('metaLine').textContent = `${capture.tag || capture.tagName || 'Element'} · ${capture.selector || 'selector unavailable'}\n${capture.url || ''}${capture.viewport ? `\nViewport ${capture.viewport.width}×${capture.viewport.height} · ${capture.viewport.devicePixelRatio}× pixel ratio` : ''}`;
   $('captureNote').value = capture.note || ''; $('noteStatus').textContent = capture.note ? 'Note saved locally' : 'No note saved';
   $('preview').srcdoc = previewDocument(capture.html, capture.css);
+  const screenshot = capture.screenshot?.dataUrl || '';
+  $('screenshotReference').classList.toggle('hidden', !screenshot);
+  $('captureScreenshot').src = screenshot;
+  $('screenshotStatus').textContent = screenshot ? `${capture.screenshot.width}×${capture.screenshot.height} · original element crop` : 'Unavailable';
+  $('screenshotUnavailable').classList.toggle('hidden', !!screenshot);
   document.querySelectorAll('.tab').forEach(t => { const active = t.dataset.tab === activeTab; t.classList.toggle('active', active); t.setAttribute('aria-selected', String(active)); t.tabIndex = active ? 0 : -1; if (active) $('codeView').setAttribute('aria-labelledby', t.id); });
   renderComponentTree(capture); renderCode(capture); renderList(); renderQuality(); updateActionStates();
   if (scroll) $('detailPanel').scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'});

@@ -50,7 +50,9 @@ function normaliseImportedCapture(c) {
     text: boundedText(c.text, 500) || '', width: Number.isFinite(c.width) ? Math.max(0, Math.min(100000, c.width)) : 0,
     height: Number.isFinite(c.height) ? Math.max(0, Math.min(100000, c.height)) : 0,
     viewport: c.viewport && typeof c.viewport === 'object' && !Array.isArray(c.viewport) && Number.isFinite(c.viewport.width) && Number.isFinite(c.viewport.height) ? {width:Math.max(1,Math.min(100000,c.viewport.width)),height:Math.max(1,Math.min(100000,c.viewport.height)),devicePixelRatio:Number.isFinite(c.viewport.devicePixelRatio)?Math.max(.25,Math.min(10,c.viewport.devicePixelRatio)):1} : null,
-    html: c.html, css: c.css, pinned: c.pinned === true, tokens: normaliseImportedTokens(c.tokens), structure,
+    html: c.html, css: c.css, pinned: c.pinned === true,
+    screenshot: c.screenshot && typeof c.screenshot === 'object' && !Array.isArray(c.screenshot) && c.screenshot.mode === 'element-crop' && typeof c.screenshot.dataUrl === 'string' && c.screenshot.dataUrl.length <= 700000 && /^data:image\/jpeg;base64,[A-Za-z0-9+/]+=*$/.test(c.screenshot.dataUrl) && Number.isInteger(c.screenshot.width) && Number.isInteger(c.screenshot.height) && c.screenshot.width > 0 && c.screenshot.height > 0 && c.screenshot.width <= 1200 && c.screenshot.height <= 1200 ? {dataUrl:c.screenshot.dataUrl,mode:'element-crop',width:c.screenshot.width,height:c.screenshot.height,mimeType:'image/jpeg'} : null,
+    screenshotStatus: c.screenshot?.dataUrl ? 'captured' : 'unavailable', tokens: normaliseImportedTokens(c.tokens), structure,
     animation: c.animation && typeof c.animation === 'object' ? Object.fromEntries(Object.entries(c.animation).filter(([k,v]) => ['name','duration','timingFunction','delay','iterationCount','direction','fillMode','playState','transition','transform'].includes(k) && typeof v === 'string' && v.length <= 200)) : {}
   };
 }
