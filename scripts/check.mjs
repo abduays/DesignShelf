@@ -5,13 +5,13 @@ import { fileURLToPath } from 'node:url';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const fail = [];
-const shared = ['background.js','content.js','sidebar.html','sidebar.js','sidebar.css','token-export.js','project-import.js'];
+const shared = ['background.js','content.js','sidebar.html','sidebar.js','sidebar.css','token-export.js','project-import.js','export-engine.js'];
 const run = (args) => {
   const result = spawnSync(process.execPath, args, { cwd:root, encoding:'utf8' });
   if (result.status !== 0) fail.push(`${args.join(' ')}\n${result.stderr || result.stdout}`);
 };
 
-for (const file of ['background.js','content.js','sidebar.js','token-export.js','project-import.js','demo/app.js']) run(['--check',file]);
+for (const file of ['background.js','content.js','sidebar.js','token-export.js','project-import.js','export-engine.js','demo/app.js']) run(['--check',file]);
 for (const browser of ['chrome','firefox']) {
   const dir = path.join(root,browser);
   const manifestPath = path.join(dir,'manifest.json');

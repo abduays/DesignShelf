@@ -1,0 +1,14 @@
+/* DesignShelf export engine. Pure deterministic code. */
+(function(root){'use strict';
+const safeSource=v=>String(v||'').replace(/[\r\n]/g,' ').replace(/--/g,'');
+const escapeCss=v=>String(v||'').replace(/<\/style/gi,'<\\/style').replace(/\0/g,'');
+function convertHtmlToJsx(html){return String(html||'').replace(/\bclass=/g,'className=').replace(/\bfor=/g,'htmlFor=').replace(/\btabindex=/gi,'tabIndex=').replace(/\bmaxlength=/gi,'maxLength=').replace(/\breadonly=/gi,'readOnly=').replace(/\bautofocus=/gi,'autoFocus=').replace(/\bcontenteditable=/gi,'contentEditable=').replace(/\bselected=/gi,'defaultSelected=').replace(/\bchecked=/gi,'defaultChecked=').replace(/\sreadonly(?=[\s/>])/gi,' readOnly').replace(/\sdisabled(?=[\s/>])/gi,' disabled').replace(/\srequired(?=[\s/>])/gi,' required').replace(/\smultiple(?=[\s/>])/gi,' multiple');}
+function componentName(name){const words=String(name||'CapturedComponent').replace(/[^a-zA-Z0-9]+/g,' ').trim().split(/\s+/).filter(Boolean);const v=words.filter(w=>/^[a-zA-Z]/.test(w)).map(w=>w.charAt(0).toUpperCase()+w.slice(1)).join('');return /^[A-Z]/.test(v)?v:'CapturedComponent';}
+function html(c){return '<!-- Captured by DesignShelf from '+safeSource(c.url)+' -->\n'+String(c.html||'')+'\n<style>\n'+escapeCss(c.css)+'\n</style>\n';}
+function react(c){return '// DesignShelf React starter. Review captured attributes, assets and responsive behaviour.\nexport default function '+componentName(c.name)+'() {\n  return (\n    <>\n      <style>{'+JSON.stringify(escapeCss(c.css))+'}</style>\n      '+convertHtmlToJsx(c.html)+'\n    </>\n  );\n}\n';}
+function vue(c){return '<!-- DesignShelf Vue starter. Review bindings, directives and assets before use. -->\n<template>\n  '+String(c.html||'')+'\n</template>\n\n<style scoped>\n'+escapeCss(c.css)+'\n</style>\n';}
+function tailwind(c){const css=String(c.css||''),s=[];if(/display:\s*flex/i.test(css))s.push('flex');if(/display:\s*grid/i.test(css))s.push('grid');if(/justify-content:\s*center/i.test(css))s.push('justify-center');if(/align-items:\s*center/i.test(css))s.push('items-center');if(/text-align:\s*center/i.test(css))s.push('text-center');if(/font-weight:\s*(600|700|800|900)/i.test(css))s.push('font-semibold');const r=(css.match(/border-radius:\s*(\d+)px/i)||[])[1];if(r)s.push(Number(r)>=20?'rounded-2xl':Number(r)>=10?'rounded-xl':'rounded-md');return '<!-- Tailwind suggestions are heuristic; original CSS is preserved. -->\n<!-- Suggested utilities: '+s.join(' ')+' -->\n'+String(c.html||'')+'\n<style>\n'+escapeCss(css)+'\n</style>\n';}
+function exportCapture(c,f){c=c||{};return f==='react'?react(c):f==='vue'?vue(c):f==='tailwind'?tailwind(c):html(c);}
+root.DesignShelfExportEngine={exportCapture,convertHtmlToJsx,componentName};
+if(typeof module!=='undefined'&&module.exports) module.exports=root.DesignShelfExportEngine;
+})(typeof globalThis!=='undefined'?globalThis:this);
