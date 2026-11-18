@@ -1,0 +1,6 @@
+const test=require('node:test');const assert=require('node:assert/strict');const e=require('../export-engine.js');const s={name:'pricing card',url:'https://example.com',html:'<section class="card"><label for="email">Email</label><input id="email" readonly><div tabindex="0"></div></section>',css:'.card{display:flex;color:red}'};
+test('HTML preserves markup and CSS',()=>{const o=e.exportCapture(s,'html');assert.match(o,/section class="card"/);assert.match(o,/<style>/);assert.match(o,/\.card\{display:flex;color:red\}/);});
+test('React converts attributes and embeds CSS',()=>{const o=e.exportCapture(s,'react');assert.match(o,/className="card"/);assert.match(o,/htmlFor="email"/);assert.match(o,/readOnly/);assert.match(o,/<style>\{/);assert.match(o,/PricingCard/);});
+test('Vue template and scoped CSS',()=>{const o=e.exportCapture(s,'vue');assert.match(o,/<template>/);assert.match(o,/<style scoped>/);});
+test('Tailwind suggestions retain captured CSS',()=>{const o=e.exportCapture(s,'tailwind');assert.match(o,/Suggested utilities: flex/);assert.match(o,/\.card\{display:flex;color:red\}/);assert.match(o,/section class="card"/);});
+test('component names are stable',()=>{assert.equal(e.componentName('9 pricing / card'),'PricingCard');assert.equal(e.componentName(''),'CapturedComponent');});
