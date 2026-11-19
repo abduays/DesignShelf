@@ -95,7 +95,7 @@ function buildCssTokenExport(groups, labels = {}) {
 }
 function buildTailwindTheme(groups, labels = {}) {
   const lines = ['@theme {','  /* Observed values only. Semantic token names have not been inferred. */'];
-  const add = (prefix,map,format=value=>value,labelMap={}) => { const used=new Set(); [...map.entries()].sort((a,b)=>b[1]-a[1]).forEach(([value],index) => { const base=semanticName(labelMap[value])||String(index+1).padStart(3,'0'); let name=base,suffix=2; while(used.has(name)) name=base+'-'+suffix++; used.add(name); lines.push('  --'+prefix+'-'+name+': '+format(value)+';'); }); };
+  const add = (prefix,map,format=value=>value,labelMap={}) => { const used=new Set(); [...map.entries()].sort((a,b)=>b[1]-a[1]).forEach(([value],index) => { const base=semanticName(labelMap[value])||'observed-'+String(index+1).padStart(3,'0'); let name=base,suffix=2; while(used.has(name)) name=base+'-'+suffix++; used.add(name); lines.push('  --'+prefix+'-'+name+': '+format(value)+';'); }); };
   add('color',groups.colors,value=>value,labels.colors);
   add('font',groups.fonts,value=>value,labels.fonts);
   add('text',groups.fontSizes,value=>value,labels.fontSizes);
