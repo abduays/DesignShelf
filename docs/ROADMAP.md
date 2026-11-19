@@ -86,7 +86,7 @@
 - [x] Record conservative runtime/framework markers and label utility-class detection as heuristic.
 - [x] Add a user-triggered picker state mode to capture hover/focus/expanded/current component states with bounded state evidence.
 - [ ] Verify state capture interactions in installed Chrome and Firefox.
-- [ ] Add pixel-level visual comparison only after screenshot privacy, crop and storage design is proven.
+- [x] Add local pixel-level visual comparison for matching-size stored screenshots; diff data never leaves the browser.
 - [ ] Improve toolbox information architecture so advanced features are easier to find.
 - [x] Improve selector stability with unique IDs, stable attributes and uniqueness checks.
 

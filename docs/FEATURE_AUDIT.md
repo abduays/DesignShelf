@@ -128,3 +128,11 @@
 - The user can interact with the component, then press `Alt+Shift+S` to capture the selected component's current state.
 - Capture metadata records the state label and boolean evidence for hover, focus, expanded, pressed and selected state. The captured markup and computed CSS reflect the current state where the page exposes it.
 - State evidence is best-effort; extension/browser UI and page scripts can affect the state. Live Chrome/Firefox verification remains pending.
+
+
+## Pixel-level capture comparison — Stage 6B
+
+- The comparison view can calculate changed-pixel percentage and mean RGB difference for two stored screenshots of matching dimensions.
+- A red heatmap marks pixels above a default threshold of 20 channel levels.
+- The algorithm and screenshot readback operate locally; no screenshots are uploaded or sent to a service.
+- Captures with missing or mismatched dimensions are rejected with an explanatory message rather than silently resized.

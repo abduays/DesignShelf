@@ -30,3 +30,11 @@ undefined
 - Captures are triggered with `Alt+Shift+S` while the selected component is in the desired state; the snapshot records hover/focus/expanded/pressed/selected evidence and a state label.
 - Added background validation and import-normalisation tests for state metadata.
 - Browser-level state capture remains pending.
+
+
+## Stage 6B — pixel visual comparison
+
+- Added a pure pixel comparison helper with threshold, changed-pixel percentage and mean RGB difference metrics.
+- Added unit tests for identical images, threshold behaviour, heatmap output and malformed buffers.
+- UI reads stored data URLs locally, requires matching dimensions and renders A/B/heatmap.
+- Browser-level image/canvas verification remains pending.
