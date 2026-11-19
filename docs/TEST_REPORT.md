@@ -16,8 +16,9 @@ undefined
 - Live browser editing/import/export verification remains pending.
 
 
-## Semantic token naming validation — 19 November 2026
+## Stage 5 validation result — 19 November 2026
 
-- Added semantic-name export tests covering sanitisation, collision handling and deterministic names across DTCG, CSS and Tailwind outputs.
-- Added import normalisation tests for token-label maps.
-- Static checks cover local persistence, project backup and passing names into each export format.
+- Node test suite: 64 passed, 0 failed.
+- Package, syntax, manifest, parity, resource and CSS checks: passed.
+- Independent DTCG 2025.10 validator: valid, 9 tokens, 8 groups, 0 aliases, 0 issues, 0 warnings.
+- Validator package is pinned to `open-design-tokens@0.7.0` and invoked only by CI.
