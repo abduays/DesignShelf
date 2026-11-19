@@ -213,3 +213,15 @@ test('capture picker supports interaction-state snapshots with a keyboard captur
   assert.match(p,/captureState:\['default','hover','focus','expanded','custom'\]/);
   assert.match(s,/\['Capture state',a\.captureState/);
 });
+
+test('pixel comparison stays local and requires same-sized stored screenshots', () => {
+  const s=read('sidebar.js'),h=read('sidebar.html'),m=read('visual-diff.js'),css=read('sidebar.css');
+  assert.match(s,/function comparePixelCaptures/);
+  assert.match(s,/createImageBitmap/);
+  assert.match(s,/comparePixelData/);
+  assert.match(s,/a\.screenshot\.width!==b\.screenshot\.width/);
+  assert.match(h,/id="pixelCompareBtn"/);
+  assert.match(h,/id="visualCompareResults"/);
+  assert.match(m,/changedPercent/);
+  assert.match(css,/visual-compare-grid/);
+});

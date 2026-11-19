@@ -101,8 +101,8 @@
       </div>
       <div class="toolbox-card">
         <div class="toolbox-card-head"><div><h3>Capture comparison</h3><p>Compare two saved captures by markup, computed CSS and style tokens.</p></div></div>
-        <div class="compare-controls"><label>Capture A<select id="compareA" disabled></select></label><label>Capture B<select id="compareB" disabled></select></label><button id="compareBtn" class="primary small" disabled>Compare</button></div>
-        <div id="compareResults" class="insight-list"><div class="empty-inline">Choose two captures and compare.</div></div>
+        <div class="compare-controls"><label>Capture A<select id="compareA" disabled></select></label><label>Capture B<select id="compareB" disabled></select></label><button id="compareBtn" class="primary small" disabled>Compare</button><button id="pixelCompareBtn" class="secondary small" disabled>Pixel diff</button></div>
+        <div id="compareResults" class="insight-list"><div class="empty-inline">Choose two captures and compare.</div></div><div id="visualCompareResults" class="visual-compare-results"><div class="empty-inline">Pixel comparison requires two saved screenshots with matching dimensions.</div></div>
       </div>
       <div class="toolbox-card">
         <div class="toolbox-card-head"><div><h3>CSS and accessibility review</h3><p>Run extra local heuristics on the selected capture.</p></div><button id="deepChecksBtn" class="secondary small" disabled>Run review</button></div>
@@ -126,7 +126,7 @@
   <footer><span>LOCAL ARCHIVE · NO ACCOUNT · NO REMOTE SYNC</span><button id="clearAllBtn" class="text-btn" disabled>Delete all history</button></footer>
   <dialog id="tutorialDialog" class="tutorial-dialog"><div class="dialog-inner"><div class="tutorial-progress"><span id="tutorialStepLabel">GETTING STARTED · 1 OF 6</span><button id="closeTutorialBtn" class="icon-btn" aria-label="Close tutorial">×</button></div><div id="tutorialIcon" class="tutorial-icon">01</div><h2 id="tutorialTitle">Capture a section</h2><p id="tutorialText">Open a normal website, choose Capture a component, then hover over the part you want to save.</p><div id="tutorialTip" class="tutorial-tip">Tip: use Parent and Child to adjust the selection boundary.</div><div class="tutorial-actions"><button id="tutorialPrevBtn" class="secondary small">Back</button><button id="tutorialNextBtn" class="primary small">Next</button></div></div></dialog>
   <dialog id="aboutDialog"><div class="dialog-inner"><h2>About DesignShelf</h2><p>DesignShelf stores captured snippets in local extension storage. It does not upload captures to a server. Captures can include visible page text, URLs and design assets, so review exports before sharing them.</p><p>Entered form values are excluded from captures. Only capture designs you have permission to inspect and reuse. Respect site licences, copyright and privacy obligations.</p><button id="closeAboutBtn" class="primary small">Got it</button></div></dialog>
-  <script src="token-export.js"></script>
+  <script src="token-export.js"></script><script src="visual-diff.js"></script>
   <script src="project-import.js"></script>
   <script src="export-engine.js"></script>
   <script src="sidebar.js"></script>
