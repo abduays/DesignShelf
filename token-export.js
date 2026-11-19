@@ -82,7 +82,7 @@ function buildDtcgTokens(groups, labels = {}) {
 }
 function buildCssTokenExport(groups, labels = {}) {
   const lines = [':root {','  /* Extracted computed values. Names are neutral; counts show snapshot frequency. */'];
-  const add = (prefix,map,format=value=>value,labelMap={}) => { const used=new Set(); [...map.entries()].sort((a,b)=>b[1]-a[1]).forEach(([value,count],index) => { const base=semanticName(labelMap[value])||String(index+1).padStart(3,'0'); let name=base,suffix=2; while(used.has(name)) name=base+'-'+suffix++; used.add(name); lines.push('  --'+prefix+'-'+name+': '+format(value)+'; /* observed '+count+' time(s) */'); }); };
+  const add = (prefix,map,format=value=>value,labelMap={}) => { const used=new Set(); [...map.entries()].sort((a,b)=>b[1]-a[1]).forEach(([value,count],index) => { const base=semanticName(labelMap[value])||'observed-'+String(index+1).padStart(3,'0'); let name=base,suffix=2; while(used.has(name)) name=base+'-'+suffix++; used.add(name); lines.push('  --'+prefix+'-'+name+': '+format(value)+'; /* observed '+count+' time(s) */'); }); };
   add('color',groups.colors,value=>value,labels.colors);
   add('font-family',groups.fonts,value=>value,labels.fonts);
   add('font-size',groups.fontSizes,value=>value,labels.fontSizes);
