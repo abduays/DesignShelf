@@ -1,13 +1,13 @@
 ## Stage 8 — Browser smoke validation (19 November 2026)
 
-- Pull request #15 merged the Playwright smoke-test harness into \`main\`.
-- CI run [44522506262](https://github.com/abduays/DesignShelf/actions/runs/44522506262) passed on commit \`aed686d1903280146396a71457191d7179f6699c\`.
+- Pull request #15 merged the Playwright smoke-test harness into `main`.
+- CI run [44522506262](https://github.com/abduays/DesignShelf/actions/runs/44522506262) passed on commit `aed686d1903280146396a71457191d7179f6699c`.
 - Automated Node suite: 78 passed, 0 failed.
 - Syntax, manifest, package parity, local-resource, CSS and independent DTCG 2025.10 validation: passed.
 - Chrome stable 158.0.8127.36: sidebar rendering/navigation, storage estimate, board rendering and content-script expanded-state capture passed.
 - Playwright Firefox 144.0.2: the same sidebar and content-script state-capture smoke checks passed.
 - The browser smoke harness uses a mocked extension API. It does not install the complete extension package or validate real side-panel/sidebar APIs, optional permission prompts, browser background lifecycle or cross-tab recording.
-- A separate post-merge \`main\` workflow was started after the merge; the PR validation above is the completed run used for this record.
+- A separate post-merge `main` workflow was started after the merge; the PR validation above is the completed run used for this record.
 
 ## Earlier validation records
 
@@ -30,12 +30,12 @@
 - Node test suite at that point: 64 passed, 0 failed.
 - Package, syntax, manifest, parity, resource and CSS checks: passed.
 - Independent DTCG 2025.10 validator: valid, 9 tokens, 8 groups, 0 aliases, 0 issues, 0 warnings.
-- Validator package is pinned to \`open-design-tokens@0.7.0\` and invoked only by CI.
+- Validator package is pinned to `open-design-tokens@0.7.0` and invoked only by CI.
 
 ## Stage 6A — component state snapshots
 
 - Added a picker state mode that lets users interact with a selected component without the selection overlay intercepting clicks.
-- Captures are triggered with \`Alt+Shift+S\` while the selected component is in the desired state; the snapshot records hover/focus/expanded/pressed/selected evidence and a state label.
+- Captures are triggered with `Alt+Shift+S` while the selected component is in the desired state; the snapshot records hover/focus/expanded/pressed/selected evidence and a state label.
 - Added background validation and import-normalisation tests for state metadata.
 - Browser-level state capture is now covered by the Stage 8 mocked-API smoke harness; real extension installation remains outstanding.
 

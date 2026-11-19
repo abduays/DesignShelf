@@ -54,7 +54,7 @@
 - [x] Preserve important captures with pinning.
 - [x] Organise references into boards/flows and reorder them.
 - [x] Add per-capture research notes.
-- [x] Export a curated \`DESIGN.md\` evidence pack with source, selector, viewport, notes, observed values and computed CSS.
+- [x] Export a curated `DESIGN.md` evidence pack with source, selector, viewport, notes, observed values and computed CSS.
 - [x] Preserve capture viewport and device-pixel-ratio metadata.
 - [x] Add optional board-level brief/intent and user-assigned semantic labels (bounded, normalised and included in evidence-pack exports).
 
@@ -69,7 +69,7 @@
 - [x] Export CSS custom properties.
 - [x] Export Tailwind v4 theme variables.
 - [x] Unit-test color conversion, dimension parsing, frequency counts and output types.
-- [ ] Add optional semantic labels assigned by the user.
+- [x] Add optional semantic labels assigned by the user.
 - [x] Validate output against an independent DTCG 2025.10 implementation in CI.
 
 **Exit condition:** exports pass unit tests and an external format validator.
@@ -81,7 +81,7 @@
 - [x] Component tree, computed-style snapshots, motion inventory, asset explorer and page insights.
 - [x] Component comparison and viewport metadata comparison.
 - [x] Local quality heuristics with explicit limitations.
-- [x] Add pseudo-element snapshots (\`::before\`/\`::after\`) where safe.
+- [x] Add pseudo-element snapshots (`::before`/`::after`) where safe.
 - [x] Capture accessibility evidence candidates (role, name source, ARIA hidden state and tab index) without claiming full accessibility-tree computation.
 - [x] Record conservative runtime/framework markers and label utility-class detection as heuristic.
 - [x] Add a user-triggered picker state mode to capture hover/focus/expanded/current component states with bounded state evidence.
@@ -111,7 +111,7 @@
 **Goal:** verify each installable package in its actual target browser.
 
 - [x] Separate Manifest V3 Chrome and Firefox manifests.
-- [x] Use Chrome \`sidePanel\` and Firefox \`sidebar_action\` packaging.
+- [x] Use Chrome `sidePanel` and Firefox `sidebar_action` packaging.
 - [x] Add package parity and local-resource validation.
 - [x] Run Chrome stable sidebar and content-script state-capture smoke tests in CI.
 - [ ] Install the complete extension package in Chrome stable and verify side-panel opening, permissions and background lifecycle.
