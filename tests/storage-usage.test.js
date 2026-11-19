@@ -1,0 +1,3 @@
+const test=require('node:test');const assert=require('node:assert/strict');const {getStorageWarning}=require('../storage-usage.js');
+test('storage warning thresholds are clear and ordered',()=>{const budget=1000;assert.equal(getStorageWarning(599,budget).level,'ok');assert.equal(getStorageWarning(600,budget).level,'notice');assert.equal(getStorageWarning(800,budget).level,'warning');assert.equal(getStorageWarning(950,budget).level,'critical');assert.equal(getStorageWarning(1100,budget).level,'critical');});
+test('invalid storage estimates return a safe unavailable state',()=>{assert.equal(getStorageWarning(-1).level,'ok');assert.equal(getStorageWarning(NaN).message,'Storage estimate unavailable.');assert.equal(getStorageWarning(1,0).level,'ok');});

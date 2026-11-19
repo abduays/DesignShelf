@@ -101,7 +101,7 @@
 - [x] Preserve old interaction history when a new recording begins.
 - [x] Stop recording when storage rejects event writes.
 - [x] Validate imports in a separate pure module and avoid mutating in-memory state before successful writes.
-- [ ] Add explicit storage usage warning thresholds and an easy export-before-delete recovery flow.
+- [x] Add explicit storage usage warning thresholds and an easy export-before-delete recovery flow.
 - [ ] Stress-test real browser storage quotas with large projects.
 
 **Exit condition:** quota exhaustion is tested without silent loss or inconsistent UI state.

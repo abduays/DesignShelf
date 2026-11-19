@@ -1,5 +1,6 @@
 const api = globalThis.browser ?? globalThis.chrome;
 const projectImport = globalThis.DesignShelfProjectImport;
+const storageUsage = globalThis.DesignShelfStorageUsage;
 const STORAGE_KEY = 'designshelfCaptures';
 const COLLECTION_KEY = 'designshelfCollections';
 const RETENTION_DAYS = 15;
@@ -646,11 +647,13 @@ async function importFullProject(file) {
 async function refreshStorageUsage() {
   const root=$('storageUsage');if(!root)return;root.replaceChildren();
   try {
-    const data=await api.storage.local.get(null);const serialized=JSON.stringify(data);const bytes=serialized.length*2;const kb=bytes/1024;const mb=kb/1024;
-    const metrics=[['Approx. local data',mb>=1?`${mb.toFixed(2)} MB`:`${kb.toFixed(1)} KB`],['Saved captures',captures.length],['Design flows',collections.length],['Recorded events',(Array.isArray(data[INTERACTION_KEY])?data[INTERACTION_KEY].length:0)]];
+    const data=await api.storage.local.get(null);const serialized=JSON.stringify(data);const bytes=serialized.length*2;const kb=bytes/1024;const mb=kb/1024;const budget=7.5*1024*1024;const warning=storageUsage.getStorageWarning(bytes,budget);
+    const display=mb>=1?mb.toFixed(2)+' MB':kb.toFixed(1)+' KB';const metrics=[['Approx. local data',display],['Estimated budget use',Math.min(100,bytes/budget*100).toFixed(1)+'%'],['Saved captures',captures.length],['Design flows',collections.length],['Recorded events',(Array.isArray(data[INTERACTION_KEY])?data[INTERACTION_KEY].length:0)]];
     metrics.forEach(([label,value])=>{const row=document.createElement('div');row.className='insight-row';const main=document.createElement('div');main.className='insight-main';const strong=document.createElement('strong');strong.textContent=String(value);const sub=document.createElement('span');sub.textContent=label;main.append(strong,sub);root.appendChild(row).appendChild(main);});
+    const progress=document.createElement('div');progress.className='storage-progress';progress.setAttribute('role','progressbar');progress.setAttribute('aria-label','Estimated local storage budget usage');progress.setAttribute('aria-valuemin','0');progress.setAttribute('aria-valuemax','100');progress.setAttribute('aria-valuenow',String(Math.min(100,Math.round(bytes/budget*100))));const bar=document.createElement('span');bar.style.width=Math.min(100,bytes/budget*100)+'%';bar.className='storage-progress-fill '+warning.level;progress.appendChild(bar);root.appendChild(progress);
     const note=document.createElement('div');note.className='small-note';note.textContent='Estimate based on JSON-serialised local storage; actual storage usage and quotas differ. No browser quota is guaranteed.';root.appendChild(note);
-  }catch(error){root.textContent=`Could not estimate storage: ${error.message||error}`;}
+    const warn=$('storageWarning');warn.className='storage-warning '+warning.level;warn.textContent=warning.message||'Storage estimate is below the warning thresholds.';$('exportRecoveryBackupBtn').disabled=bytes===0;
+  }catch(error){root.textContent='Could not estimate storage: '+(error.message||error);}
 }
 function workbenchHistory(direction) {
   const source=direction==='undo'?workbenchUndo:workbenchRedo, target=direction==='undo'?workbenchRedo:workbenchUndo;
@@ -727,7 +730,12 @@ $('importProjectBtn').addEventListener('click',()=>$('importProjectFile').click(
 $('importProjectFile').addEventListener('change',e=>importFullProject(e.target.files?.[0]));
 $('refreshStorageBtn').addEventListener('click',refreshStorageUsage);
 $('cascadeReviewBtn').addEventListener('click',runCascadeReview);
-$('clearAllBtn').addEventListener('click',async()=>{const stored=await api.storage.local.get([STORAGE_KEY,COLLECTION_KEY,INTERACTION_KEY,'designshelfAuditHistory','designshelfLastCapture','designshelfRecordingTabId']);const hasHistory=[STORAGE_KEY,COLLECTION_KEY,INTERACTION_KEY,'designshelfAuditHistory','designshelfLastCapture','designshelfRecordingTabId'].some(key=>Array.isArray(stored[key])?stored[key].length>0:!!stored[key]);if(!hasHistory)return;if(!confirm('Permanently delete ALL DesignShelf captures, flows, interaction events and page audit history from this browser profile? This cannot be undone.'))return;if(Number.isInteger(stored.designshelfRecordingTabId)){try{await api.runtime.sendMessage({type:'DESIGNSHELF_STOP_RECORDING'});}catch{}}recording=false;captures=[];collections=[];activeCollectionId=null;closeDetail();await api.storage.local.remove([STORAGE_KEY,COLLECTION_KEY,INTERACTION_KEY,'designshelfTokenLabels','designshelfAuditHistory','designshelfLastCapture','designshelfLastCaptureAt','designshelfRecordingTabId']); tokenLabels={};await saveCaptures();await saveCollections();renderInteractionEvents();setNotice('All DesignShelf history deleted.');});
+async function clearAllHistory(backupFirst) { const stored=await api.storage.local.get([STORAGE_KEY,COLLECTION_KEY,INTERACTION_KEY,'designshelfAuditHistory','designshelfLastCapture','designshelfRecordingTabId']);const hasHistory=[STORAGE_KEY,COLLECTION_KEY,INTERACTION_KEY,'designshelfAuditHistory','designshelfLastCapture','designshelfRecordingTabId'].some(key=>Array.isArray(stored[key])?stored[key].length>0:!!stored[key]);if(!hasHistory)return;if(backupFirst){try{await exportFullProject();}catch(error){setNotice('Recovery backup could not be exported. Deletion was cancelled.',true);return;}}else if(!confirm('Delete all history without a recovery backup? This cannot be undone.'))return;if(!confirm('Permanently delete ALL DesignShelf captures, flows, interaction events and page audit history from this browser profile?'))return;if(Number.isInteger(stored.designshelfRecordingTabId)){try{await api.runtime.sendMessage({type:'DESIGNSHELF_STOP_RECORDING'});}catch{}}recording=false;captures=[];collections=[];activeCollectionId=null;closeDetail();await api.storage.local.remove([STORAGE_KEY,COLLECTION_KEY,INTERACTION_KEY,'designshelfTokenLabels','designshelfAuditHistory','designshelfLastCapture','designshelfLastCaptureAt','designshelfRecordingTabId']);tokenLabels={};await saveCaptures();await saveCollections();renderInteractionEvents();setNotice('All DesignShelf history deleted.');}
+$('clearAllBtn').addEventListener('click',()=>{if($('recoveryDialog')?.showModal)$('recoveryDialog').showModal();else clearAllHistory(false);});
+$('exportBeforeDeleteBtn').addEventListener('click',async()=>{$('recoveryDialog').close();await clearAllHistory(true);});
+$('deleteWithoutExportBtn').addEventListener('click',async()=>{$('recoveryDialog').close();await clearAllHistory(false);});
+$('cancelDeleteBtn').addEventListener('click',()=>$('recoveryDialog').close());
+$('exportRecoveryBackupBtn').addEventListener('click',exportFullProject);
 $('createCollectionBtn').addEventListener('click',createCollection); $('newBoardBtn').addEventListener('click',createCollection);
 $('collectionSelect').addEventListener('change',async e=>{const c=captures.find(x=>x.id===selectedId);const flow=collections.find(x=>x.id===e.target.value);if(!c||!flow)return;collections.forEach(x=>x.captureIds=(x.captureIds||[]).filter(id=>id!==c.id));flow.captureIds.push(c.id);c.collectionId=flow.id;await saveCollections();await saveCaptures();setNotice(`Added “${c.name}” to “${flow.name}”.`);});
 $('runQualityBtn').addEventListener('click',()=>{renderQuality();const c=captures.find(x=>x.id===selectedId);if(c){setNotice('Quality checks complete. Review each warning before changing the source.');}else setNotice('Select a capture from Library first.',true);});

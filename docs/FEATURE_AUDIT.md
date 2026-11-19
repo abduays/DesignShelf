@@ -142,3 +142,10 @@
 
 - Reorganised Studio tools into native, keyboard-accessible expandable groups: Inspect & Compare, Collect & Manage, and Build & Export.
 - Existing controls, IDs and event handlers are preserved. Inspect & Compare is expanded by default; the other groups are available via their summaries.
+
+
+## Storage warnings and recovery flow — Stage 7
+
+- Added estimated-storage usage progress and warning thresholds at 60%, 80% and 95% of the conservative 7.5 MiB budget.
+- Added an export recovery backup button and delete-history dialog with backup-first, delete-without-backup and cancel choices.
+- Warning percentages are estimates only; browser quotas differ and may still reject writes.

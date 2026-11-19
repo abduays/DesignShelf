@@ -236,3 +236,18 @@ test('Studio toolbox uses accessible groups without removing existing tool IDs',
   assert.match(h,/<details class="toolbox-group"/);
   assert.match(h,/<summary/);
 });
+
+test('storage usage exposes thresholds and export-before-delete recovery choices', () => {
+  const s=read('sidebar.js'),h=read('sidebar.html'),m=read('storage-usage.js'),css=read('sidebar.css');
+  assert.match(s,/getStorageWarning/);
+  assert.match(s,/exportFullProject\(\)/);
+  assert.match(s,/clearAllHistory\(backupFirst\)/);
+  assert.match(h,/id="exportRecoveryBackupBtn"/);
+  assert.match(h,/id="recoveryDialog"/);
+  assert.match(h,/id="exportBeforeDeleteBtn"/);
+  assert.match(h,/id="deleteWithoutExportBtn"/);
+  assert.match(m,/ratio>=0\.95/);
+  assert.match(m,/ratio>=0\.8/);
+  assert.match(m,/ratio>=0\.6/);
+  assert.match(css,/storage-progress/);
+});
