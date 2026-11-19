@@ -409,6 +409,8 @@ function exportCollectionMarkdown(id) {
   appendGroup('Colours',tokenGroups.colors); appendGroup('Font families',tokenGroups.fonts);
   appendGroup('Font sizes',tokenGroups.fontSizes); appendGroup('Line heights',tokenGroups.lineHeights);
   appendGroup('Font weights',tokenGroups.fontWeights); appendGroup('Border radii',tokenGroups.radii);
+  if(flow.brief) lines.push('## Brief / intent','',markdownEscape(flow.brief),'');
+  if(Array.isArray(flow.labels)&&flow.labels.length) lines.push('## Semantic labels','',flow.labels.map(label=>'- '+markdownEscape(label)).join('\\n'),'');
   lines.push('## Curated component references','');
   items.forEach((capture,index)=>{
     lines.push(`### ${index+1}. ${markdownEscape(capture.name)}`,'',
@@ -608,10 +610,8 @@ async function importFullProject(file) {
     const validIds = new Set(byId.keys());
     const collectionMap = new Map(collections.map(c => [c.id,c]));
     importedCollections.forEach(c => {
-      if (!c || typeof c !== 'object' || typeof c.id !== 'string' || !c.id.trim() || c.id.length > 100 || typeof c.name !== 'string' || !c.name.trim() || c.name.length > 80) return;
-      const ids = Array.isArray(c.captureIds) ? c.captureIds.filter(id => typeof id === 'string' && validIds.has(id)).slice(0,5000) : [];
-      const createdAt=projectImport.boundedText(c.createdAt,40);
-      collectionMap.set(c.id,{id:c.id,name:c.name.trim(),createdAt:createdAt&&Number.isFinite(Date.parse(createdAt))?createdAt:new Date().toISOString(),captureIds:ids});
+      const normalised=projectImport.normaliseCollection(c,validIds);
+      if(normalised) collectionMap.set(normalised.id,normalised);
     });
     const nextCollections = [...collectionMap.values()].slice(0,1000);
     const importedEvents = Array.isArray(parsed.interactionEvents) ? parsed.interactionEvents.map(projectImport.normaliseEvent).filter(Boolean).slice(-300) : [];

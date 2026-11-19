@@ -90,6 +90,25 @@ function normaliseImportedEvent(e) {
   }
   return { event, tag, role:boundedText(e.role,40)||'', label, selector, time, url:u.origin+u.pathname, ...(viewport?{viewport}:{}), ...(bounds?{bounds}:{}), ...(Object.keys(state).length?{state}:{}) };
 }
+function normaliseImportedCollection(c, validCaptureIds = null) {
+  if (!c || typeof c !== 'object' || Array.isArray(c)) return null;
+  if (typeof c.id !== 'string' || !c.id.trim() || c.id.length > 100 || typeof c.name !== 'string' || !c.name.trim() || c.name.length > 80) return null;
+  const createdAt = boundedText(c.createdAt,40);
+  const safeCreatedAt = createdAt && Number.isFinite(Date.parse(createdAt)) ? createdAt : new Date().toISOString();
+  const ids = Array.isArray(c.captureIds) ? c.captureIds.filter(id => typeof id === 'string' && (!validCaptureIds || validCaptureIds.has(id))).slice(0,5000) : [];
+  const brief = boundedText(c.brief,3000) || '';
+  const rawLabels = Array.isArray(c.labels) ? c.labels : [];
+  const labels = [];
+  const seen = new Set();
+  for (const raw of rawLabels) {
+    if (typeof raw !== 'string') continue;
+    const label = raw.trim().slice(0,32), key = label.toLowerCase();
+    if (!label || seen.has(key)) continue;
+    seen.add(key); labels.push(label);
+    if (labels.length >= 12) break;
+  }
+  return {id:c.id,name:c.name.trim(),createdAt:safeCreatedAt,captureIds:ids,brief,labels};
+}
 function normaliseImportedAudit(report) {
   if (!report || typeof report !== 'object' || Array.isArray(report) || !report.page || !report.metrics) return null;
   const host = boundedText(report.page.host, 253);
@@ -109,6 +128,7 @@ function normaliseImportedAudit(report) {
     normaliseTokens:normaliseImportedTokens,
     normaliseCapture:normaliseImportedCapture,
     normaliseEvent:normaliseImportedEvent,
+    normaliseCollection:normaliseImportedCollection,
     normaliseAudit:normaliseImportedAudit
   };
   root.DesignShelfProjectImport = api;

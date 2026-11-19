@@ -56,7 +56,7 @@
 - [x] Add per-capture research notes.
 - [x] Export a curated `DESIGN.md` evidence pack with source, selector, viewport, notes, observed values and computed CSS.
 - [x] Preserve capture viewport and device-pixel-ratio metadata.
-- [ ] Add optional board-level brief/intent and user-assigned semantic labels.
+- [x] Add optional board-level brief/intent and user-assigned semantic labels (bounded, normalised and included in evidence-pack exports).
 
 **Exit condition:** a board can be exported as a self-contained research hand-off.
 
