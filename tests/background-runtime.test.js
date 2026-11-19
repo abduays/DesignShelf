@@ -239,7 +239,7 @@ test('interaction event validation rejects URL secrets and malformed nested-stat
   const mutations = [
     { url:'https://example.com/page?token=secret' }, { url:'https://example.com/page#secret' },
     { event:'password-input' }, { label:'x'.repeat(121) }, { selector:'x'.repeat(2001) },
-    { time:'invalid' }, { viewport:{width:Infinity,height:1} },
+    { time:'invalid' }, { viewport:{width:Infinity,height:1} }, { viewport:{width:0,height:1} },
     { bounds:{x:0,y:0,width:-1,height:1} }, { state:{checked:'yes'} },
     { state:{computed:{color:'x'.repeat(201)}} }, { state:{controlledElement:{tag:'div',hidden:'false'}} }
   ];

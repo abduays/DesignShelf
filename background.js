@@ -150,8 +150,16 @@ function validInteraction(item) {
   if (!boundedString(item.tag, 32) || !boundedString(item.label, 120) || !boundedString(item.selector, 2000) || !boundedString(item.time, 40) || !boundedString(item.url, 2048)) return false;
   if (!Number.isFinite(Date.parse(item.time))) return false;
   try { const u = new URL(item.url); if (!['http:','https:'].includes(u.protocol) || u.search || u.hash) return false; } catch { return false; }
-  const validDimensions = (value, keys) => value == null || (typeof value === 'object' && !Array.isArray(value) && keys.every(key => Number.isFinite(value[key]) && Math.abs(value[key]) <= 100000));
-  if (!validDimensions(item.viewport, ['width','height']) || !validDimensions(item.bounds, ['x','y','width','height'])) return false;
+  const validDimensions = (value, keys, positive = false) => {
+    if (value == null) return true;
+    if (typeof value !== 'object' || Array.isArray(value)) return false;
+    return keys.every(key => {
+      if (!Number.isFinite(value[key]) || Math.abs(value[key]) > 100000) return false;
+      if (key === 'width' || key === 'height') return positive ? value[key] > 0 : value[key] >= 0;
+      return true;
+    });
+  };
+  if (!validDimensions(item.viewport, ['width','height'], true) || !validDimensions(item.bounds, ['x','y','width','height'])) return false;
   if (item.state != null) {
     const state = item.state;
     if (typeof state !== 'object' || Array.isArray(state)) return false;
