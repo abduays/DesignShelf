@@ -196,3 +196,56 @@ test('page inspection explains missing optional website permission instead of mi
   assert.match(result.error, /Enable website access/i);
   assert.match(result.error, /optional website permission/i);
 });
+
+test('capture validation rejects a deterministic hostile and malformed mutation corpus', async () => {
+  const h = createHarness();
+  const mutations = [
+    { id: null }, { name: 42 }, { tag: 'x'.repeat(33) }, { selector: 'x'.repeat(2001) },
+    { url: 'javascript:alert(1)' }, { url: 'https://example.com/page?secret=1' },
+    { capturedAt: 'not-a-date' }, { width: -1 }, { height: 100001 },
+    { html: 'x'.repeat(600001) }, { css: 'x'.repeat(50001) },
+    { structure: {} }, { structure: Array(25).fill({}) },
+    { viewport: { width: 0, height: 900, devicePixelRatio: 1 } },
+    { tokens: { colors: Array(13).fill('#000') } },
+    { animation: { name: 'x'.repeat(201) } },
+    { semantics: { role: 'x'.repeat(161) } },
+    { screenshot: { mode: 'full-page', dataUrl: 'data:image/png;base64,AAAA' } },
+    { frameworkSignals: Array(9).fill({ name: 'React', kind: 'marker', confidence: 'observed' }) }
+  ];
+  for (let i = 0; i < mutations.length; i++) {
+    const result = await h.send({ type:'DESIGNSHELF_CAPTURE', capture:validCapture({ id:'fuzz-'+i, ...mutations[i] }) }, contentSender);
+    assert.equal(result.ok, false, 'mutation '+i+' should be rejected');
+  }
+  assert.equal(h.state.designshelfCaptures, undefined);
+});
+
+test('capture messages reject malformed sender origins and sender metadata', async () => {
+  const h = createHarness();
+  for (const sender of [
+    { id:'designshelf-test-id', tab:{id:4}, url:'file:///tmp/page.html' },
+    { id:'designshelf-test-id', tab:{id:4}, url:'https://attacker.example/page' },
+    { id:'designshelf-test-id', tab:{id:'4'}, url:'https://example.com/page' },
+    { id:'attacker', tab:{id:4}, url:'https://example.com/page' },
+    { id:'designshelf-test-id', url:'https://example.com/page' }
+  ]) {
+    const result = await h.send({ type:'DESIGNSHELF_CAPTURE', capture:validCapture() }, sender);
+    assert.equal(result.ok, false);
+  }
+});
+
+test('interaction event validation rejects URL secrets and malformed nested-state mutations', async () => {
+  const h = createHarness({ designshelfRecordingTabId:4 });
+  const valid = { event:'click',tag:'button',role:'button',label:'Save',selector:'#save',time:new Date().toISOString(),url:'https://example.com/page',viewport:{width:1280,height:800},bounds:{x:0,y:0,width:80,height:32},state:{} };
+  const mutations = [
+    { url:'https://example.com/page?token=secret' }, { url:'https://example.com/page#secret' },
+    { event:'password-input' }, { label:'x'.repeat(121) }, { selector:'x'.repeat(2001) },
+    { time:'invalid' }, { viewport:{width:Infinity,height:1} }, { viewport:{width:0,height:1} },
+    { bounds:{x:0,y:0,width:-1,height:1} }, { state:{checked:'yes'} },
+    { state:{computed:{color:'x'.repeat(201)}} }, { state:{controlledElement:{tag:'div',hidden:'false'}} }
+  ];
+  for (let i=0;i<mutations.length;i++) {
+    const result=await h.send({type:'DESIGNSHELF_INTERACTION_EVENT',event:{...valid,...mutations[i]}},contentSender);
+    assert.equal(result.ok,false,'interaction mutation '+i+' should be rejected');
+  }
+  assert.equal(h.state.designshelfInteractionEvents,undefined);
+});

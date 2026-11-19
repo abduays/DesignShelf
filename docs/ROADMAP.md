@@ -40,7 +40,9 @@
 - [x] Exclude form values and keyboard values from captures/interaction history.
 - [x] Sanitise preview HTML/CSS and apply restrictive CSP in sandboxed iframes.
 - [x] Show success/failure feedback after a component capture.
-- [ ] Run hostile-page tests, malformed-message fuzzing and browser-level preview network checks.
+- [x] Add deterministic hostile/malformed capture and interaction-message mutation tests to the CI suite.
+- [x] Test invalid sender metadata and secret-bearing interaction URLs are rejected.
+- [ ] Run browser-level preview network/navigation checks in installed Chrome and Firefox.
 
 **Exit condition:** no known high-severity issue; hostile-input tests and browser security checks recorded.
 

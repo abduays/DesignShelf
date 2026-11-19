@@ -29,6 +29,8 @@
 
 - Reject messages from invalid senders and invalid message types.
 - Reject malformed, oversized and deeply nested capture payloads.
+- Run deterministic hostile/malformed capture and interaction-message mutation corpora in CI.
+- Verify secret-bearing query/hash interaction URLs are rejected.
 - Reject malformed project imports and dangerous imported fields.
 - Verify preview blocks script execution, navigation and external network requests.
 - Verify forms do not retain entered values or sensitive form state.
