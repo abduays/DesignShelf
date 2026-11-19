@@ -25,3 +25,9 @@ jobs:
           npm test
           npm run check
           npm run validate:dtcg
+      - name: Install Playwright
+        run: npm install --no-save --no-package-lock playwright@1.57.0
+      - name: Install Chrome stable and Firefox
+        run: npx playwright install --with-deps chrome firefox
+      - name: Run cross-browser smoke tests
+        run: node tests/browser-smoke.mjs

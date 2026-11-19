@@ -149,3 +149,10 @@
 - Added estimated-storage usage progress and warning thresholds at 60%, 80% and 95% of the conservative 7.5 MiB budget.
 - Added an export recovery backup button and delete-history dialog with backup-first, delete-without-backup and cancel choices.
 - Warning percentages are estimates only; browser quotas differ and may still reject writes.
+
+
+## Cross-browser smoke tests — Stage 8
+
+- CI launches Chrome stable and Firefox with Playwright and tests the sidebar UI in both engines using a mocked extension API.
+- CI injects the content script into a controlled page and verifies the picker state-mode interaction and capture payload.
+- These tests exercise browser rendering and JavaScript behaviour, but do not replace installing the packaged extension or verifying browser-specific extension APIs.

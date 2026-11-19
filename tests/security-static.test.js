@@ -251,3 +251,15 @@ test('storage usage exposes thresholds and export-before-delete recovery choices
   assert.match(m,/ratio>=0\.6/);
   assert.match(css,/storage-progress/);
 });
+
+test('CI runs cross-browser smoke tests with pinned Playwright and storage module is loaded', () => {
+  const w=read('.github/workflows/ci.yml'),h=read('sidebar.html'),t=read('tests/browser-smoke.mjs');
+  assert.match(w,/playwright@1\.57\.0/);
+  assert.match(w,/playwright install --with-deps chrome firefox/);
+  assert.match(w,/node tests\/browser-smoke\.mjs/);
+  assert.match(h,/storage-usage\.js/);
+  assert.match(t,/chromium/);
+  assert.match(t,/firefox/);
+  assert.match(t,/DESIGNSHELF_ENABLE_PICK/);
+  assert.match(t,/Alt\+Shift\+S/);
+});
