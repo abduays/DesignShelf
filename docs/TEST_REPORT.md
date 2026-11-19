@@ -22,3 +22,11 @@ undefined
 - Package, syntax, manifest, parity, resource and CSS checks: passed.
 - Independent DTCG 2025.10 validator: valid, 9 tokens, 8 groups, 0 aliases, 0 issues, 0 warnings.
 - Validator package is pinned to `open-design-tokens@0.7.0` and invoked only by CI.
+
+
+## Stage 6A — component state snapshots
+
+- Added a picker state mode that lets users interact with a selected component without the selection overlay intercepting clicks.
+- Captures are triggered with `Alt+Shift+S` while the selected component is in the desired state; the snapshot records hover/focus/expanded/pressed/selected evidence and a state label.
+- Added background validation and import-normalisation tests for state metadata.
+- Browser-level state capture remains pending.

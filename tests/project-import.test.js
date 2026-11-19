@@ -81,3 +81,11 @@ test('token label import normalises groups, bounds names and drops invalid field
   const result=normaliseTokenLabels({colors:{'#fff':'Primary',['x'.repeat(301)]: 'Too long raw'},fonts:{Arial:'Body'},unknown:{a:'b'},fontSizes:{'16px':'z'.repeat(65)}});
   assert.deepEqual(result,{colors:{'#fff':'Primary'},fonts:{Arial:'Body'}});
 });
+
+test('capture import preserves whitelisted state labels and boolean evidence', () => {
+  const result=normaliseCapture(capture({captureState:'expanded',stateEvidence:{expanded:true,hovered:false,unsafe:'x'}}));
+  assert.equal(result.captureState,'expanded');
+  assert.deepEqual(result.stateEvidence,{expanded:true,hovered:false});
+  const invalid=normaliseCapture(capture({captureState:'javascript:alert(1)'}));
+  assert.equal(invalid.captureState,'default');
+});
