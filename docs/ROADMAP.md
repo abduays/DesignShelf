@@ -1,7 +1,7 @@
 # DesignShelf development roadmap
 
 **Target release line:** 0.8.3 development build  
-**Status date:** 16 November 2026
+**Status date:** 19 November 2026
 
 ## Stage 1 — Product and competitor audit
 
@@ -69,7 +69,7 @@
 - [x] Export CSS custom properties.
 - [x] Export Tailwind v4 theme variables.
 - [x] Unit-test color conversion, dimension parsing, frequency counts and output types.
-- [ ] Add optional semantic labels assigned by the user.
+- [x] Add optional semantic labels assigned by the user.
 - [x] Validate output against an independent DTCG 2025.10 implementation in CI.
 
 **Exit condition:** exports pass unit tests and an external format validator.
@@ -113,37 +113,38 @@
 - [x] Separate Manifest V3 Chrome and Firefox manifests.
 - [x] Use Chrome `sidePanel` and Firefox `sidebar_action` packaging.
 - [x] Add package parity and local-resource validation.
-- [x] Run Chrome stable UI and content-script smoke tests in CI on a Playwright-supported Ubuntu runner.
+- [x] Run Chrome stable sidebar and content-script state-capture smoke tests in CI.
 - [ ] Install the complete extension package in Chrome stable and verify side-panel opening, permissions and background lifecycle.
-- [x] Run Firefox UI and content-script smoke tests in CI.
+- [x] Run Firefox sidebar and content-script state-capture smoke tests in CI using the Playwright Firefox engine.
 - [ ] Install the complete extension package in Firefox stable and verify sidebar opening, permissions and background lifecycle.
-- [ ] Verify service-worker/background lifecycle, action opening, picker injection and cross-tab recording in both browsers.
+- [ ] Verify action opening, real permission grants, picker injection, service-worker/background lifecycle and cross-tab recording in both browsers.
 
-**Exit condition:** browser-specific test records completed. This stage is not complete yet.
+**Exit condition:** browser-specific test records completed. Engine-level smoke tests now pass; actual package installation and extension API checks remain open.
 
 ## Stage 9 — Automated QA and GitHub preparation
 
 **Goal:** make changes repeatable and catch regressions before publication.
 
-- [x] Add 76 Node tests across background runtime simulation, import normalisation, token export, design contrast, storage warnings and security regression checks.
+- [x] Add 78 Node tests across background runtime simulation, import normalisation, token export, design contrast, storage warnings and security regression checks.
 - [x] Add syntax, manifest, package parity, local-resource and CSS checks.
 - [x] Add GitHub Actions CI workflow and issue templates.
 - [x] Add README, contributing guide, security policy, feature audit and release checklist.
-- [ ] Choose licence and confirm Firefox add-on ID.
-- [ ] Build final ZIPs and verify installation from archives.
+- [ ] Choose licence and confirm the production Firefox add-on ID.
+- [x] Build separate Chrome and Firefox ZIPs in CI and verify required files, archive integrity and SHA-256 checksums.
+- [ ] Test installation from the generated ZIPs in their target browsers.
 
 **Exit condition:** CI passes and release metadata is confirmed.
 
-## Stage 10 — User review and GitHub publication
+## Stage 10 — User review and versioned publication
 
 **Goal:** publish only the build that has been reviewed and approved.
 
 - [ ] Present source package, Chrome ZIP, Firefox ZIP, test report and known limitations.
-- [ ] Obtain explicit approval for the first GitHub push and repository visibility.
-- [ ] Create/push the repository only after approval.
-- [ ] Tag and publish a release only after browser runtime gates pass.
+- [x] Maintain the existing GitHub repository and development history.
+- [ ] Obtain explicit approval for a versioned public release and final release metadata.
+- [ ] Tag and publish a GitHub release only after browser runtime gates pass.
+- [ ] Submit to browser stores only after store-specific IDs, signing and permissions are confirmed.
 
-**Exit condition:** explicit approval received. No GitHub upload or public release has been performed.
-
+**Exit condition:** explicit approval received. No versioned GitHub release or store submission has been performed.
 
 See [IMPROVEMENT_PLAN.md](IMPROVEMENT_PLAN.md) for the staged execution plan and [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) for project/licence review. axe-core and SmolVLM remain candidates, not shipped dependencies.

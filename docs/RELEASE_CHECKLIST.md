@@ -9,8 +9,9 @@
 - [x] Package consistency and local-resource checks added.
 - [x] GitHub Actions validation workflow added.
 - [x] Contribution and security reporting guidance added.
-- [ ] Confirm repository name, description, topics and visibility.
-- [ ] Choose an open-source licence. MIT is the simplest permissive option; MPL-2.0 is a file-level copyleft option. Do not publish without an explicit choice.
+- [x] Repository name and development repository are established.
+- [ ] Confirm final repository visibility and topics for the versioned release.
+- [ ] Choose an open-source licence. MIT is the simplest permissive option; MPL-2.0 is a file-level copyleft option. Do not add a licence without the owner's explicit choice.
 - [ ] Replace or confirm the Firefox Gecko add-on ID before AMO submission.
 - [ ] Confirm authorship and rights for all icons, code and documentation.
 
@@ -29,12 +30,12 @@
 
 ## Release packaging
 
-- [ ] Run `npm run validate`.
-- [ ] Build separate Chrome and Firefox ZIP files from their package directories.
-- [ ] Verify archive integrity and contents.
-- [ ] Test installation from the generated ZIPs.
+- [x] Run the Node tests, package checks and independent DTCG validator in CI.
+- [x] Build separate Chrome and Firefox ZIP files from their package directories in CI.
+- [x] Verify required package files, archive integrity and SHA-256 checksums in CI.
+- [ ] Download and test installation from the generated ZIPs in the target browsers.
 - [ ] Create a version tag and GitHub release notes after approval.
 
 ## Publication approval
 
-No GitHub repository creation, push, public release or store submission is authorised until the user has reviewed the final build and explicitly approved publication.
+The development repository already exists and contains merged development commits. A versioned GitHub release, browser-store submission or change to final repository visibility must wait until the owner has reviewed the final source package, browser ZIPs, test report and known limitations and explicitly approved publication.
