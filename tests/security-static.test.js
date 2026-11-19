@@ -263,3 +263,8 @@ test('CI runs cross-browser smoke tests with pinned Playwright and storage modul
   assert.match(t,/DESIGNSHELF_ENABLE_PICK/);
   assert.match(t,/Alt\+Shift\+S/);
 });
+
+test('browser smoke CI pins a Playwright-supported runner OS', () => {
+  const w=read('.github/workflows/ci.yml');
+  assert.match(w,/runs-on: ubuntu-24\.04/);
+});

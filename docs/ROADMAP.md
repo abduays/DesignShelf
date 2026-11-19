@@ -113,7 +113,7 @@
 - [x] Separate Manifest V3 Chrome and Firefox manifests.
 - [x] Use Chrome `sidePanel` and Firefox `sidebar_action` packaging.
 - [x] Add package parity and local-resource validation.
-- [x] Run Chrome stable UI and content-script smoke tests in CI.
+- [x] Run Chrome stable UI and content-script smoke tests in CI on a Playwright-supported Ubuntu runner.
 - [ ] Install the complete extension package in Chrome stable and verify side-panel opening, permissions and background lifecycle.
 - [x] Run Firefox UI and content-script smoke tests in CI.
 - [ ] Install the complete extension package in Firefox stable and verify sidebar opening, permissions and background lifecycle.
