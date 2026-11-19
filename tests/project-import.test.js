@@ -1,7 +1,7 @@
 require('../token-export.js');
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const { normaliseCapture, normaliseEvent, normaliseAudit, normaliseTokens } = require('../project-import.js');
+const { normaliseCapture, normaliseEvent, normaliseAudit, normaliseTokens, normaliseCollection } = require('../project-import.js');
 
 function capture(overrides = {}) {
   return {
