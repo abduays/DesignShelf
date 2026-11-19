@@ -113,8 +113,10 @@
 - [x] Separate Manifest V3 Chrome and Firefox manifests.
 - [x] Use Chrome `sidePanel` and Firefox `sidebar_action` packaging.
 - [x] Add package parity and local-resource validation.
-- [ ] Install and test current Chrome stable.
-- [ ] Install and test current Firefox stable.
+- [x] Run Chrome stable UI and content-script smoke tests in CI on a Playwright-supported Ubuntu runner.
+- [ ] Install the complete extension package in Chrome stable and verify side-panel opening, permissions and background lifecycle.
+- [x] Run Firefox UI and content-script smoke tests in CI.
+- [ ] Install the complete extension package in Firefox stable and verify sidebar opening, permissions and background lifecycle.
 - [ ] Verify service-worker/background lifecycle, action opening, picker injection and cross-tab recording in both browsers.
 
 **Exit condition:** browser-specific test records completed. This stage is not complete yet.
@@ -123,7 +125,7 @@
 
 **Goal:** make changes repeatable and catch regressions before publication.
 
-- [x] Add 37 Node tests across background runtime simulation, import normalisation, token export, design contrast and security regression checks.
+- [x] Add 76 Node tests across background runtime simulation, import normalisation, token export, design contrast, storage warnings and security regression checks.
 - [x] Add syntax, manifest, package parity, local-resource and CSS checks.
 - [x] Add GitHub Actions CI workflow and issue templates.
 - [x] Add README, contributing guide, security policy, feature audit and release checklist.

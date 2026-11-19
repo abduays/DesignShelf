@@ -52,3 +52,17 @@ undefined
 - Added pure threshold tests for 60%, 80% and 95% warnings.
 - Added static checks for recovery backup, dialog choices and storage progress UI.
 - Actual browser quota exhaustion and recovery download tests remain pending.
+
+
+## Stage 8 — Browser smoke validation
+
+- Added Playwright smoke tests for Chrome stable and Firefox.
+- Tests cover sidebar rendering/navigation, storage and board UI, plus content-script picker state capture.
+- CI installs browser engines and runs these tests automatically on PRs.
+- Full extension package installation, side-panel/sidebar APIs, background lifecycle and cross-tab recording remain manual/browser-extension gates.
+
+
+## Stage 8 runner correction
+
+- Initial browser setup failed before launching tests because GitHub's Ubuntu 26.04 runner image is not supported by Playwright 1.57.0 for its FFmpeg dependency.
+- Pin the smoke-test job to Ubuntu 24.04 and rerun browser installation and tests. This is an environment compatibility correction, not an application test result.
