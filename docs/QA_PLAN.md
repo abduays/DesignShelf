@@ -8,6 +8,7 @@
 - HTML ID uniqueness and event-handler reference checks.
 - Chrome/Firefox package file parity checks.
 - No remote scripts, remote fonts or undeclared host permissions.
+- CI builds separate Chrome and Firefox ZIPs, checks required package resources, validates ZIP integrity and records SHA-256 checksums.
 
 ## Functional checks
 
@@ -54,10 +55,18 @@
 
 ## Browser matrix
 
-- Chrome stable: install unpacked, side panel open/close, capture and export.
-- Firefox stable: temporary add-on install, sidebar open/close, capture and export.
+### Automated CI smoke coverage
+
+- Chrome stable: sidebar rendering/navigation, storage estimate, board rendering and content-script expanded-state capture using a mocked extension API.
+- Playwright Firefox engine: the same sidebar and content-script smoke checks using a mocked extension API.
+- These tests exercise real browser engines, but they do not install the extension package or prove browser-specific extension APIs.
+
+### Required installed-extension checks
+
+- Chrome stable: install the unpacked package, open/close the side panel, grant optional host permission, capture/export, and verify service-worker lifecycle.
+- Firefox stable: install the temporary add-on, open/close the sidebar, grant optional host permission, capture/export, and verify background lifecycle.
 - Verify unsupported browser pages fail safely with clear messaging.
-- Test page navigation, tab switching, service-worker/background lifecycle and extension reload.
+- Test page navigation, tab switching, cross-tab recording and extension reload in both browsers.
 
 ## Release gates
 

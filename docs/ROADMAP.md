@@ -1,7 +1,7 @@
 # DesignShelf development roadmap
 
 **Target release line:** 0.8.3 development build  
-**Status date:** 16 November 2026
+**Status date:** 19 November 2026
 
 ## Stage 1 — Product and competitor audit
 
@@ -54,7 +54,7 @@
 - [x] Preserve important captures with pinning.
 - [x] Organise references into boards/flows and reorder them.
 - [x] Add per-capture research notes.
-- [x] Export a curated `DESIGN.md` evidence pack with source, selector, viewport, notes, observed values and computed CSS.
+- [x] Export a curated \`DESIGN.md\` evidence pack with source, selector, viewport, notes, observed values and computed CSS.
 - [x] Preserve capture viewport and device-pixel-ratio metadata.
 - [x] Add optional board-level brief/intent and user-assigned semantic labels (bounded, normalised and included in evidence-pack exports).
 
@@ -81,7 +81,7 @@
 - [x] Component tree, computed-style snapshots, motion inventory, asset explorer and page insights.
 - [x] Component comparison and viewport metadata comparison.
 - [x] Local quality heuristics with explicit limitations.
-- [x] Add pseudo-element snapshots (`::before`/`::after`) where safe.
+- [x] Add pseudo-element snapshots (\`::before\`/\`::after\`) where safe.
 - [x] Capture accessibility evidence candidates (role, name source, ARIA hidden state and tab index) without claiming full accessibility-tree computation.
 - [x] Record conservative runtime/framework markers and label utility-class detection as heuristic.
 - [x] Add a user-triggered picker state mode to capture hover/focus/expanded/current component states with bounded state evidence.
@@ -111,39 +111,40 @@
 **Goal:** verify each installable package in its actual target browser.
 
 - [x] Separate Manifest V3 Chrome and Firefox manifests.
-- [x] Use Chrome `sidePanel` and Firefox `sidebar_action` packaging.
+- [x] Use Chrome \`sidePanel\` and Firefox \`sidebar_action\` packaging.
 - [x] Add package parity and local-resource validation.
-- [x] Run Chrome stable UI and content-script smoke tests in CI on a Playwright-supported Ubuntu runner.
+- [x] Run Chrome stable sidebar and content-script state-capture smoke tests in CI.
 - [ ] Install the complete extension package in Chrome stable and verify side-panel opening, permissions and background lifecycle.
-- [x] Run Firefox UI and content-script smoke tests in CI.
+- [x] Run Firefox sidebar and content-script state-capture smoke tests in CI using the Playwright Firefox engine.
 - [ ] Install the complete extension package in Firefox stable and verify sidebar opening, permissions and background lifecycle.
-- [ ] Verify service-worker/background lifecycle, action opening, picker injection and cross-tab recording in both browsers.
+- [ ] Verify action opening, real permission grants, picker injection, service-worker/background lifecycle and cross-tab recording in both browsers.
 
-**Exit condition:** browser-specific test records completed. This stage is not complete yet.
+**Exit condition:** browser-specific test records completed. Engine-level smoke tests now pass; actual package installation and extension API checks remain open.
 
 ## Stage 9 — Automated QA and GitHub preparation
 
 **Goal:** make changes repeatable and catch regressions before publication.
 
-- [x] Add 76 Node tests across background runtime simulation, import normalisation, token export, design contrast, storage warnings and security regression checks.
+- [x] Add 78 Node tests across background runtime simulation, import normalisation, token export, design contrast, storage warnings and security regression checks.
 - [x] Add syntax, manifest, package parity, local-resource and CSS checks.
 - [x] Add GitHub Actions CI workflow and issue templates.
 - [x] Add README, contributing guide, security policy, feature audit and release checklist.
-- [ ] Choose licence and confirm Firefox add-on ID.
-- [ ] Build final ZIPs and verify installation from archives.
+- [ ] Choose licence and confirm the production Firefox add-on ID.
+- [x] Build separate Chrome and Firefox ZIPs in CI and verify required files, archive integrity and SHA-256 checksums.
+- [ ] Test installation from the generated ZIPs in their target browsers.
 
 **Exit condition:** CI passes and release metadata is confirmed.
 
-## Stage 10 — User review and GitHub publication
+## Stage 10 — User review and versioned publication
 
 **Goal:** publish only the build that has been reviewed and approved.
 
 - [ ] Present source package, Chrome ZIP, Firefox ZIP, test report and known limitations.
-- [ ] Obtain explicit approval for the first GitHub push and repository visibility.
-- [ ] Create/push the repository only after approval.
-- [ ] Tag and publish a release only after browser runtime gates pass.
+- [x] Maintain the existing GitHub repository and development history.
+- [ ] Obtain explicit approval for a versioned public release and final release metadata.
+- [ ] Tag and publish a GitHub release only after browser runtime gates pass.
+- [ ] Submit to browser stores only after store-specific IDs, signing and permissions are confirmed.
 
-**Exit condition:** explicit approval received. No GitHub upload or public release has been performed.
-
+**Exit condition:** explicit approval received. No versioned GitHub release or store submission has been performed.
 
 See [IMPROVEMENT_PLAN.md](IMPROVEMENT_PLAN.md) for the staged execution plan and [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) for project/licence review. axe-core and SmolVLM remain candidates, not shipped dependencies.
