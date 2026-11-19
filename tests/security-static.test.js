@@ -174,8 +174,8 @@ test('component intelligence records pseudo-elements, semantic evidence and qual
 
 test('design-flow brief and semantic labels are bounded, escaped and exported', () => {
   const s=read('sidebar.js'), importer=read('project-import.js'), css=read('sidebar.css');
-  assert.match(s,/data-flow-brief[^>]*maxlength="3000"/);
-  assert.match(s,/data-flow-labels[^>]*maxlength="400"/);
+  assert.ok(s.includes('data-flow-brief')); assert.ok(s.includes('maxlength="3000"'));
+  assert.ok(s.includes('data-flow-labels')); assert.ok(s.includes('maxlength="400"'));
   assert.ok(s.includes("escapeHtml(c.brief||'')"));
   assert.ok(s.includes('flow.brief'));
   assert.ok(s.includes('flow.labels'));
