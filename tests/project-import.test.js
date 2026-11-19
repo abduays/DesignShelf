@@ -1,7 +1,7 @@
 require('../token-export.js');
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const { normaliseCapture, normaliseEvent, normaliseAudit, normaliseTokens, normaliseCollection } = require('../project-import.js');
+const { normaliseCapture, normaliseEvent, normaliseAudit, normaliseTokens, normaliseCollection, normaliseTokenLabels } = require('../project-import.js');
 
 function capture(overrides = {}) {
   return {
@@ -75,4 +75,9 @@ test('design-flow metadata is bounded, deduplicated and normalised during import
   assert.deepEqual(result.labels,['Pricing','Onboarding','x'.repeat(32)]);
   assert.equal(normaliseCollection({id:'',name:'Bad'}),null);
   assert.equal(normaliseCollection({id:'x',name:'y',brief:'z'.repeat(3001)}).brief,'');
+});
+
+test('token label import normalises groups, bounds names and drops invalid fields', () => {
+  const result=normaliseTokenLabels({colors:{'#fff':'Primary',['x'.repeat(301)]: 'Too long raw'},fonts:{Arial:'Body'},unknown:{a:'b'},fontSizes:{'16px':'z'.repeat(65)}});
+  assert.deepEqual(result,{colors:{'#fff':'Primary'},fonts:{Arial:'Body'}});
 });

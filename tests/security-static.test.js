@@ -182,3 +182,22 @@ test('design-flow brief and semantic labels are bounded, escaped and exported', 
   assert.ok(importer.includes('normaliseImportedCollection'));
   assert.ok(css.includes('.flow-metadata'));
 });
+
+test('semantic token labels are saved locally, backed up and passed to all exports', () => {
+  const s=read('sidebar.js'), h=read('sidebar.html'), importer=read('project-import.js');
+  assert.match(s,/designshelfTokenLabels/);
+  assert.match(s,/buildDtcgTokens\(groups,tokenLabels\)/);
+  assert.match(s,/buildCssTokenExport\(groups,tokenLabels\)/);
+  assert.match(s,/buildTailwindTheme\(groups,tokenLabels\)/);
+  assert.match(s,/tokenLabels,interactionEvents/);
+  assert.match(importer,/normaliseImportedTokenLabels/);
+  assert.match(h,/id="tokenMapper"/);
+});
+
+test('CI validates generated DTCG output with a pinned independent validator', () => {
+  const workflow=read('.github/workflows/ci.yml'), pkg=JSON.parse(read('package.json')), script=read('scripts/validate-dtcg.mjs');
+  assert.match(workflow,/npm run validate:dtcg/);
+  assert.equal(pkg.scripts['validate:dtcg'],'node scripts/validate-dtcg.mjs');
+  assert.match(script,/open-design-tokens@0\.7\.0/);
+  assert.match(script,/buildDtcgTokens/);
+});

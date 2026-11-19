@@ -109,6 +109,22 @@ function normaliseImportedCollection(c, validCaptureIds = null) {
   }
   return {id:c.id,name:c.name.trim(),createdAt:safeCreatedAt,captureIds:ids,brief,labels};
 }
+function normaliseImportedTokenLabels(value) {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return {};
+  const groups = ['colors','fonts','fontSizes','fontWeights','lineHeights','letterSpacing','radii'];
+  const out = {};
+  for (const group of groups) {
+    if (!value[group] || typeof value[group] !== 'object' || Array.isArray(value[group])) continue;
+    out[group] = {};
+    for (const [raw,label] of Object.entries(value[group]).slice(0,100)) {
+      if (typeof raw !== 'string' || raw.length > 300 || typeof label !== 'string' || label.length > 64) continue;
+      const clean = label.trim();
+      if (clean) out[group][raw] = clean;
+    }
+    if (!Object.keys(out[group]).length) delete out[group];
+  }
+  return out;
+}
 function normaliseImportedAudit(report) {
   if (!report || typeof report !== 'object' || Array.isArray(report) || !report.page || !report.metrics) return null;
   const host = boundedText(report.page.host, 253);
@@ -129,6 +145,7 @@ function normaliseImportedAudit(report) {
     normaliseCapture:normaliseImportedCapture,
     normaliseEvent:normaliseImportedEvent,
     normaliseCollection:normaliseImportedCollection,
+    normaliseTokenLabels:normaliseImportedTokenLabels,
     normaliseAudit:normaliseImportedAudit
   };
   root.DesignShelfProjectImport = api;

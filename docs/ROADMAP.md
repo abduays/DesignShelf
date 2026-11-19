@@ -69,7 +69,7 @@
 - [x] Export CSS custom properties.
 - [x] Export Tailwind v4 theme variables.
 - [x] Unit-test color conversion, dimension parsing, frequency counts and output types.
-- [ ] Add optional semantic labels assigned by the user.
+- [x] Add optional user-assigned semantic names to observed tokens; persist locally and include in project backups.
 - [ ] Validate output against an independent DTCG implementation.
 
 **Exit condition:** exports pass unit tests and an external format validator.

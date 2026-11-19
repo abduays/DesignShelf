@@ -114,3 +114,10 @@
 - Added an editable board-level brief/intent field (3,000-character limit).
 - Added up to 12 user-assigned semantic labels (32 characters each), case-insensitively deduplicated.
 - Metadata is normalised on load/import, retained in project backups, shown on board cards and included in `DESIGN.md` evidence packs.
+
+
+## Semantic token names — 19 November 2026
+
+- Users can assign optional names to observed token values from the token mapper.
+- Names are stored locally, normalised, deduplicated at export and included in full project backups.
+- DTCG, CSS variables and Tailwind v4 exports use the assigned names; unnamed values retain deterministic observed sequence names.

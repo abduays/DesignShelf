@@ -8,6 +8,7 @@ const $ = (id) => document.getElementById(id);
 let historyFilter = 'all';
 let captures = [];
 let collections = [];
+let tokenLabels = {};
 let selectedId = null;
 let activeTab = 'html';
 let currentView = 'library';
@@ -71,10 +72,10 @@ function previewDocument(html, css = '') {
   return `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src data:; style-src 'unsafe-inline'; font-src data:; media-src data:"><style>html,body{margin:0;padding:8px;font-family:system-ui,sans-serif;overflow:auto}*{max-width:100%;box-sizing:border-box}img,video,svg{max-width:100%;height:auto}body{min-height:100px}[data-ds-preview-root="true"]{display:contents}${rootRules}</style></head><body><div data-ds-preview-root="true">${safeHtml || '<p>No preview available.</p>'}</div></body></html>`;
 }
 async function loadCaptures() {
-  const data = await api.storage.local.get([STORAGE_KEY, COLLECTION_KEY,'designshelfLastCapture']);
+  const data = await api.storage.local.get([STORAGE_KEY, COLLECTION_KEY,'designshelfLastCapture','designshelfTokenLabels']);
   const all = Array.isArray(data[STORAGE_KEY]) ? data[STORAGE_KEY] : [];
   const rawCollections = Array.isArray(data[COLLECTION_KEY]) ? data[COLLECTION_KEY] : [];
-  collections = rawCollections.filter(c => c && typeof c === 'object' && !Array.isArray(c) && typeof c.id === 'string' && c.id.trim() && typeof c.name === 'string' && c.name.trim() && Array.isArray(c.captureIds)).slice(0,1000).map(c => ({...c,captureIds:c.captureIds.filter(id=>typeof id==='string').slice(0,5000)}));
+  collections = rawCollections.filter(c => c && typeof c === 'object' && !Array.isArray(c) && typeof c.id === 'string' && c.id.trim() && typeof c.name === 'string' && c.name.trim() && Array.isArray(c.captureIds)).slice(0,1000).map(c => ({...c,captureIds:c.captureIds.filter(id=>typeof id==='string').slice(0,5000)})); tokenLabels=projectImport.normaliseTokenLabels(data.designshelfTokenLabels);
   const cutoff = Date.now() - RETENTION_DAYS * DAY_MS;
   captures = all.filter(item => {
     if (!item || typeof item !== 'object' || Array.isArray(item) || typeof item.id !== 'string' || !item.id || typeof item.name !== 'string' || typeof item.html !== 'string' || typeof item.css !== 'string') return false;
@@ -516,22 +517,27 @@ function renderTokenMapper() {
   const root = $('tokenMapper'); root.replaceChildren();
   if (!captures.length) { root.innerHTML = '<div class="empty-inline">Capture components to build your local token map.</div>'; return; }
   const groups = collectTokenCounts();
-  const group = (label, map) => {
+  const group = (label, map, key) => {
     const h = document.createElement('h4'); h.textContent = label; root.appendChild(h);
     [...map.entries()].sort((a,b) => b[1] - a[1]).slice(0,35).forEach(([value,count]) => {
-      const row = document.createElement('div'); row.className = 'insight-row';
+      const row = document.createElement('div'); row.className = 'insight-row token-map-row';
       const main = document.createElement('div'); main.className = 'insight-main';
       const strong = document.createElement('strong'); strong.textContent = value;
       const sub = document.createElement('span'); sub.textContent = `Observed in ${count} saved token snapshot(s)`;
       main.append(strong,sub);
+      const naming = document.createElement('div'); naming.className='token-name-controls';
+      const input=document.createElement('input'); input.type='text'; input.maxLength=64; input.value=tokenLabels[key]?.[value]||''; input.placeholder='Optional semantic name'; input.setAttribute('aria-label',`Semantic name for ${label}: ${value}`);
+      const save=document.createElement('button'); save.className='secondary small'; save.textContent='Save name';
+      save.addEventListener('click',async()=>{const name=input.value.trim().slice(0,64);if(!tokenLabels[key])tokenLabels[key]={};if(name)tokenLabels[key][value]=name;else delete tokenLabels[key][value];if(!Object.keys(tokenLabels[key]).length)delete tokenLabels[key];tokenLabels=projectImport.normaliseTokenLabels(tokenLabels);await api.storage.local.set({designshelfTokenLabels:tokenLabels});renderTokenMapper();setNotice(name?'Semantic token name saved locally.':'Semantic token name cleared.');});
+      naming.append(input,save);
       const copy = document.createElement('button'); copy.className = 'secondary small'; copy.textContent = 'Copy';
       copy.addEventListener('click', async () => { try { await navigator.clipboard.writeText(value); setNotice('Token copied.'); } catch { setNotice(value); } });
-      row.append(main,copy); root.appendChild(row);
+      row.append(main,naming,copy); root.appendChild(row);
     });
   };
-  group('Observed colours',groups.colors); group('Font families',groups.fonts);
-  group('Font sizes',groups.fontSizes); group('Line heights',groups.lineHeights); group('Font weights',groups.fontWeights);
-  group('Letter spacing',groups.letterSpacing); group('Border radii',groups.radii);
+  group('Observed colours',groups.colors,'colors'); group('Font families',groups.fonts,'fonts');
+  group('Font sizes',groups.fontSizes,'fontSizes'); group('Line heights',groups.lineHeights,'lineHeights'); group('Font weights',groups.fontWeights,'fontWeights');
+  group('Letter spacing',groups.letterSpacing,'letterSpacing'); group('Border radii',groups.radii,'radii');
 }
 
 function exportDesignTokens() {
@@ -539,13 +545,13 @@ function exportDesignTokens() {
   const groups = collectTokenCounts();
   const format = $('tokenExportFormat').value;
   if (format === 'css') {
-    downloadFile('designshelf-observed-tokens.css',globalThis.DesignShelfTokenExport.buildCssTokenExport(groups),'text/css');
+    downloadFile('designshelf-observed-tokens.css',globalThis.DesignShelfTokenExport.buildCssTokenExport(groups,tokenLabels),'text/css');
     setNotice('Observed CSS variables exported. Token names are neutral, not semantic guesses.');
   } else if (format === 'tailwind') {
-    downloadFile('designshelf-tailwind-v4-theme.css',globalThis.DesignShelfTokenExport.buildTailwindTheme(groups),'text/css');
+    downloadFile('designshelf-tailwind-v4-theme.css',globalThis.DesignShelfTokenExport.buildTailwindTheme(groups,tokenLabels),'text/css');
     setNotice('Tailwind v4 theme exported. Review token coverage before use.');
   } else {
-    downloadFile('designshelf-observed-tokens.tokens.json',JSON.stringify(globalThis.DesignShelfTokenExport.buildDtcgTokens(groups),null,2),'application/design-tokens+json');
+    downloadFile('designshelf-observed-tokens.tokens.json',JSON.stringify(globalThis.DesignShelfTokenExport.buildDtcgTokens(groups,tokenLabels),null,2),'application/design-tokens+json');
     setNotice('DTCG design tokens exported. Values are measured snapshots, with neutral sequence names.');
   }
 }
@@ -587,7 +593,7 @@ function runCascadeReview() {
   const note=document.createElement('p');note.className='small-note';note.textContent='The capture does not preserve a complete browser CSS cascade trace. Cross-origin stylesheet rules may be inaccessible. This review is evidence-based but not a source-level proof of unused CSS.';root.appendChild(note);
 }
 function projectPayload() {
-  return {format:'DesignShelfProject',schemaVersion:1,exportedAt:new Date().toISOString(),appVersion:'0.8.3',captures,collections,interactionEvents:[],metadata:{retentionDays:RETENTION_DAYS,localOnly:true}};
+  return {format:'DesignShelfProject',schemaVersion:1,exportedAt:new Date().toISOString(),appVersion:'0.8.3',captures,collections,tokenLabels,interactionEvents:[],metadata:{retentionDays:RETENTION_DAYS,localOnly:true}};
 }
 async function exportFullProject() {
   const data=await api.storage.local.get([INTERACTION_KEY,'designshelfLastCapture','designshelfLastCaptureAt','designshelfAuditHistory']);
@@ -619,14 +625,15 @@ async function importFullProject(file) {
     });
     const nextCollections = [...collectionMap.values()].slice(0,1000);
     const importedEvents = Array.isArray(parsed.interactionEvents) ? parsed.interactionEvents.map(projectImport.normaliseEvent).filter(Boolean).slice(-300) : [];
+    const importedTokenLabels=projectImport.normaliseTokenLabels(parsed.tokenLabels); const nextTokenLabels={...tokenLabels}; for(const group of Object.keys(importedTokenLabels)) nextTokenLabels[group]={...(nextTokenLabels[group]||{}),...importedTokenLabels[group]};
     const old = await api.storage.local.get(null);
     const events = [...(Array.isArray(old[INTERACTION_KEY]) ? old[INTERACTION_KEY].map(projectImport.normaliseEvent).filter(Boolean) : []),...importedEvents].slice(-300);
     const auditHistory = Array.isArray(parsed.auditHistory) ? parsed.auditHistory.map(projectImport.normaliseAudit).filter(Boolean).slice(-20) : (Array.isArray(old.designshelfAuditHistory) ? old.designshelfAuditHistory : []);
-    const nextState = {...old,[STORAGE_KEY]:nextCaptures,[COLLECTION_KEY]:nextCollections,[INTERACTION_KEY]:events,designshelfAuditHistory:auditHistory};
+    const nextState = {...old,[STORAGE_KEY]:nextCaptures,[COLLECTION_KEY]:nextCollections,[INTERACTION_KEY]:events,designshelfTokenLabels:nextTokenLabels,designshelfAuditHistory:auditHistory};
     const estimatedBytes = JSON.stringify(nextState).length * 2;
     if (estimatedBytes > 7.5 * 1024 * 1024) throw new Error('This project would use too much local storage. Export a backup, remove older captures or split the project before importing.');
-    await api.storage.local.set({[STORAGE_KEY]:nextCaptures,[COLLECTION_KEY]:nextCollections,[INTERACTION_KEY]:events,designshelfAuditHistory:auditHistory});
-    captures=nextCaptures; collections=nextCollections;
+    await api.storage.local.set({[STORAGE_KEY]:nextCaptures,[COLLECTION_KEY]:nextCollections,[INTERACTION_KEY]:events,designshelfTokenLabels:nextTokenLabels,designshelfAuditHistory:auditHistory});
+    captures=nextCaptures; collections=nextCollections; tokenLabels=nextTokenLabels;
     await loadCaptures(); renderInteractionEvents(); renderTokenMapper(); renderCompareSelectors(); refreshStorageUsage();
     setNotice(`Project imported: ${valid.length} valid capture(s) processed. Invalid records were skipped; expired captures may be removed by the 15-day retention policy.`);
   } catch(error) { setNotice(`Import failed: ${error.message||'Invalid project file'}`,true); }
@@ -716,7 +723,7 @@ $('importProjectBtn').addEventListener('click',()=>$('importProjectFile').click(
 $('importProjectFile').addEventListener('change',e=>importFullProject(e.target.files?.[0]));
 $('refreshStorageBtn').addEventListener('click',refreshStorageUsage);
 $('cascadeReviewBtn').addEventListener('click',runCascadeReview);
-$('clearAllBtn').addEventListener('click',async()=>{const stored=await api.storage.local.get([STORAGE_KEY,COLLECTION_KEY,INTERACTION_KEY,'designshelfAuditHistory','designshelfLastCapture','designshelfRecordingTabId']);const hasHistory=[STORAGE_KEY,COLLECTION_KEY,INTERACTION_KEY,'designshelfAuditHistory','designshelfLastCapture','designshelfRecordingTabId'].some(key=>Array.isArray(stored[key])?stored[key].length>0:!!stored[key]);if(!hasHistory)return;if(!confirm('Permanently delete ALL DesignShelf captures, flows, interaction events and page audit history from this browser profile? This cannot be undone.'))return;if(Number.isInteger(stored.designshelfRecordingTabId)){try{await api.runtime.sendMessage({type:'DESIGNSHELF_STOP_RECORDING'});}catch{}}recording=false;captures=[];collections=[];activeCollectionId=null;closeDetail();await api.storage.local.remove([STORAGE_KEY,COLLECTION_KEY,INTERACTION_KEY,'designshelfAuditHistory','designshelfLastCapture','designshelfLastCaptureAt','designshelfRecordingTabId']);await saveCaptures();await saveCollections();renderInteractionEvents();setNotice('All DesignShelf history deleted.');});
+$('clearAllBtn').addEventListener('click',async()=>{const stored=await api.storage.local.get([STORAGE_KEY,COLLECTION_KEY,INTERACTION_KEY,'designshelfAuditHistory','designshelfLastCapture','designshelfRecordingTabId']);const hasHistory=[STORAGE_KEY,COLLECTION_KEY,INTERACTION_KEY,'designshelfAuditHistory','designshelfLastCapture','designshelfRecordingTabId'].some(key=>Array.isArray(stored[key])?stored[key].length>0:!!stored[key]);if(!hasHistory)return;if(!confirm('Permanently delete ALL DesignShelf captures, flows, interaction events and page audit history from this browser profile? This cannot be undone.'))return;if(Number.isInteger(stored.designshelfRecordingTabId)){try{await api.runtime.sendMessage({type:'DESIGNSHELF_STOP_RECORDING'});}catch{}}recording=false;captures=[];collections=[];activeCollectionId=null;closeDetail();await api.storage.local.remove([STORAGE_KEY,COLLECTION_KEY,INTERACTION_KEY,'designshelfTokenLabels','designshelfAuditHistory','designshelfLastCapture','designshelfLastCaptureAt','designshelfRecordingTabId']); tokenLabels={};await saveCaptures();await saveCollections();renderInteractionEvents();setNotice('All DesignShelf history deleted.');});
 $('createCollectionBtn').addEventListener('click',createCollection); $('newBoardBtn').addEventListener('click',createCollection);
 $('collectionSelect').addEventListener('change',async e=>{const c=captures.find(x=>x.id===selectedId);const flow=collections.find(x=>x.id===e.target.value);if(!c||!flow)return;collections.forEach(x=>x.captureIds=(x.captureIds||[]).filter(id=>id!==c.id));flow.captureIds.push(c.id);c.collectionId=flow.id;await saveCollections();await saveCaptures();setNotice(`Added “${c.name}” to “${flow.name}”.`);});
 $('runQualityBtn').addEventListener('click',()=>{renderQuality();const c=captures.find(x=>x.id===selectedId);if(c){setNotice('Quality checks complete. Review each warning before changing the source.');}else setNotice('Select a capture from Library first.',true);});

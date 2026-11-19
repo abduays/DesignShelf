@@ -14,3 +14,10 @@ undefined
 - Added import-normalisation tests for board briefs and semantic labels, including limits, deduplication and capture-ID filtering.
 - Added static regression checks for board metadata UI, escaping and evidence-pack export.
 - Live browser editing/import/export verification remains pending.
+
+
+## Semantic token naming validation — 19 November 2026
+
+- Added semantic-name export tests covering sanitisation, collision handling and deterministic names across DTCG, CSS and Tailwind outputs.
+- Added import normalisation tests for token-label maps.
+- Static checks cover local persistence, project backup and passing names into each export format.

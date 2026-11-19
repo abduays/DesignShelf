@@ -421,3 +421,7 @@ textarea { line-height:1.55; }
 .flow-metadata textarea, .flow-metadata input { width:100%; min-width:0; border:1px solid var(--ds-line); border-radius:4px; padding:8px; background:var(--ds-paper); color:var(--ds-ink); font:inherit; font-size:12px; }
 .flow-metadata textarea { resize:vertical; }
 .flow-metadata button { align-self:flex-start; }
+
+.token-map-row { align-items:center; }
+.token-name-controls { display:flex; gap:4px; min-width:0; flex:1; }
+.token-name-controls input { min-width:0; flex:1; max-width:160px; border:1px solid var(--ds-line); border-radius:4px; padding:5px 7px; background:var(--ds-paper); color:var(--ds-ink); font:inherit; font-size:11px; }

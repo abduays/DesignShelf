@@ -47,18 +47,22 @@ function parseTokenDimension(input) {
   if (!match) return null;
   return { value:Number(match[1]), unit:match[2].toLowerCase() };
 }
-function tokenEntries(map, prefix, transform) {
+function semanticName(label) { return String(label || '').trim().toLowerCase().replace(/[^a-z0-9_-]+/g,'-').replace(/[-_]{2,}/g,'-').replace(/^[-_]+|[-_]+$/g,'').slice(0,64) || null; }
+function tokenEntries(map, prefix, transform, labels = {}) {
   const output = [];
   let index = 0;
   [...map.entries()].sort((a,b) => b[1] - a[1]).forEach(([value,count]) => {
     const converted = transform(value);
     if (converted == null) return;
-    const name = `${prefix}-${String(++index).padStart(3,'0')}`;
+    const fallback = `${prefix}-${String(++index).padStart(3,'0')}`;
+    const base = semanticName(labels[value]) || fallback;
+    let name = base, suffix = 2;
+    while (output.some(([existing]) => existing === name)) name = `${base}-${suffix++}`;
     output.push([name,{value:converted,count,source:value}]);
   });
   return output;
 }
-function buildDtcgTokens(groups) {
+function buildDtcgTokens(groups, labels = {}) {
   const output = { $description:'DesignShelf extraction. Values are observed computed styles; sequence names are neutral labels, not inferred semantic roles.' };
   const addGroup = (name, entries, type) => {
     if (!entries.length) return;
@@ -67,41 +71,41 @@ function buildDtcgTokens(groups) {
       output[name][tokenName] = { $type:type, $value:item.value, $description:`Observed in ${item.count} saved token snapshot(s).` };
     });
   };
-  addGroup('colors',tokenEntries(groups.colors,'observed',parseTokenColor),'color');
-  addGroup('fontFamilies',tokenEntries(groups.fonts,'observed',value => value.split(',').map(v => v.trim().replace(/^['"]|['"]$/g,''))),'fontFamily');
-  addGroup('fontSizes',tokenEntries(groups.fontSizes,'observed',parseTokenDimension),'dimension');
-  addGroup('lineHeights',tokenEntries(groups.lineHeights,'observed',parseTokenDimension),'dimension');
-  addGroup('letterSpacing',tokenEntries(groups.letterSpacing,'observed',parseTokenDimension),'dimension');
-  addGroup('borderRadii',tokenEntries(groups.radii,'observed',parseTokenDimension),'dimension');
-  addGroup('fontWeights',tokenEntries(groups.fontWeights,'observed',value => { const n=Number(value); return Number.isFinite(n)&&n>=1&&n<=1000?n:null; }),'fontWeight');
+  addGroup('colors',tokenEntries(groups.colors,'observed',parseTokenColor,labels.colors),'color');
+  addGroup('fontFamilies',tokenEntries(groups.fonts,'observed',value => value.split(',').map(v => v.trim().replace(/^['"]|['"]$/g,'')),labels.fonts),'fontFamily');
+  addGroup('fontSizes',tokenEntries(groups.fontSizes,'observed',parseTokenDimension,labels.fontSizes),'dimension');
+  addGroup('lineHeights',tokenEntries(groups.lineHeights,'observed',parseTokenDimension,labels.lineHeights),'dimension');
+  addGroup('letterSpacing',tokenEntries(groups.letterSpacing,'observed',parseTokenDimension,labels.letterSpacing),'dimension');
+  addGroup('borderRadii',tokenEntries(groups.radii,'observed',parseTokenDimension,labels.radii),'dimension');
+  addGroup('fontWeights',tokenEntries(groups.fontWeights,'observed',value => { const n=Number(value); return Number.isFinite(n)&&n>=1&&n<=1000?n:null; },labels.fontWeights),'fontWeight');
   return output;
 }
-function buildCssTokenExport(groups) {
+function buildCssTokenExport(groups, labels = {}) {
   const lines = [':root {','  /* Extracted computed values. Names are neutral; counts show snapshot frequency. */'];
-  const add = (prefix,map,format=value=>value) => [...map.entries()].sort((a,b)=>b[1]-a[1]).forEach(([value,count],index) => lines.push(`  --${prefix}-${String(index+1).padStart(3,'0')}: ${format(value)}; /* observed ${count} time(s) */`));
-  add('color-observed',groups.colors);
-  add('font-family-observed',groups.fonts,value=>value);
-  add('font-size-observed',groups.fontSizes);
-  add('line-height-observed',groups.lineHeights);
-  add('font-weight-observed',groups.fontWeights);
-  add('letter-spacing-observed',groups.letterSpacing);
-  add('radius-observed',groups.radii);
+  const add = (prefix,map,format=value=>value,labelMap={}) => { const used=new Set(); [...map.entries()].sort((a,b)=>b[1]-a[1]).forEach(([value,count],index) => { const base=semanticName(labelMap[value])||String(index+1).padStart(3,'0'); let name=base,suffix=2; while(used.has(name)) name=base+'-'+suffix++; used.add(name); lines.push('  --'+prefix+'-'+name+': '+format(value)+'; /* observed '+count+' time(s) */'); }); };
+  add('color',groups.colors,value=>value,labels.colors);
+  add('font-family',groups.fonts,value=>value,labels.fonts);
+  add('font-size',groups.fontSizes,value=>value,labels.fontSizes);
+  add('line-height',groups.lineHeights,value=>value,labels.lineHeights);
+  add('font-weight',groups.fontWeights,value=>value,labels.fontWeights);
+  add('letter-spacing',groups.letterSpacing,value=>value,labels.letterSpacing);
+  add('radius',groups.radii,value=>value,labels.radii);
   lines.push('}');
   return lines.join('\n');
 }
-function buildTailwindTheme(groups) {
+function buildTailwindTheme(groups, labels = {}) {
   const lines = ['@theme {','  /* Observed values only. Semantic token names have not been inferred. */'];
-  const add = (prefix,map,format=value=>value) => [...map.entries()].sort((a,b)=>b[1]-a[1]).forEach(([value],index) => lines.push(`  --${prefix}-observed-${String(index+1).padStart(3,'0')}: ${format(value)};`));
-  add('color',groups.colors);
-  add('font',groups.fonts);
-  add('text',groups.fontSizes);
-  add('leading',groups.lineHeights);
-  add('font-weight',groups.fontWeights);
-  add('radius',groups.radii);
+  const add = (prefix,map,format=value=>value,labelMap={}) => { const used=new Set(); [...map.entries()].sort((a,b)=>b[1]-a[1]).forEach(([value],index) => { const base=semanticName(labelMap[value])||String(index+1).padStart(3,'0'); let name=base,suffix=2; while(used.has(name)) name=base+'-'+suffix++; used.add(name); lines.push('  --'+prefix+'-'+name+': '+format(value)+';'); }); };
+  add('color',groups.colors,value=>value,labels.colors);
+  add('font',groups.fonts,value=>value,labels.fonts);
+  add('text',groups.fontSizes,value=>value,labels.fontSizes);
+  add('leading',groups.lineHeights,value=>value,labels.lineHeights);
+  add('font-weight',groups.fontWeights,value=>value,labels.fontWeights);
+  add('radius',groups.radii,value=>value,labels.radii);
   lines.push('}');
   return lines.join('\n');
 }
-  const api = { collectTokenCounts, parseTokenColor, parseTokenDimension, buildDtcgTokens, buildCssTokenExport, buildTailwindTheme };
+  const api = { collectTokenCounts, parseTokenColor, parseTokenDimension, semanticName, buildDtcgTokens, buildCssTokenExport, buildTailwindTheme };
   root.DesignShelfTokenExport = api;
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
 })(globalThis);
