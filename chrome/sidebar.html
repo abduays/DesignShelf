@@ -60,55 +60,52 @@
     <section id="toolboxView" role="tabpanel" aria-labelledby="viewTab-toolbox" tabindex="0" class="app-view hidden view-section">
       <div class="section-heading"><div><h2>Studio tools</h2><span class="muted">Interaction, assets, tokens and comparison</span></div><button id="refreshInsightsBtn" class="primary small">Inspect page</button></div>
       <div class="feature-intro">Runs locally in the active tab. Some details depend on browser access and the website's implementation.</div>
-      <div class="toolbox-card">
+      <details class="toolbox-group" open><summary><div><strong>Inspect & Compare</strong><span>Review captures, visual differences and quality signals</span></div><span class="toolbox-group-count">5 tools</span></summary><div class="toolbox-group-content"><div class="toolbox-card">
+        <div class="toolbox-card-head"><div><h3>Computed style snapshot review</h3><p>Review captured declarations and repeated values. This is not a trace of the original stylesheet cascade.</p></div><button id="cascadeReviewBtn" class="secondary small" disabled>Review selected</button></div>
+        <div id="cascadeResults" class="insight-list"><div class="empty-inline">Select a capture and run the review.</div></div>
+      </div>
+<div class="toolbox-card">
+        <div class="toolbox-card-head"><div><h3>Viewport preview</h3><p>Resize the saved snapshot at common widths. Original media queries may not be present in the capture.</p></div></div>
+        <div class="inline-actions"><button class="secondary small viewport-btn" data-width="1440">Desktop · 1440</button><button class="secondary small viewport-btn" data-width="768">Tablet · 768</button><button class="secondary small viewport-btn" data-width="390">Mobile · 390</button><button class="secondary small viewport-btn" data-width="320">Small · 320</button></div>
+        <div id="responsiveStatus" class="small-note">Select a saved capture, then choose a viewport width.</div>
+      </div>
+<div class="toolbox-card">
+        <div class="toolbox-card-head"><div><h3>Component similarity finder</h3><p>Find captures with matching tags, repeated colours, fonts or similar names.</p></div><button id="findSimilarBtn" class="secondary small" disabled>Find similar</button></div>
+        <div id="similarResults" class="insight-list"><div class="empty-inline">Select a capture and find related components.</div></div>
+      </div>
+<div class="toolbox-card">
+        <div class="toolbox-card-head"><div><h3>Capture comparison</h3><p>Compare two saved captures by markup, computed CSS and style tokens.</p></div></div>
+        <div class="compare-controls"><label>Capture A<select id="compareA" disabled></select></label><label>Capture B<select id="compareB" disabled></select></label><button id="compareBtn" class="primary small" disabled>Compare</button><button id="pixelCompareBtn" class="secondary small" disabled>Pixel diff</button></div>
+        <div id="compareResults" class="insight-list"><div class="empty-inline">Choose two captures and compare.</div></div><div id="visualCompareResults" class="visual-compare-results"><div class="empty-inline">Pixel comparison requires two saved screenshots with matching dimensions.</div></div>
+      </div>
+<div class="toolbox-card">
+        <div class="toolbox-card-head"><div><h3>CSS and accessibility review</h3><p>Run extra local heuristics on the selected capture.</p></div><button id="deepChecksBtn" class="secondary small" disabled>Run review</button></div>
+        <div id="deepChecksResults" class="insight-list"><div class="empty-inline">Select a capture in Library first.</div></div>
+      </div></div></details><details class="toolbox-group"><summary><div><strong>Collect & Manage</strong><span>Backups, page insights and interaction history</span></div><span class="toolbox-group-count">3 tools</span></summary><div class="toolbox-group-content"><div class="toolbox-card">
         <div class="toolbox-card-head"><div><h3>Project backup and storage</h3><p>Export or restore captures, design flows, interaction history and project metadata. Everything stays in this browser profile unless you export it.</p></div></div>
         <div class="inline-actions"><button id="exportProjectBtn" class="primary small" disabled>Export full project</button><button id="importProjectBtn" class="secondary small">Import project</button><input id="importProjectFile" type="file" accept="application/json,.json" hidden><button id="refreshStorageBtn" class="secondary small">Refresh storage</button></div>
         <div id="storageUsage" class="insight-list"><div class="empty-inline">Storage usage has not been calculated.</div></div>
         <div class="small-note">Import merges by capture ID and collection ID. Review imported content before using it. Browser storage limits vary by Firefox version and profile.</div>
       </div>
-      <div class="toolbox-card">
-        <div class="toolbox-card-head"><div><h3>Computed style snapshot review</h3><p>Review captured declarations and repeated values. This is not a trace of the original stylesheet cascade.</p></div><button id="cascadeReviewBtn" class="secondary small" disabled>Review selected</button></div>
-        <div id="cascadeResults" class="insight-list"><div class="empty-inline">Select a capture and run the review.</div></div>
-      </div>
-      <div class="toolbox-card">
+<div class="toolbox-card">
         <div class="toolbox-card-head"><div><h3>Interaction recorder</h3><p>Record clicks, hover, focus and keyboard events on the active page.</p></div><span id="recordingStatus" class="status-pill">Stopped</span></div>
         <div class="inline-actions"><button id="startRecordingBtn" class="primary small">Start recording</button><button id="stopRecordingBtn" class="secondary small" disabled>Stop</button><button id="exportRecordingBtn" class="secondary small" disabled>Export events</button></div>
         <div id="interactionEvents" class="insight-list"><div class="empty-inline">No interaction events recorded yet.</div></div>
       </div>
-      <div class="toolbox-card">
-        <div class="toolbox-card-head"><div><h3>Viewport preview</h3><p>Resize the saved snapshot at common widths. Original media queries may not be present in the capture.</p></div></div>
-        <div class="inline-actions"><button class="secondary small viewport-btn" data-width="1440">Desktop · 1440</button><button class="secondary small viewport-btn" data-width="768">Tablet · 768</button><button class="secondary small viewport-btn" data-width="390">Mobile · 390</button><button class="secondary small viewport-btn" data-width="320">Small · 320</button></div>
-        <div id="responsiveStatus" class="small-note">Select a saved capture, then choose a viewport width.</div>
-      </div>
-      <div class="toolbox-card">
+<div class="toolbox-card">
         <div class="toolbox-card-head"><div><h3>Assets and page insights</h3><p>List images, fonts, scripts, stylesheets, interactive controls and stylesheet details available to the page.</p></div></div>
         <div id="insightsSummary" class="audit-metric-grid"><div class="empty-inline">Choose Inspect page to collect insights.</div></div>
         <div id="assetExplorer" class="insight-list"></div>
-      </div>
-      <div class="toolbox-card">
+      </div></div></details><details class="toolbox-group"><summary><div><strong>Build & Export</strong><span>Edit isolated snapshots and export design tokens</span></div><span class="toolbox-group-count">2 tools</span></summary><div class="toolbox-group-content"><div class="toolbox-card">
         <div class="toolbox-card-head"><div><h3>Live component workbench</h3><p>Edit a selected capture in an isolated sandbox preview. Changes do not affect the original website.</p></div></div>
         <div class="workbench-fields"><label>HTML snapshot<textarea id="workbenchHtml" rows="6" spellcheck="false" placeholder="Select a capture to load HTML"></textarea></label><label>CSS snapshot<textarea id="workbenchCss" rows="7" spellcheck="false" placeholder="Edit captured CSS"></textarea></label></div>
         <div class="inline-actions"><button id="loadWorkbenchBtn" class="secondary small" disabled>Load selected capture</button><button id="updateWorkbenchBtn" class="primary small" disabled disabled>Update preview</button><button id="undoWorkbenchBtn" class="secondary small" disabled disabled>Undo</button><button id="redoWorkbenchBtn" class="secondary small" disabled disabled>Redo</button><button id="resetWorkbenchBtn" class="secondary small" disabled disabled>Reset</button><button id="exportWorkbenchBtn" class="secondary small" disabled disabled>Export variant</button></div>
         <div class="workbench-preview"><iframe id="workbenchPreview" title="Isolated component workbench preview" sandbox=""></iframe></div>
       </div>
-      <div class="toolbox-card">
-        <div class="toolbox-card-head"><div><h3>Component similarity finder</h3><p>Find captures with matching tags, repeated colours, fonts or similar names.</p></div><button id="findSimilarBtn" class="secondary small" disabled>Find similar</button></div>
-        <div id="similarResults" class="insight-list"><div class="empty-inline">Select a capture and find related components.</div></div>
-      </div>
-      <div class="toolbox-card">
+<div class="toolbox-card">
         <div class="toolbox-card-head"><div><h3>Design token mapper</h3><p>Aggregate observed colours, type and dimensions from saved captures.</p></div><div class="inline-actions"><label class="visually-hidden" for="tokenExportFormat">Token export format</label><select id="tokenExportFormat" aria-label="Token export format" disabled><option value="dtcg">DTCG tokens</option><option value="css">CSS variables</option><option value="tailwind">Tailwind v4</option></select><button id="exportTokensBtn" class="secondary small" disabled>Export</button></div></div>
         <div id="tokenMapper" class="insight-list"><div class="empty-inline">Capture components to build your local token map.</div></div>
-      </div>
-      <div class="toolbox-card">
-        <div class="toolbox-card-head"><div><h3>Capture comparison</h3><p>Compare two saved captures by markup, computed CSS and style tokens.</p></div></div>
-        <div class="compare-controls"><label>Capture A<select id="compareA" disabled></select></label><label>Capture B<select id="compareB" disabled></select></label><button id="compareBtn" class="primary small" disabled>Compare</button><button id="pixelCompareBtn" class="secondary small" disabled>Pixel diff</button></div>
-        <div id="compareResults" class="insight-list"><div class="empty-inline">Choose two captures and compare.</div></div><div id="visualCompareResults" class="visual-compare-results"><div class="empty-inline">Pixel comparison requires two saved screenshots with matching dimensions.</div></div>
-      </div>
-      <div class="toolbox-card">
-        <div class="toolbox-card-head"><div><h3>CSS and accessibility review</h3><p>Run extra local heuristics on the selected capture.</p></div><button id="deepChecksBtn" class="secondary small" disabled>Run review</button></div>
-        <div id="deepChecksResults" class="insight-list"><div class="empty-inline">Select a capture in Library first.</div></div>
-      </div>
-    </section>
+      </div></div></details></section>
     <section id="detailPanel" class="detail-panel hidden">
       <div class="detail-heading"><div><span class="eyebrow">SELECTED CAPTURE</span><h2 id="detailName">Component</h2></div><div class="preview-tools"><button id="expandPreviewBtn" class="secondary small" type="button" aria-pressed="false" disabled>Expand preview</button><button id="closeDetailBtn" class="icon-btn" aria-label="Close details">×</button></div></div>
       <div id="metaLine" class="meta-line"></div>

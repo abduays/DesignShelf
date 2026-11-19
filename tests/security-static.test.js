@@ -225,3 +225,14 @@ test('pixel comparison stays local and requires same-sized stored screenshots', 
   assert.match(m,/changedPercent/);
   assert.match(css,/visual-compare-grid/);
 });
+
+test('Studio toolbox uses accessible groups without removing existing tool IDs', () => {
+  const h=read('sidebar.html');
+  assert.equal((h.match(/class="toolbox-group"/g)||[]).length,3);
+  assert.match(h,/Inspect &amp; Compare|Inspect & Compare/);
+  assert.match(h,/Collect &amp; Manage|Collect & Manage/);
+  assert.match(h,/Build &amp; Export|Build & Export/);
+  for(const id of ['exportProjectBtn','cascadeReviewBtn','startRecordingBtn','responsiveStatus','assetExplorer','workbenchHtml','findSimilarBtn','tokenMapper','compareBtn','pixelCompareBtn','deepChecksBtn'])assert.ok(h.includes('id="'+id+'"'));
+  assert.match(h,/<details class="toolbox-group"/);
+  assert.match(h,/<summary/);
+});

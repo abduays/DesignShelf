@@ -432,3 +432,14 @@ textarea { line-height:1.55; }
 .visual-compare-card figcaption { margin-bottom:6px; color:var(--ds-muted); font-size:10px; font-weight:700; }
 .visual-compare-card img { display:block; width:100%; height:auto; max-height:300px; object-fit:contain; background:var(--ds-paper); }
 @media(max-width:480px){.visual-compare-grid{grid-template-columns:1fr;}}
+
+.toolbox-group { margin:10px 0; border:1px solid var(--ds-line); border-radius:7px; background:var(--ds-paper); overflow:hidden; }
+.toolbox-group>summary { display:flex; align-items:center; justify-content:space-between; gap:10px; padding:11px 12px; cursor:pointer; list-style:none; background:var(--ds-paper-2); }
+.toolbox-group>summary::-webkit-details-marker { display:none; }
+.toolbox-group>summary:focus-visible { outline:2px solid var(--ds-green); outline-offset:-2px; }
+.toolbox-group>summary>div { display:flex; flex-direction:column; gap:3px; }
+.toolbox-group>summary strong { color:var(--ds-ink); font-size:12px; }
+.toolbox-group>summary span { color:var(--ds-muted); font-size:10px; }
+.toolbox-group-count { padding:3px 7px; border:1px solid var(--ds-line); border-radius:99px; white-space:nowrap; }
+.toolbox-group-content { padding:0 10px 8px; }
+.toolbox-group-content .toolbox-card { box-shadow:none; }

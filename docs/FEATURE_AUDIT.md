@@ -136,3 +136,9 @@
 - A red heatmap marks pixels above a default threshold of 20 channel levels.
 - The algorithm and screenshot readback operate locally; no screenshots are uploaded or sent to a service.
 - Captures with missing or mismatched dimensions are rejected with an explanatory message rather than silently resized.
+
+
+## Studio toolbox information architecture — Stage 6C
+
+- Reorganised Studio tools into native, keyboard-accessible expandable groups: Inspect & Compare, Collect & Manage, and Build & Export.
+- Existing controls, IDs and event handlers are preserved. Inspect & Compare is expanded by default; the other groups are available via their summaries.
