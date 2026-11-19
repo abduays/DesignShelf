@@ -87,7 +87,7 @@
 - [x] Add a user-triggered picker state mode to capture hover/focus/expanded/current component states with bounded state evidence.
 - [ ] Verify state capture interactions in installed Chrome and Firefox.
 - [x] Add local pixel-level visual comparison for matching-size stored screenshots; diff data never leaves the browser.
-- [ ] Improve toolbox information architecture so advanced features are easier to find.
+- [x] Group Studio tools into accessible Inspect & Compare, Collect & Manage and Build & Export sections.
 - [x] Improve selector stability with unique IDs, stable attributes and uniqueness checks.
 
 **Exit condition:** each diagnostic is explainable, reproducible and labelled as measured or heuristic.

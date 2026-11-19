@@ -38,3 +38,10 @@ undefined
 - Added unit tests for identical images, threshold behaviour, heatmap output and malformed buffers.
 - UI reads stored data URLs locally, requires matching dimensions and renders A/B/heatmap.
 - Browser-level image/canvas verification remains pending.
+
+
+## Stage 6C — Studio toolbox organisation
+
+- Added three native details/summary groups to reduce the flat tool-card list.
+- Preserved existing control IDs and event handlers; static regression checks cover the grouped structure.
+- Live keyboard and responsive UI verification remains pending.
