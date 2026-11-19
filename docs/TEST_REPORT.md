@@ -45,3 +45,10 @@ undefined
 - Added three native details/summary groups to reduce the flat tool-card list.
 - Preserved existing control IDs and event handlers; static regression checks cover the grouped structure.
 - Live keyboard and responsive UI verification remains pending.
+
+
+## Stage 7 — Storage warnings and recovery
+
+- Added pure threshold tests for 60%, 80% and 95% warnings.
+- Added static checks for recovery backup, dialog choices and storage progress UI.
+- Actual browser quota exhaustion and recovery download tests remain pending.

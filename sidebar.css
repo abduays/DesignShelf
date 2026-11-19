@@ -443,3 +443,15 @@ textarea { line-height:1.55; }
 .toolbox-group-count { padding:3px 7px; border:1px solid var(--ds-line); border-radius:99px; white-space:nowrap; }
 .toolbox-group-content { padding:0 10px 8px; }
 .toolbox-group-content .toolbox-card { box-shadow:none; }
+
+.storage-warning { margin:8px 0; padding:8px; border-radius:5px; border:1px solid var(--ds-line); font-size:10px; line-height:1.5; }
+.storage-warning.ok { color:var(--ds-muted); background:var(--ds-paper-2); }
+.storage-warning.notice { color:#8a5a00; border-color:#e4c57d; background:#fff7df; }
+.storage-warning.warning { color:#8a3b00; border-color:#e0a45b; background:#fff0df; }
+.storage-warning.critical { color:#8b1e1e; border-color:#e4a1a1; background:#ffeded; font-weight:700; }
+.storage-progress { height:8px; width:100%; margin:8px 0; border-radius:999px; background:var(--ds-line); overflow:hidden; }
+.storage-progress-fill { display:block; height:100%; background:var(--ds-green); border-radius:999px; }
+.storage-progress-fill.notice { background:#d8a638; }.storage-progress-fill.warning { background:#d97721; }.storage-progress-fill.critical { background:#c53b3b; }
+.recovery-dialog { width:min(520px,calc(100vw - 28px)); border:1px solid var(--ds-line); border-radius:8px; padding:0; background:var(--ds-paper); color:var(--ds-ink); }
+.recovery-dialog::backdrop { background:rgba(15,23,42,.55); }
+.recovery-actions { display:flex; flex-wrap:wrap; gap:7px; margin-top:14px; }
