@@ -411,7 +411,7 @@ function exportCollectionMarkdown(id) {
   appendGroup('Font sizes',tokenGroups.fontSizes); appendGroup('Line heights',tokenGroups.lineHeights);
   appendGroup('Font weights',tokenGroups.fontWeights); appendGroup('Border radii',tokenGroups.radii);
   if(flow.brief) lines.push('## Brief / intent','',markdownEscape(flow.brief),'');
-  if(Array.isArray(flow.labels)&&flow.labels.length) lines.push('## Semantic labels','',flow.labels.map(label=>'- '+markdownEscape(label)).join('\\n'),'');
+  if(Array.isArray(flow.labels)&&flow.labels.length) lines.push('## Semantic labels','',flow.labels.map(label=>'- '+markdownEscape(label)).join('\n'),'');
   lines.push('## Curated component references','');
   items.forEach((capture,index)=>{
     lines.push(`### ${index+1}. ${markdownEscape(capture.name)}`,'',
