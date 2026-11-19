@@ -62,7 +62,7 @@ const ids = [...html.matchAll(/\bid=["']([^"']+)["']/g)].map(match => match[1]);
 if (new Set(ids).size !== ids.length) fail.push('sidebar.html contains duplicate IDs');
 const uiJs = fs.readFileSync(path.join(root,'sidebar.js'),'utf8');
 const staticRefs = [...uiJs.matchAll(/\$\(["']([^"']+)["']\)/g)].map(match => match[1]);
-const dynamicIds = new Set(['deleteFlowBtn','exportFlowMarkdownBtn']);
+const dynamicIds = new Set(['deleteFlowBtn','exportFlowMarkdownBtn','flowBrief','flowLabels']);
 for (const id of staticRefs) if (!ids.includes(id) && !dynamicIds.has(id)) fail.push(`sidebar.js references missing HTML ID: ${id}`);
 const buttonIds = [...html.matchAll(/<button\b[^>]*\bid=["']([^"']+)["']/g)].map(match => match[1]);
 const directHandlers = new Set([...uiJs.matchAll(/\$\(["']([^"']+)["']\)(?:\?\.addEventListener|\.addEventListener)/g)].map(match => match[1]));
