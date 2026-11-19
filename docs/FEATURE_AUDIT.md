@@ -120,3 +120,11 @@
 
 - CI validates generated DTCG output with the pinned `open-design-tokens@0.7.0` independent validator.
 - The validator is CI-only and is not bundled as an extension runtime dependency.
+
+
+## Component state snapshots — Stage 6A
+
+- The picker can enter a state-interaction mode after selecting a component. It removes the picker overlay so page interaction is not intercepted.
+- The user can interact with the component, then press `Alt+Shift+S` to capture the selected component's current state.
+- Capture metadata records the state label and boolean evidence for hover, focus, expanded, pressed and selected state. The captured markup and computed CSS reflect the current state where the page exposes it.
+- State evidence is best-effort; extension/browser UI and page scripts can affect the state. Live Chrome/Firefox verification remains pending.

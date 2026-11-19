@@ -201,3 +201,15 @@ test('CI validates generated DTCG output with a pinned independent validator', (
   assert.match(script,/open-design-tokens@0\.7\.0/);
   assert.match(script,/buildDtcgTokens/);
 });
+
+test('capture picker supports interaction-state snapshots with a keyboard capture shortcut', () => {
+  const c=read('content.js'),b=read('background.js'),p=read('project-import.js'),s=read('sidebar.js');
+  assert.match(c,/data-action="stateMode"/);
+  assert.match(c,/Alt\+Shift\+S/);
+  assert.match(c,/function enterStateMode/);
+  assert.match(c,/function detectCaptureState/);
+  assert.match(c,/stateEvidence: readStateEvidence/);
+  assert.match(b,/capture\.captureState/);
+  assert.match(p,/captureState:\['default','hover','focus','expanded','custom'\]/);
+  assert.match(s,/\['Capture state',a\.captureState/);
+});

@@ -46,7 +46,7 @@ function normaliseImportedCapture(c) {
     return node;
   }).filter(Boolean);
   return {
-    id: c.id, name: c.name, note:boundedText(c.note,2000)||'', tag: boundedText(c.tag, 32) || 'div',
+    id: c.id, name: c.name, note:boundedText(c.note,2000)||'', captureState:['default','hover','focus','expanded','custom'].includes(c.captureState)?c.captureState:'default', stateEvidence:c.stateEvidence&&typeof c.stateEvidence==='object'&&!Array.isArray(c.stateEvidence)?Object.fromEntries(Object.entries(c.stateEvidence).filter(([k,v])=>['hovered','focused','expanded','pressed','selected'].includes(k)&&typeof v==='boolean')):{}, tag: boundedText(c.tag, 32) || 'div',
     selector: boundedText(c.selector, 2000) || '', url: parsedUrl.origin + parsedUrl.pathname,
     pageTitle: boundedText(c.pageTitle, 300) || '', capturedAt: c.capturedAt,
     text: boundedText(c.text, 500) || '', width: Number.isFinite(c.width) ? Math.max(0, Math.min(100000, c.width)) : 0,

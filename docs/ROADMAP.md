@@ -84,7 +84,8 @@
 - [x] Add pseudo-element snapshots (`::before`/`::after`) where safe.
 - [x] Capture accessibility evidence candidates (role, name source, ARIA hidden state and tab index) without claiming full accessibility-tree computation.
 - [x] Record conservative runtime/framework markers and label utility-class detection as heuristic.
-- [ ] Add user-triggered component state snapshots for hover/focus/expanded states.
+- [x] Add a user-triggered picker state mode to capture hover/focus/expanded/current component states with bounded state evidence.
+- [ ] Verify state capture interactions in installed Chrome and Firefox.
 - [ ] Add pixel-level visual comparison only after screenshot privacy, crop and storage design is proven.
 - [ ] Improve toolbox information architecture so advanced features are easier to find.
 - [x] Improve selector stability with unique IDs, stable attributes and uniqueness checks.

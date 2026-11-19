@@ -249,3 +249,11 @@ test('interaction event validation rejects URL secrets and malformed nested-stat
   }
   assert.equal(h.state.designshelfInteractionEvents,undefined);
 });
+
+test('background accepts bounded component-state metadata and rejects invalid state names', async () => {
+  const h=createHarness();
+  const valid=await h.send({type:'DESIGNSHELF_CAPTURE',capture:validCapture({captureState:'hover',stateEvidence:{hovered:true,focused:false,expanded:false,pressed:false,selected:false}})},contentSender);
+  assert.equal(valid.ok,true);
+  const invalid=await h.send({type:'DESIGNSHELF_CAPTURE',capture:validCapture({captureState:'script',stateEvidence:{hovered:'yes'}})},contentSender);
+  assert.equal(invalid.ok,false);
+});

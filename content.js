@@ -11,6 +11,7 @@
   let current = null;
   let overlay = null;
   let toolbar = null;
+  let stateMode = false;
   let lastPointer = { x: 0, y: 0 };
   let interactionRecording = false;
   let interactionCount = 0;
@@ -87,7 +88,7 @@
     if (toolbar) return;
     toolbar = document.createElement('div');
     toolbar.id = TOOLBAR_ID;
-    toolbar.innerHTML = `<span class="__ds_info" data-role="info">Hover over a section</span><button type="button" data-action="parent" title="Select parent container (↑)">↑ Parent</button><button type="button" data-action="child" title="Select first child (↓)">↓ Child</button><button type="button" data-action="capture" data-primary="true">Capture section</button><button type="button" data-action="cancel">Cancel</button>`;
+    renderToolbarMode();
     toolbar.addEventListener('click', (event) => {
       const button = event.target.closest('button[data-action]');
       if (!button) return;
@@ -97,11 +98,20 @@
       if (action === 'parent') selectParent();
       if (action === 'child') selectChild();
       if (action === 'capture' && current) capture(current);
+      if (action === 'stateMode' && current) enterStateMode();
+      if (action === 'captureState' && current) capture(current, 'custom');
+      if (action === 'back' && current) returnToPicker();
       if (action === 'cancel') stopPicking();
     });
     (document.documentElement || document.body).appendChild(toolbar);
   }
 
+  function renderToolbarMode() {
+    if (!toolbar) return;
+    toolbar.innerHTML = stateMode
+      ? '<span class="__ds_info" data-role="info">Interact with the selected component, then press Alt+Shift+S</span><button type="button" data-action="captureState" data-primary="true">Capture current state</button><button type="button" data-action="back">Back to picker</button><button type="button" data-action="cancel">Cancel</button>'
+      : '<span class="__ds_info" data-role="info">Hover over a section</span><button type="button" data-action="parent" title="Select parent container (↑)">↑ Parent</button><button type="button" data-action="child" title="Select first child (↓)">↓ Child</button><button type="button" data-action="capture" data-primary="true">Capture section</button><button type="button" data-action="stateMode">Capture state</button><button type="button" data-action="cancel">Cancel</button>';
+  }
   function updateToolbar() {
     if (!toolbar) return;
     const info = toolbar.querySelector('[data-role="info"]');
@@ -364,7 +374,47 @@
     } catch {}
   }
 
-  function capture(element) {
+  function readStateEvidence(element) {
+    const expanded=element.getAttribute('aria-expanded')==='true'||element.hasAttribute('open');
+    const pressed=element.getAttribute('aria-pressed')==='true';
+    const selected=element.getAttribute('aria-selected')==='true';
+    let hovered=false,focused=false;
+    try { hovered=element.matches(':hover'); focused=element.matches(':focus')||element.matches(':focus-within'); } catch {}
+    return {hovered,focused,expanded,pressed,selected};
+  }
+  function detectCaptureState(element) {
+    const evidence=readStateEvidence(element);
+    if(evidence.expanded)return 'expanded';
+    if(evidence.focused)return 'focus';
+    if(evidence.hovered)return 'hover';
+    if(evidence.pressed||evidence.selected)return 'expanded';
+    return 'custom';
+  }
+  function enterStateMode() {
+    if(!current||!toolbar)return;
+    stateMode=true;picking=false;selecting=false;
+    document.removeEventListener('mousemove',onMove,true);
+    document.removeEventListener('click',onClick,true);
+    document.removeEventListener('keydown',onKey,true);
+    if(overlay)overlay.style.display='none';
+    renderToolbarMode();
+    document.addEventListener('keydown',onStateKey,true);
+  }
+  function onStateKey(event) {
+    if(!stateMode)return;
+    if(event.key==='Escape'){event.preventDefault();stopPicking();return;}
+    if(event.altKey&&event.shiftKey&&event.key.toLowerCase()==='s'&&current){event.preventDefault();event.stopPropagation();capture(current,detectCaptureState(current));}
+  }
+  function returnToPicker() {
+    if(!current)return;
+    stateMode=false;document.removeEventListener('keydown',onStateKey,true);
+    picking=true;selecting=true;renderToolbarMode();
+    document.addEventListener('mousemove',onMove,true);
+    document.addEventListener('click',onClick,true);
+    document.addEventListener('keydown',onKey,true);
+    moveOverlay(current);updateToolbar();
+  }
+  function capture(element, captureState = 'default') {
     const rect = element.getBoundingClientRect();
     const tag = element.tagName.toLowerCase();
     const text = safeText(element.innerText || element.textContent, 500);
@@ -379,6 +429,8 @@
       url: (() => { const u = new URL(location.href); u.search = ''; u.hash = ''; return u.href; })(),
       pageTitle: safeText(document.title, 180),
       note: '',
+      captureState,
+      stateEvidence: readStateEvidence(element),
       capturedAt: new Date().toISOString(),
       text,
       width: Math.round(rect.width),
@@ -430,6 +482,7 @@
   function startPicking() {
     ensureOverlay();
     ensureToolbar();
+    stateMode = false;
     picking = true;
     selecting = false;
     current = null;
@@ -441,12 +494,14 @@
 
   function stopPicking() {
     picking = false;
+    stateMode = false;
     selecting = false;
     current = null;
     document.documentElement.classList.remove('__designshelf_picking');
     document.removeEventListener('mousemove', onMove, true);
     document.removeEventListener('click', onClick, true);
     document.removeEventListener('keydown', onKey, true);
+    document.removeEventListener('keydown', onStateKey, true);
     if (overlay) overlay.style.display = 'none';
     if (toolbar) toolbar.remove();
     toolbar = null;
