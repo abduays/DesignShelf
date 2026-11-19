@@ -107,3 +107,10 @@
 - Kept `activeTab` as the least-privilege path when the user does not grant persistent optional access.
 - Replaced misleading generic scan errors with a specific permission instruction or a protected-page explanation.
 - Browser-level verification is still required in Chrome and Firefox after reloading the unpacked extension.
+
+
+## Board metadata upgrade — 19 November 2026
+
+- Added an editable board-level brief/intent field (3,000-character limit).
+- Added up to 12 user-assigned semantic labels (32 characters each), case-insensitively deduplicated.
+- Metadata is normalised on load/import, retained in project backups, shown on board cards and included in `DESIGN.md` evidence packs.

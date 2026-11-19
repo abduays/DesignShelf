@@ -171,3 +171,14 @@ test('component intelligence records pseudo-elements, semantic evidence and qual
   assert.ok(c.includes('getPseudoElementDetails(element)')); assert.ok(c.includes('getSemanticDetails(element)')); assert.ok(c.includes('getFrameworkSignals(element)')); assert.ok(c.includes('getComputedStyle(element, pseudo)'));
   assert.ok(b.includes('capture.frameworkSignals')); assert.ok(b.includes('node.pseudoElements')); assert.ok(s.includes('renderComponentIntelligence')); assert.ok(h.includes('id="componentIntelligence"')); assert.ok(importer.includes('frameworkSignals: Array.isArray(c.frameworkSignals)'));
 });
+
+test('design-flow brief and semantic labels are bounded, escaped and exported', () => {
+  const s=read('sidebar.js'), importer=read('project-import.js'), css=read('sidebar.css');
+  assert.ok(s.includes('data-flow-brief')); assert.ok(s.includes('maxlength="3000"'));
+  assert.ok(s.includes('data-flow-labels')); assert.ok(s.includes('maxlength="400"'));
+  assert.ok(s.includes("escapeHtml(c.brief||'')"));
+  assert.ok(s.includes('flow.brief'));
+  assert.ok(s.includes('flow.labels'));
+  assert.ok(importer.includes('normaliseImportedCollection'));
+  assert.ok(css.includes('.flow-metadata'));
+});

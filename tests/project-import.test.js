@@ -1,7 +1,7 @@
 require('../token-export.js');
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const { normaliseCapture, normaliseEvent, normaliseAudit, normaliseTokens } = require('../project-import.js');
+const { normaliseCapture, normaliseEvent, normaliseAudit, normaliseTokens, normaliseCollection } = require('../project-import.js');
 
 function capture(overrides = {}) {
   return {
@@ -65,4 +65,14 @@ test('audit import keeps only bounded comparison fields and finite metrics', () 
   const result=normaliseAudit({page:{host:'example.com',title:'Example',url:'https://example.com/?secret=x'},metrics:{resourceCount:12,domElements:100,scriptCount:-1,unexpected:'keep out'},issues:[{message:'untrusted'}]});
   assert.deepEqual(result,{page:{host:'example.com',title:'Example',url:'https://example.com/'},metrics:{resourceCount:12,domElements:100}});
   assert.equal(normaliseAudit({page:{},metrics:{}}),null);
+});
+
+test('design-flow metadata is bounded, deduplicated and normalised during import', () => {
+  const validIds = new Set(['capture-a','capture-b']);
+  const result=normaliseCollection({id:'flow-1',name:'Product research',createdAt:'2026-11-18T00:00:00.000Z',captureIds:['capture-a','unknown','capture-b'],brief:'Audience and constraints',labels:['Pricing','pricing','Onboarding','x'.repeat(40),null]},validIds);
+  assert.deepEqual(result.captureIds,['capture-a','capture-b']);
+  assert.equal(result.brief,'Audience and constraints');
+  assert.deepEqual(result.labels,['Pricing','Onboarding','x'.repeat(32)]);
+  assert.equal(normaliseCollection({id:'',name:'Bad'}),null);
+  assert.equal(normaliseCollection({id:'x',name:'y',brief:'z'.repeat(3001)}).brief,'');
 });
