@@ -52,3 +52,21 @@ test('CSS and Tailwind exports produce deterministic variables without invented 
   assert.match(tailwind, /--color-observed-001: #123456/);
   assert.doesNotMatch(tailwind, /--color-primary/);
 });
+
+test('semantic token labels are sanitised, deterministic and collision-safe across formats', () => {
+  const groups=collectTokenCounts([{tokens:{colors:['#123456','#abcdef'],fontFamily:'Arial',fontSize:'16px'}}]);
+  const labels={colors:{'#123456':'Brand Primary','#abcdef':'Brand Primary'},fonts:{Arial:'Body Font'},fontSizes:{'16px':'Text Base'}};
+  const dtcg=buildDtcgTokens(groups,labels);
+  assert.ok(dtcg.colors['brand-primary']);
+  assert.ok(dtcg.colors['brand-primary-2']);
+  assert.ok(dtcg.fontFamilies['body-font']);
+  assert.ok(dtcg.fontSizes['text-base']);
+  const css=buildCssTokenExport(groups,labels);
+  assert.match(css,/--color-brand-primary:/);
+  assert.match(css,/--color-brand-primary-2:/);
+  const tailwind=buildTailwindTheme(groups,labels);
+  assert.match(tailwind,/--color-brand-primary:/); assert.match(tailwind,/--color-brand-primary-2:/);
+  assert.match(tailwind,/--font-body-font:/);
+  assert.match(tailwind,/--text-text-base:/);
+  assert.equal(require('../token-export.js').semanticName(' ../Invalid Token '),'invalid-token');
+});

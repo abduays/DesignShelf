@@ -114,3 +114,9 @@
 - Added an editable board-level brief/intent field (3,000-character limit).
 - Added up to 12 user-assigned semantic labels (32 characters each), case-insensitively deduplicated.
 - Metadata is normalised on load/import, retained in project backups, shown on board cards and included in `DESIGN.md` evidence packs.
+
+
+## Independent token validation — 19 November 2026
+
+- CI validates generated DTCG output with the pinned `open-design-tokens@0.7.0` independent validator.
+- The validator is CI-only and is not bundled as an extension runtime dependency.

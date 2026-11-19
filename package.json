@@ -6,7 +6,8 @@
   "scripts": {
     "test": "node --test tests/*.test.js",
     "check": "node scripts/check.mjs",
-    "validate": "npm test && npm run check"
+    "validate": "npm test && npm run check && npm run validate:dtcg",
+    "validate:dtcg": "node scripts/validate-dtcg.mjs"
   },
   "engines": {
     "node": ">=20"

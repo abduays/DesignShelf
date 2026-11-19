@@ -70,7 +70,7 @@
 - [x] Export Tailwind v4 theme variables.
 - [x] Unit-test color conversion, dimension parsing, frequency counts and output types.
 - [ ] Add optional semantic labels assigned by the user.
-- [ ] Validate output against an independent DTCG implementation.
+- [x] Validate output against an independent DTCG 2025.10 implementation in CI.
 
 **Exit condition:** exports pass unit tests and an external format validator.
 
