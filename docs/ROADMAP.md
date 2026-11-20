@@ -114,7 +114,7 @@
 - [x] Use Chrome `sidePanel` and Firefox `sidebar_action` packaging.
 - [x] Add package parity and local-resource validation.
 - [x] Run Chrome stable sidebar and content-script state-capture smoke tests in CI.
-- [ ] Install the complete extension package in Chrome stable and verify side-panel opening, permissions and background lifecycle.
+- [x] Install the generated Chrome ZIP in a real Chrome stable CI profile; verify extension service-worker startup, extension-origin sidebar rendering, storage round-trip, navigation and default permissions.\n- [ ] Verify toolbar-action side-panel opening, user-granted optional host access, picker capture/export and service-worker lifecycle in a local interactive browser.
 - [x] Run Firefox sidebar and content-script state-capture smoke tests in CI using the Playwright Firefox engine.
 - [ ] Install the complete extension package in Firefox stable and verify sidebar opening, permissions and background lifecycle.
 - [ ] Verify action opening, real permission grants, picker injection, service-worker/background lifecycle and cross-tab recording in both browsers.
@@ -131,7 +131,7 @@
 - [x] Add README, contributing guide, security policy, feature audit and release checklist.
 - [ ] Choose licence and confirm the production Firefox add-on ID.
 - [x] Build separate Chrome and Firefox ZIPs in CI and verify required files, archive integrity and SHA-256 checksums.
-- [ ] Test installation from the generated ZIPs in their target browsers.
+- [x] Test installation from the generated Chrome ZIP in Chrome stable CI.\n- [ ] Test installation from the generated Firefox ZIP in Firefox stable.
 
 **Exit condition:** CI passes and release metadata is confirmed.
 
