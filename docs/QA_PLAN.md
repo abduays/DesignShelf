@@ -59,12 +59,12 @@
 
 - Chrome stable: sidebar rendering/navigation, storage estimate, board rendering and content-script expanded-state capture using a mocked extension API.
 - Playwright Firefox engine: the same sidebar and content-script smoke checks using a mocked extension API.
-- These tests exercise real browser engines, but they do not install the extension package or prove browser-specific extension APIs.
+- Chrome package smoke test loads the generated Chrome ZIP in Chrome stable with a real extension runtime and checks service-worker startup, sidebar page, storage, navigation and permission state. It still does not exercise toolbar-triggered side-panel opening, picker capture or optional permission prompts.\n- Playwright Firefox smoke tests use a mocked extension API; they do not install the Firefox package or prove browser-specific extension APIs.
 
-### Required installed-extension checks
+### Remaining interactive installed-extension checks
 
-- Chrome stable: install the unpacked package, open/close the side panel, grant optional host permission, capture/export, and verify service-worker lifecycle.
-- Firefox stable: install the temporary add-on, open/close the sidebar, grant optional host permission, capture/export, and verify background lifecycle.
+- Chrome stable: interactively open/close the side panel from the toolbar, grant optional host permission, capture/export, and test cross-tab recording and navigation.
+- Firefox stable: install the generated ZIP as a temporary add-on, open/close the sidebar, grant optional host permission, capture/export, and test cross-tab recording and navigation.
 - Verify unsupported browser pages fail safely with clear messaging.
 - Test page navigation, tab switching, cross-tab recording and extension reload in both browsers.
 
