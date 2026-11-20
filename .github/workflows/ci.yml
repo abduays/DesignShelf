@@ -28,7 +28,7 @@ jobs:
       - name: Install Playwright
         run: npm install --no-save --no-package-lock playwright@1.57.0
       - name: Install Chrome stable and Firefox
-        run: npx playwright install chrome firefox
+        run: npx playwright install chromium chrome firefox
       - name: Run cross-browser smoke tests
         run: node tests/browser-smoke.mjs
       - name: Build and verify browser packages
