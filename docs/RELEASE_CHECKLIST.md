@@ -33,7 +33,7 @@
 - [x] Run the Node tests, package checks and independent DTCG validator in CI.
 - [x] Build separate Chrome and Firefox ZIP files from their package directories in CI.
 - [x] Verify required package files, archive integrity and SHA-256 checksums in CI.
-- [ ] Download and test installation from the generated ZIPs in the target browsers.
+- [x] Test Chrome ZIP installation/runtime smoke in Chrome stable CI.\n- [ ] Test Firefox ZIP installation in Firefox stable.\n- [ ] Complete interactive toolbar/sidebar, permission, capture/export and cross-tab tests in both browsers.
 - [ ] Create a version tag and GitHub release notes after approval.
 
 ## Publication approval
