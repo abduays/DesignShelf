@@ -28,7 +28,7 @@ jobs:
       - name: Install Playwright
         run: npm install --no-save --no-package-lock playwright@1.57.0
       - name: Install Chrome stable and Firefox
-        run: npx playwright install chrome firefox
+        run: npx playwright install chromium chrome firefox
       - name: Run cross-browser smoke tests
         run: node tests/browser-smoke.mjs
       - name: Build and verify browser packages
@@ -50,6 +50,14 @@ jobs:
             fi
           done
           sha256sum dist/*.zip > dist/SHA256SUMS.txt
+      - name: Install and smoke-test the generated Chrome ZIP
+        run: |
+          set -euo pipefail
+          version="$(node -p "require('./package.json').version")"
+          mkdir -p dist/chrome-package-smoke
+          chrome_archive="dist/designshelf-chrome-v${version}.zip"
+          unzip -q "$chrome_archive" -d dist/chrome-package-smoke
+          xvfb-run -a node tests/chrome-package-smoke.mjs dist/chrome-package-smoke
       - name: Upload browser packages
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         uses: actions/upload-artifact@v4
