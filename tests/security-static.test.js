@@ -257,6 +257,8 @@ test('CI runs cross-browser smoke tests with pinned Playwright and storage modul
   assert.match(w,/playwright@1\.57\.0/);
   assert.match(w,/playwright install chromium chrome firefox/);
   assert.match(w,/node tests\/browser-smoke\.mjs/);
+  assert.match(w,/chrome-package-smoke\.mjs/);
+  assert.match(w,/xvfb-run -a/);
   assert.match(h,/storage-usage\.js/);
   assert.match(t,/chromium/);
   assert.match(t,/firefox/);
