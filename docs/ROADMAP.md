@@ -1,7 +1,7 @@
 # DesignShelf development roadmap
 
 **Target release line:** 0.8.3 development build  
-**Status date:** 19 November 2026
+**Status date:** 20 November 2026
 
 ## Stage 1 — Product and competitor audit
 
