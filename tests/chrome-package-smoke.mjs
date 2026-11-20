@@ -35,7 +35,7 @@ try {
 
   const fixture = await context.newPage();
   await fixture.goto(fixtureUrl);
-  assert.equal(await fixture.title(), '', 'controlled fixture page loads');
+  assert.equal(await fixture.locator('#fixture').count(), 1, 'controlled fixture page loads');
 
   const sidebar = await context.newPage();
   const pageErrors = [];
@@ -48,7 +48,7 @@ try {
 
   const manifest = await sidebar.evaluate(() => chrome.runtime.getManifest());
   assert.equal(manifest.manifest_version, 3, 'real package manifest is loaded');
-  assert.equal(manifest.side_panel.default_path, 'sidebar.html', 'Chrome side-panel package entry is configured');
+  assert.equal(manifest.side_panel.default_path, 'sidebar.html', 'Chrome side-panel package entry is configured');\n  assert.ok(manifest.permissions.includes('sidePanel'), 'package declares the side-panel API permission');\n  assert.ok(await sidebar.evaluate(() => typeof chrome.sidePanel?.open === 'function'), 'real Chrome sidePanel API is available');
 
   const storageRoundTrip = await sidebar.evaluate(async () => {
     const key = 'designshelf_ci_runtime_smoke';
