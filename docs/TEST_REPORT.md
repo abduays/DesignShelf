@@ -9,7 +9,7 @@
 - The browser smoke harness uses a mocked extension API. It does not install the complete extension package or validate real side-panel/sidebar APIs, optional permission prompts, browser background lifecycle or cross-tab recording.
 - A separate post-merge `main` workflow was started after the merge; the PR validation above is the completed run used for this record.
 
-## Stage 9A — generated Chrome package runtime smoke (pending CI result)
+## Stage 9A — generated Chrome package runtime smoke (20 November 2026; pending CI result)
 
 - Added a CI test that extracts the generated Chrome ZIP and loads that exact package in a persistent Chrome stable profile.
 - Checks real MV3 service-worker startup, extension ID/origin, manifest side-panel entry, sidebar page load, storage write/read/delete, workspace navigation, Studio rendering, and confirms optional website permissions are not pre-granted.
