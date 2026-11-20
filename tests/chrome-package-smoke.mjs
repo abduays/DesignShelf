@@ -46,6 +46,16 @@ try {
   assert.equal(await sidebar.evaluate(() => chrome.runtime.id), extensionId, 'sidebar runs under the installed extension origin');
   assert.equal(await sidebar.title(), 'DesignShelf', 'installed sidebar page loads');
 
+  // Fresh extension profiles show the first-run guide. Close it through its UI
+  // so the modal does not block the workspace navigation smoke checks.
+  await sidebar.waitForSelector('#tutorialDialog[open]', { timeout: 10000 });
+  await sidebar.getByRole('button', { name: 'Close tutorial' }).click();
+  await sidebar.waitForFunction(() => !document.querySelector('#tutorialDialog')?.open);
+  await sidebar.waitForFunction(async () => {
+    const state = await chrome.storage.local.get('designshelfTutorialSeen');
+    return state.designshelfTutorialSeen === true;
+  });
+
   const manifest = await sidebar.evaluate(() => chrome.runtime.getManifest());
   assert.equal(manifest.manifest_version, 3, 'real package manifest is loaded');
   assert.equal(manifest.side_panel.default_path, 'sidebar.html', 'Chrome side-panel package entry is configured');
