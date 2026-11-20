@@ -6,7 +6,9 @@ Security fixes are applied to the current development/release line. Older builds
 
 ## Reporting a vulnerability
 
-Please do not publish an exploitable vulnerability in a public issue. Once GitHub private vulnerability reporting is enabled for the repository, use that channel to report the issue privately. Include the affected version, browser, reproduction steps and impact. Do not include real user data, credentials or private website content.
+Please do not publish an exploitable vulnerability in a public issue. Use GitHub's **Report a vulnerability** / private vulnerability reporting feature for this repository if it is available. If that feature is unavailable, contact the repository owner through their GitHub profile and request a private reporting channel before sharing technical details.
+
+Include the affected version, browser, reproduction steps and impact. Do not include real user data, credentials, private website content or secrets. Allow reasonable time for investigation and a fix before public disclosure.
 
 ## Security design
 

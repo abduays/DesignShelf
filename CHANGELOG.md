@@ -1,5 +1,17 @@
 # Changelog
 
+## Unreleased
+
+- Added the MIT licence.
+- Added a user help guide covering installation, capture, inspection, organisation, exports, privacy, troubleshooting and known limitations.
+- Clarified development-build and release status in project documentation.
+- Added semantic workspace tabs, roving keyboard navigation, skip navigation and focusable content panels.
+- Improved focus visibility, target sizing, narrow-panel navigation, forced-colors support and reduced-motion behaviour.
+- Improved captured element selector stability using unique IDs, stable attributes and uniqueness checks.
+- Expanded local accessibility heuristics for form controls, headings and generic link text.
+- Documented competitor research, project licences, third-party adoption decisions and staged implementation plan.
+- No third-party runtime dependency or remote service added.
+
 ## 0.9.1 — Component intelligence (development)
 
 - Capture computed `::before` and `::after` style evidence for the selected component and component-tree nodes.
@@ -7,7 +19,6 @@
 - Detect limited framework/runtime markers and utility-class patterns, with confidence labels to distinguish observed markers from heuristics.
 - Display component intelligence in the inspector and preserve validated fields through project import/export.
 - Sync root, Chrome and Firefox capture, background, inspector and import files.
-
 
 ## 0.8.3 — Development build
 
@@ -34,13 +45,3 @@
 - Added a custom shelf/index browser icon set and accessible keyboard navigation for inspector tabs.
 - Fixed interaction recording so it stops on the tab where it began and preserves previous sessions.
 - Expanded delete-all history to include page audit and interaction history.
-
-
-## Unreleased — UI and accessibility improvements
-
-- Added semantic workspace tabs, roving keyboard navigation, skip navigation and focusable content panels.
-- Improved focus visibility, target sizing, narrow-panel navigation, forced-colors support and reduced-motion behaviour.
-- Improved captured element selector stability using unique IDs, stable attributes and uniqueness checks.
-- Expanded local accessibility heuristics for form controls, headings and generic link text.
-- Documented competitor research, project licences, third-party adoption decisions and staged implementation plan.
-- No third-party runtime dependency or remote service added.
