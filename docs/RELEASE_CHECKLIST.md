@@ -10,10 +10,20 @@
 - [x] GitHub Actions validation workflow added.
 - [x] Contribution and security reporting guidance added.
 - [x] Repository name and development repository are established.
+- [x] MIT licence added in `LICENSE`.
+- [x] User help guide added and linked from README.
 - [ ] Confirm final repository visibility and topics for the versioned release.
-- [ ] Choose an open-source licence. MIT is the simplest permissive option; MPL-2.0 is a file-level copyleft option. Do not add a licence without the owner's explicit choice.
 - [ ] Replace or confirm the Firefox Gecko add-on ID before AMO submission.
 - [ ] Confirm authorship and rights for all icons, code and documentation.
+
+## Documentation quality
+
+- [x] README describes product purpose, features, installation, privacy and limitations.
+- [x] Help guide covers install, first capture, inspection, organisation, workbench, exports, permissions, privacy and troubleshooting.
+- [x] Security policy explains how to report vulnerabilities without public disclosure.
+- [x] Third-party register distinguishes research references from bundled dependencies.
+- [x] Changelog records documentation and licensing changes.
+- [ ] Recheck all documentation against the exact release build and package version.
 
 ## Product and engineering gates
 
@@ -31,7 +41,7 @@
 ## Release packaging
 
 - [x] Run the Node tests, package checks and independent DTCG validator in CI.
-- [x] Build separate Chrome and Firefox ZIP files from their package directories in CI.
+- [x] Build separate Chrome and Firefox ZIP files in CI.
 - [x] Verify required package files, archive integrity and SHA-256 checksums in CI.
 - [x] Test Chrome ZIP installation/runtime smoke in Chromium CI.
 - [ ] Test Firefox ZIP installation in Firefox stable.
