@@ -114,7 +114,7 @@
 - [x] Use Chrome `sidePanel` and Firefox `sidebar_action` packaging.
 - [x] Add package parity and local-resource validation.
 - [x] Run Chrome stable sidebar and content-script state-capture smoke tests in CI.
-- [x] Install the generated Chrome ZIP in a real Chrome stable CI profile; verify extension service-worker startup, extension-origin sidebar rendering, storage round-trip, navigation and default permissions.
+- [x] Install the generated Chrome ZIP in a real Chromium extension runtime in CI; verify service-worker startup, extension-origin sidebar rendering, storage round-trip, navigation and default permissions.
 - [ ] Verify toolbar-action side-panel opening, user-granted optional host access, picker capture/export and service-worker lifecycle in a local interactive browser.
 - [x] Run Firefox sidebar and content-script state-capture smoke tests in CI using the Playwright Firefox engine.
 - [ ] Install the complete extension package in Firefox stable and verify sidebar opening, permissions and background lifecycle.
