@@ -5,7 +5,7 @@ import { resolve } from 'node:path';
 import { tmpdir } from 'node:os';
 import { createServer } from 'node:http';
 
-const extensionPath = resolve('chrome');
+const extensionPath = resolve(process.argv[2] || 'chrome');
 const profilePath = await mkdtemp(resolve(tmpdir(), 'designshelf-chrome-smoke-'));
 const server = createServer((req, res) => {
   res.writeHead(200, { 'content-type': 'text/html; charset=utf-8' });
