@@ -57,7 +57,7 @@ jobs:
           mkdir -p dist/chrome-package-smoke
           chrome_archive="dist/designshelf-chrome-v${version}.zip"
           unzip -q "$chrome_archive" -d dist/chrome-package-smoke
-          node tests/chrome-package-smoke.mjs dist/chrome-package-smoke
+          xvfb-run -a node tests/chrome-package-smoke.mjs dist/chrome-package-smoke
       - name: Upload browser packages
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         uses: actions/upload-artifact@v4
