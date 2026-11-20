@@ -17,7 +17,7 @@ let context;
 
 try {
   context = await chromium.launchPersistentContext(profilePath, {
-    channel: 'chrome',
+    channel: 'chromium',
     headless: false,
     args: [
       `--disable-extensions-except=${extensionPath}`,
