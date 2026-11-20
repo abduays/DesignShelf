@@ -23,6 +23,7 @@
   <a href="https://abduays.github.io/DesignShelf/">Live demo</a> ·
   <a href="#screenshots">Screenshots</a> ·
   <a href="#get-started">Get started</a> ·
+  <a href="docs/HELP_GUIDE.md">Help guide</a> ·
   <a href="#privacy-and-permissions">Privacy</a> ·
   <a href="#development">Development</a>
 </p>
@@ -77,6 +78,8 @@ Try the [interactive DesignShelf demo](https://abduays.github.io/DesignShelf/) t
 The saved result is a browser-observed snapshot. Dynamic states, inaccessible stylesheets and assets, and framework-specific source code may not be available.
 
 ## Get started
+
+For a step-by-step guide to installation, capture, inspection, organising, exports and troubleshooting, read the **[Help Guide](docs/HELP_GUIDE.md)**.
 
 **This is a development build (v0.8.3), not a store release.** Install it locally using the package for your browser.
 
@@ -173,7 +176,7 @@ DesignShelf/
 
 DesignShelf is under active development. The current codebase includes automated tests and static package checks, but **live Chrome and Firefox workflows, accessibility testing and further security testing remain necessary**. Do not treat this build as independently security-certified or production-ready.
 
-The repository currently has no open-source licence. Until a licence is selected and added, no permission to redistribute or reuse the source is granted.
+DesignShelf is licensed under the [MIT License](LICENSE). The licence applies to the project code; it does not grant rights to website content, captured material or third-party assets. See [Third-party notices](docs/THIRD_PARTY_NOTICES.md).
 
 ---
 
