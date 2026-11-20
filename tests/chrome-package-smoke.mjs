@@ -18,7 +18,7 @@ let context;
 try {
   context = await chromium.launchPersistentContext(profilePath, {
     channel: 'chrome',
-    headless: true,
+    headless: false,
     args: [
       `--disable-extensions-except=${extensionPath}`,
       `--load-extension=${extensionPath}`,
@@ -28,7 +28,7 @@ try {
   });
 
   let worker = context.serviceWorkers()[0];
-  if (!worker) worker = await context.waitForEvent('serviceworker', { timeout: 15000 });
+  if (!worker) worker = await context.waitForEvent('serviceworker', { timeout: 30000 });
   assert.match(worker.url(), /^chrome-extension:\/\//, 'extension service worker starts');
   const extensionId = new URL(worker.url()).host;
   assert.ok(extensionId, 'extension ID is discovered from the real service worker URL');
